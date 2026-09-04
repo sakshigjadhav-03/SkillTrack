@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Maharashtra District Outcome Map — SkillTrack{% endblock %}
+
+{% block extra_head %}
+<style>
+  #maharashtraMap {
+    height: 600px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .map-watermark {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #664d03;
+    border: 1px solid #ffe69c;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .leaflet-popup-content-wrapper {
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .custom-popup h6 {
+    color: #0e385f;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .custom-popup .metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.85rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Map Header -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-primary text-uppercase">Geographic Outcome Mapping</span>
+          <span class="badge bg-warning text-dark text-uppercase">Feature 17</span>
+        </div>
+        <h3 class="fw-bold mb-0">Maharashtra District-Level Outcome Map</h3>
+        <p class="text-muted small mb-0">Interactive Leaflet.js map with OpenStreetMap basemap tracking regional employment and retention</p>
+      </div>
+      <div>
+        <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Card Container -->
+  <div class="card border-0 shadow-sm rounded-4 p-3 bg-white position-relative">
+    <div id="maharashtraMap"></div>
+    <div class="map-watermark">
+      <i class="bi bi-shield-exclamation me-1"></i> Prototype Data — Not Government Data
+    </div>
+  </div>
+
+  <!-- District Summary Table -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
+    <div class="section-header">
+      <h4>Maharashtra Regional Cohort Distribution</h4>
+      <p>Synthetic prototype metrics aggregated across Maharashtra administrative divisions</p>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table custom-table table-bordered mb-0">
+        <thead>
+          <tr>
+            <th>District</th>
+            <th>Division</th>
+            <th>Total Trained</th>
+            <th>Employment %</th>
+            <th>Retention %</th>
+            <th>Avg. Salary</th>
+            <th>Top Detected Skill Gaps</th>
+          </tr>
+        </thead>
+        <tbody id="districtsTableBody">
+          <!-- Populated via JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize Leaflet Map centered on Maharashtra
+  const map = L.map('maharashtraMap').setView([19.7515, 75.7139], 7);
+
+  // OpenStreetMap Tile Layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | SkillTrack Prototype'
+  }).addTo(map);
+
+  // Fetch district data from API
+  fetch('/api/districts')
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.districts) {
+        const tableBody = document.getElementById('districtsTableBody');
+        
+        data.districts.forEach(d => {
+          // Color based on employment rate
+          const markerColor = d.employment_rate >= 75 ? '#198754' : (d.employment_rate >= 70 ? '#0d6efd' : '#ffc107');
+
+          // Add Circle Marker
+          const marker = L.circleMarker([d.lat, d.lng], {
+            radius: 12,
+            fillColor: markerColor,
+            color: '#ffffff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.85
+          }).addTo(map);
+
+          // Construct Popup HTML
+          const popupContent = `
+            <div class="custom-popup" style="min-width: 220px;">
+              <h6>${d.name} (${d.division})</h6>
+              <div class="metric-row">
+                <span class="text-muted">Total Trained:</span>
+                <strong>${d.total_trained}</strong>
+              </div>
+              <div class="metric-row">
+                <span class="text-muted">Employment Rate:</span>
+                <strong class="text-success">${d.employment_rate}%</strong>
+              </div>
+              <div class="metric-row">
+                <span class="text-muted">12M Retention:</span>
+                <strong class="text-primary">${d.retention_rate}%</strong>
+              </div>
+              <div class="metric-row">
+                <span class="text-muted">Average Wage:</span>
+                <strong>₹${d.avg_salary.toLocaleString()}</strong>
+              </div>
+              <div class="mt-2">
+                <span class="text-muted small d-block">Top Skill Gaps:</span>
+                <span class="badge bg-warning-subtle text-dark border small mt-1">${d.top_skill_gaps.join(', ')}</span>
+              </div>
+            </div>
+          `;
+          marker.bindPopup(popupContent);
+
+          // Populate Table Row
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><strong>${d.name}</strong></td>
+            <td><span class="badge bg-light text-dark border">${d.division}</span></td>
+            <td>${d.total_trained}</td>
+            <td><span class="text-success fw-bold">${d.employment_rate}%</span></td>
+            <td><span class="text-primary fw-bold">${d.retention_rate}%</span></td>
+            <td>₹${d.avg_salary.toLocaleString()}</td>
+            <td><span class="small text-danger">${d.top_skill_gaps.join(' &bull; ')}</span></td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+    })
+    .catch(err => console.error('Error loading district map data:', err));
+});
+</script>
+{% endblock %}

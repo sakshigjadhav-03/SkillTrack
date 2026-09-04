@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "name": "Mumbai",
+    "division": "Konkan",
+    "lat": 19.0760,
+    "lng": 72.8777,
+    "total_trained": 420,
+    "employment_rate": 83.5,
+    "retention_rate": 79.0,
+    "avg_salary": 21500,
+    "top_skill_gaps": ["Advanced Excel", "Client Communication", "Python"]
+  },
+  {
+    "id": 2,
+    "name": "Pune",
+    "division": "Pune",
+    "lat": 18.5204,
+    "lng": 73.8567,
+    "total_trained": 510,
+    "employment_rate": 81.2,
+    "retention_rate": 76.5,
+    "avg_salary": 20400,
+    "top_skill_gaps": ["Data Analysis", "Industrial Automation", "CRM Software"]
+  },
+  {
+    "id": 3,
+    "name": "Nagpur",
+    "division": "Vidarbha",
+    "lat": 21.1458,
+    "lng": 79.0882,
+    "total_trained": 380,
+    "employment_rate": 74.5,
+    "retention_rate": 69.2,
+    "avg_salary": 16800,
+    "top_skill_gaps": ["Logistics Tracking", "Basic Accounting", "Digital Tools"]
+  },
+  {
+    "id": 4,
+    "name": "Nashik",
+    "division": "Nashik",
+    "lat": 19.9975,
+    "lng": 73.7898,
+    "total_trained": 340,
+    "employment_rate": 76.0,
+    "retention_rate": 71.8,
+    "avg_salary": 17200,
+    "top_skill_gaps": ["Solar Inverter Maintenance", "Supply Chain", "English Communication"]
+  },
+  {
+    "id": 5,
+    "name": "Chhatrapati Sambhajinagar",
+    "division": "Marathwada",
+    "lat": 19.8762,
+    "lng": 75.3433,
+    "total_trained": 290,
+    "employment_rate": 71.4,
+    "retention_rate": 65.0,
+    "avg_salary": 15900,
+    "top_skill_gaps": ["Auto-CAD Basics", "Industrial Electrical Safety", "Customer Service"]
+  },
+  {
+    "id": 6,
+    "name": "Thane",
+    "division": "Konkan",
+    "lat": 19.2183,
+    "lng": 72.9781,
+    "total_trained": 360,
+    "employment_rate": 80.0,
+    "retention_rate": 75.0,
+    "avg_salary": 19800,
+    "top_skill_gaps": ["Warehouse Management", "Data Entry Speed", "Email Etiquette"]
+  },
+  {
+    "id": 7,
+    "name": "Kolhapur",
+    "division": "Pune",
+    "lat": 16.7050,
+    "lng": 74.2433,
+    "total_trained": 260,
+    "employment_rate": 75.8,
+    "retention_rate": 72.4,
+    "avg_salary": 16500,
+    "top_skill_gaps": ["Machining Diagnostics", "Retail POS Software", "Team Collaboration"]
+  },
+  {
+    "id": 8,
+    "name": "Solapur",
+    "division": "Pune",
+    "lat": 17.6599,
+    "lng": 75.9064,
+    "total_trained": 240,
+    "employment_rate": 68.2,
+    "retention_rate": 62.1,
+    "avg_salary": 14800,
+    "top_skill_gaps": ["Textile Machine Operations", "Computer Literacy", "Workplace Discipline"]
+  },
+  {
+    "id": 9,
+    "name": "Amravati",
+    "division": "Vidarbha",
+    "lat": 20.9374,
+    "lng": 77.7796,
+    "total_trained": 210,
+    "employment_rate": 66.5,
+    "retention_rate": 60.0,
+    "avg_salary": 14200,
+    "top_skill_gaps": ["Medical Record Keeping", "Basic IT Operations", "Patient Handling"]
+  },
+  {
+    "id": 10,
+    "name": "Nanded",
+    "division": "Marathwada",
+    "lat": 19.1383,
+    "lng": 77.3210,
+    "total_trained": 190,
+    "employment_rate": 64.8,
+    "retention_rate": 58.5,
+    "avg_salary": 13900,
+    "top_skill_gaps": ["Solar Panel Installation", "Local Sales Outreach", "Spoken English"]
+  }
+]

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Post-Training Follow-Up Survey — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+          <div>
+            <span class="badge bg-primary mb-1">Longitudinal Livelihood Review</span>
+            <h4 class="fw-bold mb-0">Post-Training Milestone Follow-Up</h4>
+          </div>
+          <span class="outcome-id-pill">{{ trainee.outcome_id }}</span>
+        </div>
+
+        <form action="{{ url_for('trainee.followup') }}" method="POST" id="followupForm">
+          
+          <!-- Milestone Selection -->
+          <div class="mb-4">
+            <label class="form-label fw-bold">Select Milestone Interval *</label>
+            <div class="row g-2">
+              <div class="col-md-3 col-6">
+                <input type="radio" class="btn-check" name="milestone_months" id="m3" value="3" checked>
+                <label class="btn btn-outline-primary w-100 py-2 fw-semibold" for="m3">3 Months</label>
+              </div>
+              <div class="col-md-3 col-6">
+                <input type="radio" class="btn-check" name="milestone_months" id="m6" value="6">
+                <label class="btn btn-outline-primary w-100 py-2 fw-semibold" for="m6">6 Months</label>
+              </div>
+              <div class="col-md-3 col-6">
+                <input type="radio" class="btn-check" name="milestone_months" id="m12" value="12">
+                <label class="btn btn-outline-primary w-100 py-2 fw-semibold" for="m12">12 Months</label>
+              </div>
+              <div class="col-md-3 col-6">
+                <input type="radio" class="btn-check" name="milestone_months" id="m24" value="24">
+                <label class="btn btn-outline-primary w-100 py-2 fw-semibold" for="m24">24 Months</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Employment Status Pathway -->
+          <div class="mb-4">
+            <label class="form-label fw-bold">Current Livelihood Status *</label>
+            <select name="employment_status" id="empStatusSelect" class="form-select form-select-lg" required>
+              <option value="employed" selected>Wage Employed (Full-time / Part-time / Contract)</option>
+              <option value="self_employed">Self-Employed / Entrepreneur</option>
+              <option value="apprentice">Apprenticeship</option>
+              <option value="unemployed">Unemployed / Seeking Employment</option>
+              <option value="further_education">Further Education / Higher Studies</option>
+            </select>
+          </div>
+
+          <!-- Section: Wage Employed -->
+          <div id="employedFields" class="p-3 border rounded-3 mb-4 bg-light">
+            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-briefcase me-1"></i> Employment Details</h6>
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Company / Employer Name</label>
+                <input type="text" name="company_name" class="form-control" placeholder="e.g. TCS BPS / Reliance Retail">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small fw-semibold">Designation / Job Role</label>
+                <input type="text" name="job_role" class="form-control" placeholder="e.g. Operations Associate">
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">Current Monthly In-Hand Salary (INR) *</label>
+              <div class="input-group">
+                <span class="input-group-text">₹</span>
+                <input type="number" name="current_salary" class="form-control" placeholder="e.g. 18000" min="0" step="500">
+                <span class="input-group-text">/ month</span>
+              </div>
+              <span class="text-muted small">SkillTrack tracks wage progression over time to measure sustainable growth.</span>
+            </div>
+          </div>
+
+          <!-- Section: Unemployed Root Causes (Feature 8) -->
+          <div id="unemployedFields" class="p-3 border rounded-3 mb-4 bg-light d-none">
+            <h6 class="fw-bold text-danger mb-3"><i class="bi bi-question-circle me-1"></i> Non-Placement Reason (Why Analysis)</h6>
+            <label class="form-label small fw-semibold">Primary reason for non-placement:</label>
+            <select name="non_placement_reason" class="form-select">
+              <option value="">-- Select primary reason --</option>
+              <option value="Lack of required skills">Lack of required skills / Industry skill mismatch</option>
+              <option value="No suitable jobs in local area">No suitable jobs in local district/area</option>
+              <option value="Low salary offered">Salary offered was below minimum expectation</option>
+              <option value="Transportation problem">Transportation or commute issues</option>
+              <option value="Personal/family reasons">Personal / Family constraints</option>
+              <option value="No interview opportunities">No interview opportunities provided</option>
+              <option value="Lack of experience">Lack of prior work experience</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- Section: Job Leaving / Attrition Reasons (Feature 7) -->
+          <div class="mb-4">
+            <label class="form-label small fw-semibold">If you left a previous job, what was the primary reason? (Optional)</label>
+            <select name="attrition_reason" class="form-select">
+              <option value="">-- No recent job exit --</option>
+              <option value="Low salary">Low salary / Compensation below expectations</option>
+              <option value="Better opportunity elsewhere">Secured better career opportunity elsewhere</option>
+              <option value="Relocation to hometown">Relocation / Migration constraints</option>
+              <option value="Work environment & long hours">Difficult work environment or long shifts</option>
+              <option value="Skill mismatch">Skill mismatch with daily workplace demands</option>
+              <option value="Contract ended">Temporary contract concluded</option>
+              <option value="Personal reasons">Personal or health reasons</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-semibold">Additional Comments / Skill Feedback</label>
+            <textarea name="notes" class="form-control" rows="2" placeholder="Tell us if you need upskilling or have any feedback on your training..."></textarea>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+            <a href="{{ url_for('trainee.dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-send-check me-1"></i> Submit Follow-up Record
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const statusSelect = document.getElementById('empStatusSelect');
+  const empFields = document.getElementById('employedFields');
+  const unempFields = document.getElementById('unemployedFields');
+
+  statusSelect.addEventListener('change', () => {
+    const val = statusSelect.value;
+    if (val === 'employed' || val === 'self_employed' || val === 'apprentice') {
+      empFields.classList.remove('d-none');
+      unempFields.classList.add('d-none');
+    } else if (val === 'unemployed') {
+      empFields.classList.add('d-none');
+      unempFields.classList.remove('d-none');
+    } else {
+      empFields.classList.add('d-none');
+      unempFields.classList.add('d-none');
+    }
+  });
+});
+</script>
+{% endblock %}

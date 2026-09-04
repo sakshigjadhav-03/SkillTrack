@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Employer Verification Portal — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Employer Header -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success">
+          <i class="bi bi-building-check fs-2"></i>
+        </div>
+        <div>
+          <h3 class="fw-bold mb-1">{{ employer.company_name }}</h3>
+          <p class="text-muted small mb-0">
+            Sector: <strong>{{ employer.industry }}</strong> &bull; Empanelled Verification Partner
+          </p>
+        </div>
+      </div>
+      <span class="badge bg-success-subtle text-success border border-success px-3 py-2">
+        <i class="bi bi-shield-lock-fill me-1"></i> Authorized Verification Node
+      </span>
+    </div>
+  </div>
+
+  <!-- Search by Permanent Outcome ID -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="section-header">
+      <h4>Look Up Candidate by Unique Outcome ID</h4>
+      <p>Enter the candidate's permanent identifier (e.g., <code>ST-MH-000123</code>) to verify employment</p>
+    </div>
+
+    <form action="{{ url_for('employer.dashboard') }}" method="GET" class="row g-2 align-items-center mb-3">
+      <div class="col-md-6 col-lg-5">
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+          <input type="text" name="outcome_id" value="{{ search_query }}" class="form-control" placeholder="ST-MH-000123" required>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+          <i class="bi bi-search me-1"></i> Look Up Outcome ID
+        </button>
+      </div>
+      <div class="col-auto">
+        <a href="{{ url_for('employer.dashboard', outcome_id='ST-MH-000123') }}" class="btn btn-outline-secondary btn-sm">
+          Try Demo ID (ST-MH-000123)
+        </a>
+      </div>
+    </form>
+
+    <!-- Searched Candidate Result & Verification Form -->
+    {% if searched_trainee %}
+      <div class="border rounded-4 p-4 mt-4" style="background-color: #f8fafc;">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          <div>
+            <span class="badge bg-primary mb-1">Consent Verified</span>
+            <h5 class="fw-bold mb-0">{{ searched_trainee.first_name }} {{ searched_trainee.last_name }}</h5>
+          </div>
+          <span class="outcome-id-pill">{{ searched_trainee.outcome_id }}</span>
+        </div>
+
+        <div class="row g-3 mb-4 small">
+          <div class="col-md-4">
+            <span class="text-muted d-block">Completed Training Course:</span>
+            <strong>{{ searched_trainee.course_name }}</strong>
+          </div>
+          <div class="col-md-4">
+            <span class="text-muted d-block">Training Provider:</span>
+            <strong>{{ searched_trainee.provider_name }}</strong>
+          </div>
+          <div class="col-md-4">
+            <span class="text-muted d-block">Certification Status:</span>
+            <span class="badge bg-success">{{ searched_trainee.certification_status|upper }}</span>
+          </div>
+        </div>
+
+        <hr class="my-3 text-muted">
+
+        <!-- Verification Form -->
+        <h6 class="fw-bold text-dark mb-3"><i class="bi bi-patch-check me-1 text-primary"></i> Employment Verification Confirmation</h6>
+        <form action="{{ url_for('employer.verify_trainee') }}" method="POST">
+          <input type="hidden" name="outcome_id" value="{{ searched_trainee.outcome_id }}">
+          
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Verification Status</label>
+              <select name="verification_status" class="form-select">
+                <option value="verified" selected>Verified (Currently Employed on Rolls)</option>
+                <option value="rejected">Rejected (Candidate not on rolls)</option>
+                <option value="pending">Pending Review</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Designation / Job Role</label>
+              <input type="text" name="verified_role" class="form-control" value="{{ existing_verification.verified_role if existing_verification else 'Junior Data Operations Executive' }}" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">Joining Date</label>
+              <input type="date" name="verified_joining_date" class="form-control" value="{{ existing_verification.verified_joining_date if existing_verification else '2023-09-01' }}" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Monthly Salary Range</label>
+              <select name="verified_salary_range" class="form-select">
+                <option value="₹12,000 - ₹15,000">₹12,000 - ₹15,000</option>
+                <option value="₹15,000 - ₹18,000">₹15,000 - ₹18,000</option>
+                <option value="₹18,000 - ₹22,000" selected>₹18,000 - ₹22,000</option>
+                <option value="₹22,000 - ₹28,000">₹22,000 - ₹28,000</option>
+                <option value="₹28,000+">₹28,000+</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Verification Remarks</label>
+              <input type="text" name="remarks" class="form-control" placeholder="e.g. Role and active status confirmed by HR" value="{{ existing_verification.remarks if existing_verification else 'Confirmed on payroll.' }}">
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success fw-semibold px-4">
+              <i class="bi bi-check2-circle me-1"></i> Submit Official Verification
+            </button>
+            <a href="{{ url_for('employer.feedback', outcome_id=searched_trainee.outcome_id) }}" class="btn btn-outline-primary fw-semibold px-3">
+              <i class="bi bi-star me-1"></i> Provide Skill Gap Feedback
+            </a>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Verified Trainees History Table -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+    <div class="section-header">
+      <h4>Verified Candidate Records</h4>
+      <p>Candidates validated under this enterprise with verified status badges</p>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table custom-table table-bordered mb-0">
+        <thead>
+          <tr>
+            <th>Outcome ID</th>
+            <th>Candidate Name</th>
+            <th>Training Course</th>
+            <th>Verified Job Role</th>
+            <th>Status</th>
+            <th>Feedback & Skill Gaps</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for v in verifications %}
+            <tr>
+              <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+              <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+              <td>{{ v.course_name }}</td>
+              <td>{{ v.verified_role }}</td>
+              <td><span class="verified-badge"><i class="bi bi-check-circle-fill"></i> Verified ✓</span></td>
+              <td>
+                {% if v.missing_skills_text %}
+                  <span class="badge bg-warning-subtle text-danger border">Gaps: {{ v.missing_skills_text }}</span>
+                {% else %}
+                  <span class="text-muted small">Pending rating</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ url_for('employer.feedback', outcome_id=v.outcome_id) }}" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-chat-left-text me-1"></i> Skill Feedback
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

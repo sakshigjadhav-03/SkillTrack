@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block title %}Government Command Center — SkillTrack (SIH26135){% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-4 py-4">
+
+  <!-- Command Center Header -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-primary text-uppercase">State Outcome Intelligence Node</span>
+          <span class="badge bg-warning text-dark text-uppercase">SIH26135 Executive View</span>
+        </div>
+        <h2 class="fw-bold mb-0">Government Outcome Dashboard</h2>
+        <p class="text-muted small mb-0">Longitudinal employment retention, wage progression, skill-gap analysis, and policy action engine</p>
+      </div>
+
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('government.map_view') }}" class="btn btn-outline-primary fw-semibold">
+          <i class="bi bi-geo-alt me-1"></i> Interactive District Map
+        </a>
+        <a href="{{ url_for('government.recommendations_view') }}" class="btn btn-warning fw-bold text-dark">
+          <i class="bi bi-lightbulb-fill me-1"></i> Action Engine
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top 8 KPI Cards (Feature 18) -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">Total Trainees Tracked</div>
+        <div class="kpi-value text-primary">{{ total_trainees }}</div>
+        <div class="kpi-subtext">Active longitudinal consent records</div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">Overall Employment Rate</div>
+        <div class="kpi-value text-success">{{ employment_rate }}%</div>
+        <div class="kpi-subtext">Wage ({{ wage_employed }}), Self ({{ self_employed }}), Apprentice ({{ apprentice }})</div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">12-Month Retention Rate</div>
+        <div class="kpi-value text-info">{{ retention_rate }}%</div>
+        <div class="kpi-subtext">Sustained post-placement livelihoods</div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card border-warning">
+        <div class="kpi-title text-warning">Prototype Outcome Score</div>
+        <div class="kpi-value text-dark">{{ outcome_score.outcome_score }} <span style="font-size: 1rem; color: #64748b;">/ 100</span></div>
+        <div class="kpi-subtext" style="font-size: 0.72rem;">* Weighted composite metric (30-25-20-15-10)</div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">Average Monthly Salary</div>
+        <div class="kpi-value text-dark">₹{{ "{:,.0f}".format(avg_salary) }}</div>
+        <div class="kpi-subtext">Across active wage employment records</div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">Average Salary Growth</div>
+        <div class="kpi-value text-success">+{{ avg_salary_growth }}%</div>
+        <div class="kpi-subtext">Progression between 3M and 12M marks</div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">Training → Job Relevance</div>
+        <div class="kpi-value text-primary">{{ job_relevance_index }}%</div>
+        <div class="kpi-subtext">TF-IDF semantic curriculum alignment</div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="kpi-card">
+        <div class="kpi-title">Apprenticeship Conversion</div>
+        <div class="kpi-value text-info">{{ appr_conv_rate }}%</div>
+        <div class="kpi-subtext">Converted to regular wage jobs</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1: Retention Trends & Salary Progression -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+        <div class="section-header">
+          <h4>Longitudinal Employment Retention Trend</h4>
+          <p>Tracking cohort retention drop-off from 3 to 24 months</p>
+        </div>
+        <div style="position: relative; height: 280px;">
+          <canvas id="retentionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+        <div class="section-header">
+          <h4>Salary Growth Progression Trajectory</h4>
+          <p>Longitudinal average monthly wage growth post-certification</p>
+        </div>
+        <div style="position: relative; height: 280px;">
+          <canvas id="salaryProgressionChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- "WHY ANALYSIS" Section (Feature 7 & Feature 8) -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="why-analysis">
+    <div class="section-header">
+      <h4><i class="bi bi-search text-danger me-2"></i>"Why Analysis" — Root Causes for Outcome Bottlenecks</h4>
+      <p>Data-driven breakdown of why candidates remain unplaced and why placed candidates leave jobs</p>
+    </div>
+
+    <div class="row g-4 mt-1">
+      <div class="col-lg-6">
+        <h6 class="fw-bold text-danger mb-3">1. Non-Placement Causes (Why Candidates Are Unemployed)</h6>
+        <div style="position: relative; height: 260px;">
+          <canvas id="nonPlacementChart"></canvas>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <h6 class="fw-bold text-warning text-dark mb-3">2. Early Job Attrition Causes (Why Trainees Leave Jobs)</h6>
+        <div style="position: relative; height: 260px;">
+          <canvas id="attritionChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Institutional Comparisons: Courses & Providers -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+        <div class="section-header">
+          <h4>Course Outcome Performance</h4>
+          <p>Comparative placement conversion and average monthly salaries across vocational trades</p>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0">
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Sector</th>
+                <th>Enrolled</th>
+                <th>Employment %</th>
+                <th>Avg. Salary</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in courses %}
+                <tr>
+                  <td><strong>{{ c.course_name }}</strong></td>
+                  <td><span class="badge bg-light text-dark border">{{ c.sector }}</span></td>
+                  <td>{{ c.enrolled }}</td>
+                  <td>
+                    <span class="text-success fw-bold">{{ c.emp_rate }}%</span>
+                  </td>
+                  <td>₹{{ "{:,.0f}".format(c.avg_sal) }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+        <div class="section-header">
+          <h4>Top Statewide Skill Gaps</h4>
+          <p>Highest frequency workplace skill deficiencies identified by recruiting employers</p>
+        </div>
+
+        <div class="list-group list-group-flush">
+          {% for skill, count in skill_gaps %}
+            <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+              <div>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle me-2">Rank {{ loop.index }}</span>
+                <strong>{{ skill }}</strong>
+              </div>
+              <span class="badge bg-dark rounded-pill">{{ count }} reports</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Actionable Recommendations (Feature 20) -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div class="section-header mb-0">
+        <h4>Actionable Policy Recommendations</h4>
+        <p>Explainable, data-driven interventions generated by SkillTrack's Recommendation Engine</p>
+      </div>
+      <a href="{{ url_for('government.recommendations_view') }}" class="btn btn-primary btn-sm">
+        View All Recommendations →
+      </a>
+    </div>
+
+    <div class="row g-3">
+      {% for rec in recommendations[:2] %}
+        <div class="col-lg-6">
+          <div class="p-3 rounded-3 border h-100" style="background-color: #f8fafc;">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-danger text-uppercase">{{ rec.priority }} Priority</span>
+              <span class="small text-muted">{{ rec.category }}</span>
+            </div>
+            <h6 class="fw-bold text-primary mb-1">{{ rec.problem }}</h6>
+            <p class="small text-muted mb-2"><strong>Evidence:</strong> {{ rec.evidence }}</p>
+            <div class="p-2 bg-white rounded border border-primary border-opacity-25 small mb-2">
+              <strong>Recommendation:</strong> {{ rec.recommendation }}
+            </div>
+            <div class="small text-success">
+              <i class="bi bi-arrow-return-right me-1"></i><strong>Suggested Action:</strong> {{ rec.suggested_action }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Retention Curve Chart
+  const retCtx = document.getElementById('retentionChart').getContext('2d');
+  new Chart(retCtx, {
+    type: 'line',
+    data: {
+      labels: ['3 Months', '6 Months', '12 Months', '24 Months (Est.)'],
+      datasets: [{
+        label: 'Job Retention Rate (%)',
+        data: [86.4, 78.2, 71.4, 66.8],
+        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(13, 110, 253, 0.08)',
+        fill: true,
+        tension: 0.35,
+        borderWidth: 3,
+        pointBackgroundColor: '#0d6efd',
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { min: 50, max: 100, ticks: { callback: v => v + '%' } }
+      }
+    }
+  });
+
+  // 2. Salary Progression Chart
+  const salCtx = document.getElementById('salaryProgressionChart').getContext('2d');
+  new Chart(salCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Entry', '3 Months', '6 Months', '12 Months', '24 Months (Est.)'],
+      datasets: [{
+        label: 'Avg. Monthly Salary (INR)',
+        data: [14800, 16200, 18400, 20800, 24500],
+        backgroundColor: '#198754',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { ticks: { callback: v => '₹' + v.toLocaleString() } }
+      }
+    }
+  });
+
+  // 3. Non-Placement Reasons Chart
+  const npCtx = document.getElementById('nonPlacementChart').getContext('2d');
+  new Chart(npCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Skill Gap', 'Low Salary Offered', 'Transport / Distance', 'No Local Jobs', 'Other'],
+      datasets: [{
+        data: [38, 26, 18, 12, 6],
+        backgroundColor: ['#dc3545', '#ffc107', '#0dcaf0', '#6c757d', '#adb5bd']
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  // 4. Attrition Reasons Chart
+  const attCtx = document.getElementById('attritionChart').getContext('2d');
+  new Chart(attCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Low Wage Progression', 'Better Opportunity', 'Relocation to Hometown', 'Work Hours', 'Skill Mismatch'],
+      datasets: [{
+        data: [42, 24, 16, 10, 8],
+        backgroundColor: ['#e59819', '#198754', '#0d6efd', '#6f42c1', '#20c997']
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+});
+</script>
+{% endblock %}

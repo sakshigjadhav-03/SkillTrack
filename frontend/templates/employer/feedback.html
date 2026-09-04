@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Employer Skill Feedback — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+          <div>
+            <span class="badge bg-success mb-1">Feature 12 — Workplace Skill Feedback</span>
+            <h4 class="fw-bold mb-0">Evaluate Trainee Competencies & Skill Gaps</h4>
+            <p class="text-muted small mb-0">Candidate: <strong>{{ trainee.first_name }} {{ trainee.last_name }}</strong> &bull; Course: {{ trainee.course_name }}</p>
+          </div>
+          <span class="outcome-id-pill">{{ outcome_id }}</span>
+        </div>
+
+        <form action="{{ url_for('employer.feedback', outcome_id=outcome_id) }}" method="POST">
+          
+          <h6 class="fw-bold text-primary mb-3">6-Pillar Skill Evaluation (1 to 5 Stars)</h6>
+          
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">1. Technical Competence</label>
+              <select name="technical_skills_rating" class="form-select">
+                <option value="5" {% if feedback and feedback.technical_skills_rating == 5 %}selected{% endif %}>★★★★★ 5 - Excellent</option>
+                <option value="4" {% if not feedback or feedback.technical_skills_rating == 4 %}selected{% endif %}>★★★★☆ 4 - Good</option>
+                <option value="3" {% if feedback and feedback.technical_skills_rating == 3 %}selected{% endif %}>★★★☆☆ 3 - Average</option>
+                <option value="2" {% if feedback and feedback.technical_skills_rating == 2 %}selected{% endif %}>★★☆☆☆ 2 - Below Average</option>
+                <option value="1" {% if feedback and feedback.technical_skills_rating == 1 %}selected{% endif %}>★☆☆☆☆ 1 - Poor</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">2. Communication & Soft Skills</label>
+              <select name="communication_rating" class="form-select">
+                <option value="5" {% if feedback and feedback.communication_rating == 5 %}selected{% endif %}>★★★★★ 5 - Excellent</option>
+                <option value="4" {% if not feedback or feedback.communication_rating == 4 %}selected{% endif %}>★★★★☆ 4 - Good</option>
+                <option value="3" {% if feedback and feedback.communication_rating == 3 %}selected{% endif %}>★★★☆☆ 3 - Average</option>
+                <option value="2" {% if feedback and feedback.communication_rating == 2 %}selected{% endif %}>★★☆☆☆ 2 - Below Average</option>
+                <option value="1" {% if feedback and feedback.communication_rating == 1 %}selected{% endif %}>★☆☆☆☆ 1 - Poor</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">3. Practical Hands-On Skills</label>
+              <select name="practical_skills_rating" class="form-select">
+                <option value="5" {% if feedback and feedback.practical_skills_rating == 5 %}selected{% endif %}>★★★★★ 5 - Excellent</option>
+                <option value="4" {% if not feedback or feedback.practical_skills_rating == 4 %}selected{% endif %}>★★★★☆ 4 - Good</option>
+                <option value="3" {% if feedback and feedback.practical_skills_rating == 3 %}selected{% endif %}>★★★☆☆ 3 - Average</option>
+                <option value="2" {% if feedback and feedback.practical_skills_rating == 2 %}selected{% endif %}>★★☆☆☆ 2 - Below Average</option>
+                <option value="1" {% if feedback and feedback.practical_skills_rating == 1 %}selected{% endif %}>★☆☆☆☆ 1 - Poor</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">4. Problem Solving Ability</label>
+              <select name="problem_solving_rating" class="form-select">
+                <option value="5" {% if feedback and feedback.problem_solving_rating == 5 %}selected{% endif %}>★★★★★ 5 - Excellent</option>
+                <option value="4" {% if feedback and feedback.problem_solving_rating == 4 %}selected{% endif %}>★★★★☆ 4 - Good</option>
+                <option value="3" {% if not feedback or feedback.problem_solving_rating == 3 %}selected{% endif %}>★★★☆☆ 3 - Average</option>
+                <option value="2" {% if feedback and feedback.problem_solving_rating == 2 %}selected{% endif %}>★★☆☆☆ 2 - Below Average</option>
+                <option value="1" {% if feedback and feedback.problem_solving_rating == 1 %}selected{% endif %}>★☆☆☆☆ 1 - Poor</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">5. Digital & Tool Literacy</label>
+              <select name="digital_skills_rating" class="form-select">
+                <option value="5" {% if feedback and feedback.digital_skills_rating == 5 %}selected{% endif %}>★★★★★ 5 - Excellent</option>
+                <option value="4" {% if feedback and feedback.digital_skills_rating == 4 %}selected{% endif %}>★★★★☆ 4 - Good</option>
+                <option value="3" {% if not feedback or feedback.digital_skills_rating == 3 %}selected{% endif %}>★★★☆☆ 3 - Average</option>
+                <option value="2" {% if feedback and feedback.digital_skills_rating == 2 %}selected{% endif %}>★★☆☆☆ 2 - Below Average</option>
+                <option value="1" {% if feedback and feedback.digital_skills_rating == 1 %}selected{% endif %}>★☆☆☆☆ 1 - Poor</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">6. Industry Work Readiness</label>
+              <select name="industry_readiness_rating" class="form-select">
+                <option value="5" {% if feedback and feedback.industry_readiness_rating == 5 %}selected{% endif %}>★★★★★ 5 - Excellent</option>
+                <option value="4" {% if not feedback or feedback.industry_readiness_rating == 4 %}selected{% endif %}>★★★★☆ 4 - Good</option>
+                <option value="3" {% if feedback and feedback.industry_readiness_rating == 3 %}selected{% endif %}>★★★☆☆ 3 - Average</option>
+                <option value="2" {% if feedback and feedback.industry_readiness_rating == 2 %}selected{% endif %}>★★☆☆☆ 2 - Below Average</option>
+                <option value="1" {% if feedback and feedback.industry_readiness_rating == 1 %}selected{% endif %}>★☆☆☆☆ 1 - Poor</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Feature 12 & 14: Missing Workplace Skills -->
+          <div class="p-3 border rounded-3 mb-4 bg-light">
+            <label class="form-label fw-bold text-danger mb-1">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> Missing Workplace Skills (Comma Separated)
+            </label>
+            <p class="small text-muted mb-2">
+              What specific technical tools or practical skills were required on the job that were missing from the candidate's training?
+            </p>
+            <input type="text" name="missing_skills_text" class="form-control" 
+                   value="{{ feedback.missing_skills_text if feedback else 'Advanced Excel, Data Analysis' }}"
+                   placeholder="e.g. Advanced Excel, Data Analysis, Client Communication">
+            <div class="text-muted small mt-2">
+              * Used by SkillTrack's <strong>TF-IDF & Cosine Similarity Engine</strong> to trigger automated curriculum revision alerts.
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-semibold">General Employer Remarks / Performance Review</label>
+            <textarea name="general_feedback" class="form-control" rows="3" placeholder="Describe the candidate's on-the-job strengths and recommendations for vocational curriculum refinement...">{{ feedback.general_feedback if feedback else 'Candidate is dependable with basic data entry, but requires training in Advanced Excel formulas (VLOOKUP, Pivot tables) to handle complex reporting.' }}</textarea>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+            <a href="{{ url_for('employer.dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-send-check me-1"></i> Save Skill Evaluation
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

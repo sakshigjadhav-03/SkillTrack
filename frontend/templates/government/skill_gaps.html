@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Skill Gap Analysis & TF-IDF Relevance — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-primary text-uppercase">NLP Skill Matching Engine</span>
+          <span class="badge bg-warning text-dark text-uppercase">Feature 13 & 14</span>
+        </div>
+        <h3 class="fw-bold mb-0">Statewide Skill Gap Analysis & Relevance Engine</h3>
+        <p class="text-muted small mb-0">Powered by TF-IDF Vectorizer and Cosine Similarity comparing vocational curricula against workplace demands</p>
+      </div>
+      <div>
+        <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left me-1"></i> Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive TF-IDF Skill Matcher Tester -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="section-header">
+      <h4><i class="bi bi-cpu text-primary me-2"></i>Live TF-IDF & Cosine Similarity Sandbox</h4>
+      <p>Test real-time semantic alignment between training skills and employer expectations</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">1. Training Curriculum Skills (Taught to Trainee)</label>
+          <textarea id="curriculumInput" class="form-control" rows="3">Basic Excel, Communication, Data Entry, English Typing</textarea>
+          <span class="text-muted small">Comma-separated list of competencies taught by the training institute.</span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">2. Workplace Required Skills (Reported by Employer)</label>
+          <textarea id="workplaceInput" class="form-control" rows="3">Advanced Excel, Data Analysis, Client Communication, Report Automation</textarea>
+          <span class="text-muted small">Actual skill set requested on the job by recruiting enterprises.</span>
+        </div>
+
+        <button id="btnRunTfidf" class="btn btn-primary px-4 fw-semibold">
+          <i class="bi bi-play-circle me-1"></i> Calculate Relevance & Detect Gaps
+        </button>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="p-4 rounded-4 border h-100" style="background-color: #f8fafc;">
+          <h6 class="fw-bold text-dark mb-3">Analysis Results:</h6>
+
+          <div class="text-center py-2 mb-3">
+            <div class="display-3 fw-bold text-primary" id="relevanceScoreDisplay">78.0%</div>
+            <div class="text-muted small text-uppercase fw-semibold">Training → Job Relevance Score</div>
+            <div class="progress mt-2" style="height: 10px;">
+              <div id="relevanceProgressBar" class="progress-bar bg-primary" style="width: 78%"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <span class="fw-bold text-success small d-block mb-1">
+              <i class="bi bi-check-circle-fill me-1"></i> Matched Competencies:
+            </span>
+            <div id="matchedSkillsList" class="d-flex flex-wrap gap-1">
+              <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2">✓ Communication</span>
+            </div>
+          </div>
+
+          <div>
+            <span class="fw-bold text-danger small d-block mb-1">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i> Detected Missing Skills (Skill Gaps):
+            </span>
+            <div id="missingSkillsList" class="d-flex flex-wrap gap-1">
+              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2">⚠ Advanced Excel</span>
+              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2">⚠ Data Analysis</span>
+              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2">⚠ Report Automation</span>
+            </div>
+          </div>
+
+          <div class="alert alert-info-subtle border border-info small mt-3 mb-0" style="font-size: 0.78rem;">
+            <i class="bi bi-info-circle me-1"></i>
+            <strong>Explainability:</strong> Scikit-learn TF-IDF Vectorizer computes token frequency-inverse document frequency weighting, followed by pairwise cosine distance and discrete term overlap ratio.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sectoral Skill Gap Priority Matrix -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+    <div class="section-header">
+      <h4>Maharashtra Priority Skill Gaps by Sector</h4>
+      <p>Deficits extracted across 500+ employer validation interactions</p>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="p-3 border rounded-3 h-100">
+          <span class="badge bg-primary mb-2">IT & ITES</span>
+          <h6 class="fw-bold">Data Operations & Back-Office</h6>
+          <ul class="small ps-3 text-secondary mb-0">
+            <li><strong>Advanced Excel</strong> (VLOOKUP, Pivot, Dashboards) &bull; 68% frequency</li>
+            <li><strong>Data Analysis</strong> &bull; 45% frequency</li>
+            <li><strong>ERP Software Navigation</strong> &bull; 34% frequency</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-3 border rounded-3 h-100">
+          <span class="badge bg-success mb-2">Renewable Energy</span>
+          <h6 class="fw-bold">Solar & Power Infrastructure</h6>
+          <ul class="small ps-3 text-secondary mb-0">
+            <li><strong>Solar Inverter Maintenance</strong> &bull; 54% frequency</li>
+            <li><strong>Industrial Electrical Safety</strong> &bull; 41% frequency</li>
+            <li><strong>Battery Management Diagnostics</strong> &bull; 32% frequency</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-3 border rounded-3 h-100">
+          <span class="badge bg-info text-dark mb-2">Retail & Services</span>
+          <h6 class="fw-bold">Sales & Customer Operations</h6>
+          <ul class="small ps-3 text-secondary mb-0">
+            <li><strong>POS Cashless Systems</strong> &bull; 48% frequency</li>
+            <li><strong>Client Communication & Upselling</strong> &bull; 42% frequency</li>
+            <li><strong>Inventory Stock Audit</strong> &bull; 30% frequency</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btnRunTfidf');
+  const currInput = document.getElementById('curriculumInput');
+  const workInput = document.getElementById('workplaceInput');
+  const scoreDisplay = document.getElementById('relevanceScoreDisplay');
+  const progBar = document.getElementById('relevanceProgressBar');
+  const matchedList = document.getElementById('matchedSkillsList');
+  const missingList = document.getElementById('missingSkillsList');
+
+  btn.addEventListener('click', () => {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Analyzing...';
+
+    fetch('/api/relevance/calculate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        curriculum_skills: currInput.value,
+        workplace_skills: workInput.value
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-play-circle me-1"></i> Calculate Relevance & Detect Gaps';
+
+      if (data.success && data.result) {
+        const r = data.result;
+        scoreDisplay.innerText = r.relevance_percentage + '%';
+        progBar.style.width = r.relevance_percentage + '%';
+
+        // Update matched skills
+        matchedList.innerHTML = '';
+        if (r.matched_skills.length === 0) {
+          matchedList.innerHTML = '<span class="text-muted small">No direct match</span>';
+        } else {
+          r.matched_skills.forEach(s => {
+            const span = document.createElement('span');
+            span.className = 'badge bg-success-subtle text-success border border-success-subtle py-1 px-2';
+            span.innerText = '✓ ' + s.charAt(0).toUpperCase() + s.slice(1);
+            matchedList.appendChild(span);
+          });
+        }
+
+        // Update missing skills
+        missingList.innerHTML = '';
+        if (r.missing_skills.length === 0) {
+          missingList.innerHTML = '<span class="text-success small">No missing skills detected! Complete coverage.</span>';
+        } else {
+          r.missing_skills.forEach(s => {
+            const span = document.createElement('span');
+            span.className = 'badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2';
+            span.innerText = '⚠ ' + s.charAt(0).toUpperCase() + s.slice(1);
+            missingList.appendChild(span);
+          });
+        }
+      }
+    })
+    .catch(err => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-play-circle me-1"></i> Calculate Relevance & Detect Gaps';
+      console.error(err);
+    });
+  });
+});
+</script>
+{% endblock %}

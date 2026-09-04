@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}SkillTrack — From Training to Sustainable Employment (SIH26135){% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 text-white" style="background: linear-gradient(135deg, #0e385f 0%, #08223a 100%);">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3">
+          <i class="bi bi-award me-1"></i> SIH Problem Statement SIH26135
+        </span>
+        <h1 class="display-4 fw-bold mb-3">From Training to Sustainable Employment</h1>
+        <p class="lead mb-4 text-light opacity-90">
+          <strong>SkillTrack</strong> is the longitudinal <em>outcome-intelligence layer</em> for vocational training ecosystems. It answers the fundamental question:
+        </p>
+        <div class="p-3 mb-4 rounded-3 border border-secondary" style="background: rgba(255,255,255,0.06);">
+          <div class="fst-italic text-warning fs-5">
+            "What happened to the trainee after training, and did the training actually lead to a relevant and sustainable livelihood?"
+          </div>
+        </div>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{{ url_for('government.dashboard') }}" class="btn btn-warning btn-lg fw-bold px-4">
+            <i class="bi bi-speedometer2 me-2"></i>Launch Gov Command Center
+          </a>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Role-Based Portals
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-lg text-dark p-4 rounded-4" style="background: #ffffff;">
+          <h5 class="fw-bold text-primary mb-3"><i class="bi bi-lightning-charge-fill text-warning me-2"></i>Quick 1-Click Role Login</h5>
+          <p class="small text-muted mb-3">Instant hackathon presentation access with pre-seeded demo accounts:</p>
+          
+          <form action="{{ url_for('auth.login') }}" method="POST" class="d-grid gap-2">
+            <button type="submit" name="quick_role" value="trainee" class="btn btn-outline-primary text-start d-flex justify-content-between align-items-center py-2">
+              <span><i class="bi bi-person me-2"></i><strong>Trainee</strong> (ST-MH-000123)</span>
+              <span class="badge bg-primary">Consent & Timeline</span>
+            </button>
+            <button type="submit" name="quick_role" value="employer" class="btn btn-outline-success text-start d-flex justify-content-between align-items-center py-2">
+              <span><i class="bi bi-building-check me-2"></i><strong>Employer</strong> (TCS BPS)</span>
+              <span class="badge bg-success">Verify & Rate</span>
+            </button>
+            <button type="submit" name="quick_role" value="provider" class="btn btn-outline-info text-start d-flex justify-content-between align-items-center py-2">
+              <span><i class="bi bi-mortarboard me-2"></i><strong>Training Provider</strong> (Pune MSDM)</span>
+              <span class="badge bg-info text-dark">Cohorts & Gaps</span>
+            </button>
+            <button type="submit" name="quick_role" value="government" class="btn btn-outline-warning text-dark text-start d-flex justify-content-between align-items-center py-2">
+              <span><i class="bi bi-shield-shaded me-2"></i><strong>Government / Admin</strong></span>
+              <span class="badge bg-warning text-dark">Analytics & Map</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Positioning Banner -->
+<section class="py-4 bg-white border-bottom shadow-sm">
+  <div class="container">
+    <div class="row align-items-center text-center text-md-start">
+      <div class="col-md-3">
+        <h6 class="text-uppercase fw-bold text-muted mb-0">Platform Positioning</h6>
+      </div>
+      <div class="col-md-9">
+        <p class="mb-0 text-secondary">
+          <strong>SkillTrack is NOT another job portal. SkillTrack is NOT another training portal.</strong>
+          It acts as an outcome-intelligence layer that can work with existing skilling systems, focusing on integrated, longitudinal tracking of employment outcomes, retention, employer validation, skill gaps and actionable recommendations.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 WOW Features Section -->
+<section class="py-5" style="background-color: #f8fafc;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h6 class="text-primary fw-bold text-uppercase">Demonstration Highlights</h6>
+      <h2 class="fw-bold">5 Core System Capabilities</h2>
+      <p class="text-muted">Explore how SkillTrack bridges the post-training data void with data-driven precision.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-primary fs-1 mb-3"><i class="bi bi-bezier2"></i></div>
+          <h5 class="fw-bold">1. Outcome Timeline</h5>
+          <p class="text-muted small">
+            Traces complete trainee journeys sequentially: Enrollment → Certification → Consent → Employment → 3M → 6M → 12M Milestones.
+          </p>
+          <a href="{{ url_for('trainee.dashboard') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">View Trainee Timeline →</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-success fs-1 mb-3"><i class="bi bi-cpu"></i></div>
+          <h5 class="fw-bold">2. TF-IDF Skill Relevance</h5>
+          <p class="text-muted small">
+            Compares training curriculum skills against employer feedback using TF-IDF & Cosine Similarity to isolate exact workplace gaps (e.g. Advanced Excel).
+          </p>
+          <a href="{{ url_for('government.skill_gaps_view') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Inspect Skill Matcher →</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-warning fs-1 mb-3"><i class="bi bi-speedometer"></i></div>
+          <h5 class="fw-bold">3. Prototype Outcome Score</h5>
+          <p class="text-muted small">
+            Transparent multi-factor score: 30% Employment + 25% Retention + 20% Relevance + 15% Wage Growth + 10% Employer Feedback.
+          </p>
+          <a href="{{ url_for('government.dashboard') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Explore Formula →</a>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-danger fs-1 mb-3"><i class="bi bi-pie-chart-fill"></i></div>
+          <h5 class="fw-bold">4. "Why Analysis" (Root Cause Engine)</h5>
+          <p class="text-muted small">
+            Uncovers why candidates are unplaced (lack of skills, transport barriers, entry salary) and why placed candidates leave jobs (low salary, relocation, skill mismatch).
+          </p>
+          <a href="{{ url_for('government.dashboard') }}#why-analysis" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">View Root Causes →</a>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-info fs-1 mb-3"><i class="bi bi-lightbulb-fill"></i></div>
+          <h5 class="fw-bold">5. Actionable Recommendation Engine</h5>
+          <p class="text-muted small">
+            Translates outcome analytics into concrete government policy actions:
+            <strong>Problem → Evidence → Recommendation → Suggested Action</strong>.
+          </p>
+          <a href="{{ url_for('government.recommendations_view') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Open Action Engine →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- End-to-End System Flow -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h6 class="text-primary fw-bold text-uppercase">Architecture Lifecycle</h6>
+      <h2 class="fw-bold">End-to-End Longitudinal Flow</h2>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 text-center">
+      <span class="badge bg-light text-dark border p-2 px-3 fw-semibold">1. Training Enrolment</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-light text-dark border p-2 px-3 fw-semibold">2. Certification</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-warning text-dark p-2 px-3 fw-semibold">3. Trainee Consent</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-primary p-2 px-3 fw-semibold">4. Unique Outcome ID (ST-MH-XXXXXX)</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-info text-dark p-2 px-3 fw-semibold">5. 3 / 6 / 12M Follow-ups</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-success p-2 px-3 fw-semibold">6. Employer Verification</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-secondary p-2 px-3 fw-semibold">7. Skill Gap & Outcome Score</span>
+      <i class="bi bi-arrow-right text-muted"></i>
+      <span class="badge bg-dark p-2 px-3 fw-semibold">8. Action Recommendations</span>
+    </div>
+  </div>
+</section>
+{% endblock %}

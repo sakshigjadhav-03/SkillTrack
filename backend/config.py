@@ -1,12 +1,22 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
 # Base directory of the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load .env file
-load_dotenv(BASE_DIR / '.env')
+# Load .env file with graceful fallback
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env')
+except ImportError:
+    env_path = BASE_DIR / '.env'
+    if env_path.exists():
+        with open(env_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, val = line.split('=', 1)
+                    os.environ.setdefault(key.strip(), val.strip())
 
 class Config:
     """Base application configuration."""

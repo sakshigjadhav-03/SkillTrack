@@ -1,10 +1,19 @@
 import sys
+import os
+import subprocess
 from pathlib import Path
 
-# Add project root directory to Python path
+# Base directory
 ROOT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT_DIR))
 
+# Auto-detect and switch to .venv if running outside the virtual environment
+venv_python = ROOT_DIR / '.venv' / 'Scripts' / 'python.exe'
+if venv_python.exists() and Path(sys.executable).resolve() != venv_python.resolve():
+    print(f"[SkillTrack] Automatically activating virtual environment: {venv_python}")
+    sys.exit(subprocess.call([str(venv_python)] + sys.argv))
+
+# Now import project dependencies
 from backend.config import Config
 from backend.app import create_app
 from database.init_db import init_database

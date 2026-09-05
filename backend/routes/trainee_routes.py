@@ -4,6 +4,7 @@ from backend.database import query_db, execute_db
 from backend.utils.decorators import login_required, role_required
 from backend.services.outcome_id_service import lookup_by_outcome_id
 from backend.services.skill_matcher import SkillMatcher
+from backend.services.risk_radar import OutcomeRiskRadar
 
 trainee_bp = Blueprint('trainee', __name__, url_prefix='/trainee')
 
@@ -114,6 +115,22 @@ def dashboard():
 
     relevance_data = SkillMatcher.calculate_relevance(curriculum_skills, workplace_skills)
 
+    # Evaluate Trainee Risk Radar (Feature 1)
+    latest_followup = followups[-1] if followups else {}
+    salary_growth = latest_followup.get('salary_growth_pct', 0.0) if latest_followup else 0.0
+    ret_status = latest_followup.get('retention_status', 'retained') if latest_followup else 'retained'
+    emp_rating = feedback.get('technical_skills_rating', 4.0) if feedback else 4.0
+    missing_txt = feedback.get('missing_skills_text', '') if feedback else ''
+
+    risk_assessment = OutcomeRiskRadar.evaluate_trainee_risk(
+        employment_status=trainee.get('current_employment_status', 'employed'),
+        salary_growth_pct=salary_growth,
+        job_relevance_pct=relevance_data.get('relevance_percentage', 75.0),
+        retention_status=ret_status,
+        employer_rating=emp_rating,
+        missing_skills_text=missing_txt
+    )
+
     # Build Outcome Timeline Events
     timeline_events = _build_timeline(trainee, followups, employment, verification)
 
@@ -126,6 +143,7 @@ def dashboard():
         verification=verification,
         feedback=feedback,
         relevance=relevance_data,
+        risk_assessment=risk_assessment,
         timeline=timeline_events
     )
 

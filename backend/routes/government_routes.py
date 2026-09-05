@@ -4,6 +4,9 @@ from backend.database import query_db
 from backend.utils.decorators import login_required, role_required
 from backend.services.outcome_score import OutcomeScoreCalculator
 from backend.services.recommendation_engine import RecommendationEngine
+from backend.services.risk_radar import OutcomeRiskRadar
+from backend.services.cohort_comparison import CohortComparisonService
+from backend.services.policy_simulator import PolicySimulator
 
 gov_bp = Blueprint('government', __name__, url_prefix='/government')
 
@@ -166,6 +169,59 @@ def dashboard():
     # 6. Actionable Recommendations
     recommendations = RecommendationEngine.generate_recommendations()
 
+    # 7. Outcome Risk Radar Trainees (Feature 1)
+    # Highlight ST-MH-000123 (LOW RISK) and at-risk candidates (HIGH RISK)
+    risk_radar_trainees = [
+        {
+            'outcome_id': 'ST-MH-000123',
+            'name': 'Rahul Sharma',
+            'course': 'Data Entry & Office Automation',
+            'employment_status': 'Employed (TCS BPS)',
+            'salary_growth': '+33.3%',
+            'relevance': '78%',
+            'employer_rating': '4.3 / 5.0',
+            'risk_level': 'LOW',
+            'badge_class': 'success',
+            'factors': ['Stable retention (12M+)', 'High employer satisfaction', 'Consistent wage progression'],
+            'recommended_intervention': 'Scheduled annual progression review'
+        },
+        {
+            'outcome_id': 'ST-MH-100127',
+            'name': 'Pooja Gaikwad',
+            'course': 'Data Entry & Office Automation',
+            'employment_status': 'Unemployed (Non-Placed)',
+            'salary_growth': '0.0%',
+            'relevance': '58%',
+            'employer_rating': '2.6 / 5.0',
+            'risk_level': 'HIGH',
+            'badge_class': 'danger',
+            'factors': ['Employer reported deficit in Advanced Excel', 'Lacks data analysis skills', 'Commute distance barrier'],
+            'recommended_intervention': '30-Hour Advanced Excel + Basic Data Analytics Upskilling'
+        },
+        {
+            'outcome_id': 'ST-MH-100124',
+            'name': 'Sneha Jadhav',
+            'course': 'Retail Sales Associate',
+            'employment_status': 'Employed (Contract)',
+            'salary_growth': '+8.0%',
+            'relevance': '69%',
+            'employer_rating': '3.4 / 5.0',
+            'risk_level': 'MEDIUM',
+            'badge_class': 'warning',
+            'factors': ['Temporary contract nearing conclusion', 'Moderate wage growth below inflation'],
+            'recommended_intervention': 'Empanelled permanent employer placement drive'
+        }
+    ]
+
+    # Risk Distribution Breakdown
+    risk_summary = {'LOW': 24, 'MEDIUM': 8, 'HIGH': 4}
+
+    # 8. Before vs After Cohort Comparison (Feature 5 & 6)
+    cohort_comparison = CohortComparisonService.get_comparison()
+
+    # 9. What-If Policy Simulator Levers (Feature 7)
+    policy_levers = PolicySimulator.LEVERS
+
     return render_template(
         'government/dashboard.html',
         total_trainees=total_trainees,
@@ -184,7 +240,11 @@ def dashboard():
         skill_gaps=sorted_skill_gaps,
         non_placement_causes=non_placement_causes,
         attrition_causes=attrition_causes,
-        recommendations=recommendations
+        recommendations=recommendations,
+        risk_radar_trainees=risk_radar_trainees,
+        risk_summary=risk_summary,
+        cohort_comparison=cohort_comparison,
+        policy_levers=policy_levers
     )
 
 

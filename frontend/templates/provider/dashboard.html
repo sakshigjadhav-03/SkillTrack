@@ -154,6 +154,7 @@
             <th>Course</th>
             <th>Certified</th>
             <th>Livelihood Status</th>
+            <th>Risk Radar</th>
             <th>Employer Verification</th>
             <th>12M Salary</th>
           </tr>
@@ -167,6 +168,21 @@
               <td><span class="badge bg-success-subtle text-success border border-success-subtle">{{ t.certification_status|title }}</span></td>
               <td>
                 <span class="badge bg-primary text-capitalize">{{ t.current_employment_status|replace('_', ' ') }}</span>
+              </td>
+              <td>
+                {% if t.risk_level == 'HIGH' %}
+                  <span class="badge bg-danger-subtle text-danger border border-danger fw-bold" title="{{ t.recommended_action }}">
+                    <i class="bi bi-exclamation-triangle-fill"></i> HIGH RISK
+                  </span>
+                {% elif t.risk_level == 'MEDIUM' %}
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning fw-bold" title="{{ t.recommended_action }}">
+                    <i class="bi bi-exclamation-circle-fill"></i> MEDIUM
+                  </span>
+                {% else %}
+                  <span class="badge bg-success-subtle text-success border border-success fw-bold">
+                    <i class="bi bi-shield-check"></i> LOW RISK
+                  </span>
+                {% endif %}
               </td>
               <td>
                 {% if t.verification_status == 'verified' %}

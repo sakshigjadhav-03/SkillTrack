@@ -75,33 +75,66 @@
   </div>
 </section>
 
-<!-- 5 WOW Features Section -->
+<!-- 6 WOW Features Section: Outcome Intelligence Loop -->
 <section class="py-5" style="background-color: #f8fafc;">
   <div class="container">
     <div class="text-center mb-5">
-      <h6 class="text-primary fw-bold text-uppercase">Demonstration Highlights</h6>
-      <h2 class="fw-bold">5 Core System Capabilities</h2>
-      <p class="text-muted">Explore how SkillTrack bridges the post-training data void with data-driven precision.</p>
+      <h6 class="text-primary fw-bold text-uppercase">The Outcome Intelligence Loop</h6>
+      <h2 class="fw-bold">Closing the Loop: From Tracking to Impact</h2>
+      <p class="text-muted">Not just "What happened?" but "Why did it happen?", "Who is at risk?", and "Did our intervention work?"</p>
     </div>
 
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
-          <div class="text-primary fs-1 mb-3"><i class="bi bi-bezier2"></i></div>
-          <h5 class="fw-bold">1. Outcome Timeline</h5>
+          <div class="text-danger fs-1 mb-3"><i class="bi bi-radar"></i></div>
+          <h5 class="fw-bold">1. Early Outcome Risk Radar</h5>
           <p class="text-muted small">
-            Traces complete trainee journeys sequentially: Enrollment → Certification → Consent → Employment → 3M → 6M → 12M Milestones.
+            Flags post-training risk levels (High / Medium / Low) before unplaced or underemployed trainees drop out of the workforce, recommending proactive interventions.
           </p>
-          <a href="{{ url_for('trainee.dashboard') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">View Trainee Timeline →</a>
+          <a href="{{ url_for('government.dashboard') }}#risk-radar" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Inspect Risk Radar →</a>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
-          <div class="text-success fs-1 mb-3"><i class="bi bi-cpu"></i></div>
-          <h5 class="fw-bold">2. TF-IDF Skill Relevance</h5>
+          <div class="text-primary fs-1 mb-3"><i class="bi bi-pie-chart-fill"></i></div>
+          <h5 class="fw-bold">2. "WHY Analysis" Root Cause Engine</h5>
           <p class="text-muted small">
-            Compares training curriculum skills against employer feedback using TF-IDF & Cosine Similarity to isolate exact workplace gaps (e.g. Advanced Excel).
+            Drills into <em>why</em> trainees remain unplaced (42% Skill Gap, 23% Salary Mismatch) and <em>why</em> attrition occurs (35% Low Salary, 25% Skill Mismatch).
+          </p>
+          <a href="{{ url_for('government.dashboard') }}#why-analysis" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">View Root Causes →</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-success fs-1 mb-3"><i class="bi bi-sliders"></i></div>
+          <h5 class="fw-bold">3. What-If Policy Simulator</h5>
+          <p class="text-muted small">
+            Live interactive sandbox allowing policymakers to toggle curriculum upgrades and wage benchmarks to predict placement and retention gains before spending funds.
+          </p>
+          <a href="{{ url_for('government.dashboard') }}#policy-simulator" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Run What-If Simulator →</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-info fs-1 mb-3"><i class="bi bi-arrow-left-right"></i></div>
+          <h5 class="fw-bold">4. Before vs. After Cohort Impact</h5>
+          <p class="text-muted small">
+            Measures longitudinal intervention effectiveness between baseline and revised cohorts (e.g., +14.5% Intervention Impact Score in Data Entry course).
+          </p>
+          <a href="{{ url_for('government.dashboard') }}#cohort-comparison" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">View Cohort Comparison →</a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
+          <div class="text-warning fs-1 mb-3"><i class="bi bi-cpu"></i></div>
+          <h5 class="fw-bold">5. TF-IDF Skill Relevance Matcher</h5>
+          <p class="text-muted small">
+            Compares training syllabus against employer feedback text using TF-IDF & Cosine Similarity to isolate exact missing skills (e.g. Advanced Excel).
           </p>
           <a href="{{ url_for('government.skill_gaps_view') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Inspect Skill Matcher →</a>
         </div>
@@ -109,33 +142,11 @@
 
       <div class="col-md-4">
         <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
-          <div class="text-warning fs-1 mb-3"><i class="bi bi-speedometer"></i></div>
-          <h5 class="fw-bold">3. Prototype Outcome Score</h5>
+          <div class="text-secondary fs-1 mb-3"><i class="bi bi-journal-check"></i></div>
+          <h5 class="fw-bold">6. Actionable Recommendation Engine</h5>
           <p class="text-muted small">
-            Transparent multi-factor score: 30% Employment + 25% Retention + 20% Relevance + 15% Wage Growth + 10% Employer Feedback.
-          </p>
-          <a href="{{ url_for('government.dashboard') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Explore Formula →</a>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
-          <div class="text-danger fs-1 mb-3"><i class="bi bi-pie-chart-fill"></i></div>
-          <h5 class="fw-bold">4. "Why Analysis" (Root Cause Engine)</h5>
-          <p class="text-muted small">
-            Uncovers why candidates are unplaced (lack of skills, transport barriers, entry salary) and why placed candidates leave jobs (low salary, relocation, skill mismatch).
-          </p>
-          <a href="{{ url_for('government.dashboard') }}#why-analysis" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">View Root Causes →</a>
-        </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card h-100 border-0 shadow-sm p-4 rounded-3 bg-white">
-          <div class="text-info fs-1 mb-3"><i class="bi bi-lightbulb-fill"></i></div>
-          <h5 class="fw-bold">5. Actionable Recommendation Engine</h5>
-          <p class="text-muted small">
-            Translates outcome analytics into concrete government policy actions:
-            <strong>Problem → Evidence → Recommendation → Suggested Action</strong>.
+            Translates outcome analytics into structured policy directives:
+            <strong>Problem → Evidence → Root Cause → Intervention → Policy Target</strong>.
           </p>
           <a href="{{ url_for('government.recommendations_view') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold">Open Action Engine →</a>
         </div>

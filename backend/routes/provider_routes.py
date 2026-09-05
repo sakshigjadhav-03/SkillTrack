@@ -69,7 +69,9 @@ def dashboard():
             tr.certification_status,
             ev.verification_status,
             f.current_salary,
-            f.salary_growth_pct
+            f.salary_growth_pct,
+            f.retention_status,
+            f.job_relevance_score
         FROM training_records tr
         JOIN trainees t ON tr.trainee_id = t.id
         JOIN courses c ON tr.course_id = c.id
@@ -80,6 +82,21 @@ def dashboard():
         """,
         (provider_id,)
     )
+
+    # Attach Risk Radar analysis to each trainee
+    from backend.services.risk_radar import OutcomeRiskRadar
+    for t in trainees:
+        risk_res = OutcomeRiskRadar.evaluate_trainee_risk(
+            employment_status=t.get('current_employment_status') or 'unemployed',
+            retention_status=t.get('retention_status') or 'unknown',
+            salary_growth_pct=float(t.get('salary_growth_pct') or 0.0),
+            job_relevance_pct=float(t.get('job_relevance_score') or 60.0),
+            verification_status=t.get('verification_status') or 'pending',
+            skill_gap_count=1 if t.get('current_employment_status') == 'unemployed' else 0
+        )
+        t['risk_level'] = risk_res['risk_level']
+        t['risk_color'] = risk_res['risk_color']
+        t['recommended_action'] = risk_res['recommended_action']
 
     # Employer feedback for this provider's graduates
     feedbacks = query_db(

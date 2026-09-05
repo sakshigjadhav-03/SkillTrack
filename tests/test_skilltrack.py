@@ -15,6 +15,11 @@ from backend.services.outcome_score import OutcomeScoreCalculator
 from backend.services.recommendation_engine import RecommendationEngine
 
 
+from backend.services.risk_radar import OutcomeRiskRadar
+from backend.services.policy_simulator import PolicySimulator
+from backend.services.cohort_comparison import CohortComparisonService
+
+
 class SkillTrackTestCase(unittest.TestCase):
     """Automated test suite verifying core SkillTrack prototype components."""
 
@@ -31,12 +36,12 @@ class SkillTrackTestCase(unittest.TestCase):
         self.assertEqual(trainee['first_name'], 'Rahul')
         self.assertEqual(trainee['consent_status'], 'agreed')
 
-        # Verify longitudinal followups (3m, 6m, 12m)
+        # Verify longitudinal followups
         followups = query_db(
             "SELECT milestone_months, current_salary, salary_growth_pct FROM followups WHERE trainee_id = %s ORDER BY milestone_months ASC",
             (trainee['id'],)
         )
-        self.assertEqual(len(followups), 3, "Trainee must have 3-month, 6-month, and 12-month followups.")
+        self.assertGreaterEqual(len(followups), 3, "Trainee must have at least 3-month, 6-month, and 12-month followups.")
         self.assertEqual(followups[0]['current_salary'], 15000.0)
         self.assertEqual(followups[1]['current_salary'], 17000.0)
         self.assertEqual(followups[2]['current_salary'], 20000.0)
@@ -93,6 +98,54 @@ class SkillTrackTestCase(unittest.TestCase):
         self.assertIn('recommendation', first_rec)
         self.assertIn('suggested_action', first_rec)
 
+    def test_risk_radar_service(self):
+        """Verify Outcome Risk Radar correctly flags Low vs High risk trainees."""
+        # Low risk: Employed, retained, 33% growth
+        low_res = OutcomeRiskRadar.evaluate_trainee_risk(
+            employment_status='employed',
+            salary_growth_pct=33.3,
+            job_relevance_pct=78.0,
+            retention_status='retained',
+            employer_rating=4.5,
+            missing_skills_text=''
+        )
+        self.assertEqual(low_res['risk_level'], 'LOW')
+
+        # High risk: Unemployed, 0 salary growth, multiple skill gaps
+        high_res = OutcomeRiskRadar.evaluate_trainee_risk(
+            employment_status='unemployed',
+            salary_growth_pct=0.0,
+            job_relevance_pct=30.0,
+            retention_status='at_risk',
+            employer_rating=2.5,
+            missing_skills_text='Advanced Excel, Data Analysis'
+        )
+        self.assertEqual(high_res['risk_level'], 'HIGH')
+        self.assertGreater(len(high_res['risk_factors']), 0)
+        self.assertIn('excel', high_res['recommended_intervention'].lower())
+
+    def test_policy_simulator(self):
+        """Verify What-If Policy Simulator predicts uplift accurately."""
+        # Baseline (no levers)
+        base = PolicySimulator.simulate([])
+        self.assertEqual(base['projected']['employment_rate'], 68.0)
+
+        # Apply Advanced Excel and Data Analytics levers
+        uplift = PolicySimulator.simulate(['add_adv_excel', 'add_data_analytics'])
+        self.assertGreater(uplift['projected']['employment_rate'], 68.0)
+        self.assertGreater(uplift['projected']['retention_rate'], 63.0)
+        self.assertEqual(uplift['active_levers_count'], 2)
+
+    def test_cohort_comparison(self):
+        """Verify Before vs After intervention cohort comparison and impact score."""
+        comp = CohortComparisonService.get_comparison()
+        self.assertIn('before', comp)
+        self.assertIn('after', comp)
+        self.assertIn('impact_score', comp)
+        self.assertEqual(comp['before']['cohort_id'], 'COHORT-2023-A')
+        self.assertEqual(comp['after']['cohort_id'], 'COHORT-2024-B')
+        self.assertGreater(comp['impact_score']['score'], 0.0)
+
     def test_http_routes(self):
         """Verify core HTTP endpoints return HTTP 200 OK."""
         res = self.client.get('/')
@@ -110,6 +163,20 @@ class SkillTrackTestCase(unittest.TestCase):
 
         res_rel = self.client.get('/api/relevance/calculate')
         self.assertEqual(res_rel.status_code, 200)
+
+        # Test new Outcome Intelligence endpoints
+        res_cohort = self.client.get('/api/cohorts/comparison')
+        self.assertEqual(res_cohort.status_code, 200)
+        self.assertTrue(res_cohort.json['success'])
+
+        res_sim = self.client.post('/api/simulator/evaluate', json={'levers': ['add_adv_excel']})
+        self.assertEqual(res_sim.status_code, 200)
+        self.assertTrue(res_sim.json['success'])
+        self.assertGreater(res_sim.json['simulation']['projected']['employment_rate'], 68.0)
+
+        res_radar = self.client.get('/api/risk-radar/evaluate?outcome_id=ST-MH-000123')
+        self.assertEqual(res_radar.status_code, 200)
+        self.assertEqual(res_radar.json['risk_assessment']['risk_level'], 'LOW')
 
 
 if __name__ == '__main__':

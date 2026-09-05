@@ -116,25 +116,325 @@
     </div>
   </div>
 
-  <!-- "WHY ANALYSIS" Section (Feature 7 & Feature 8) -->
+  <!-- ==================================================== -->
+  <!-- OUTCOME INTELLIGENCE LOOP HERO (Primary Innovation)  -->
+  <!-- ==================================================== -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 text-white" style="background: linear-gradient(135deg, #0e385f 0%, #1e4a79 100%);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <span class="badge bg-warning text-dark text-uppercase px-3 py-1 fw-bold">Primary Innovation: Outcome Intelligence Loop</span>
+        <h3 class="fw-bold mt-2 mb-1">Beyond "What Happened" → Diagnosing "Why", "Who Is At Risk", and "Did It Work?"</h3>
+      </div>
+      <span class="badge bg-light text-dark px-3 py-2 border">Closed-Loop Policy Intelligence</span>
+    </div>
+    <div class="d-flex flex-wrap justify-content-between align-items-center text-center gap-2 p-3 rounded-3" style="background: rgba(255,255,255,0.08);">
+      <div class="p-2"><span class="badge bg-light text-dark p-2 px-3 fw-semibold">1. Training</span></div>
+      <i class="bi bi-arrow-right text-warning"></i>
+      <div class="p-2"><span class="badge bg-info text-dark p-2 px-3 fw-semibold">2. Outcome Follow-up</span></div>
+      <i class="bi bi-arrow-right text-warning"></i>
+      <div class="p-2"><span class="badge bg-danger p-2 px-3 fw-semibold">3. WHY Analysis</span></div>
+      <i class="bi bi-arrow-right text-warning"></i>
+      <div class="p-2"><span class="badge bg-warning text-dark p-2 px-3 fw-semibold">4. Risk Detection</span></div>
+      <i class="bi bi-arrow-right text-warning"></i>
+      <div class="p-2"><span class="badge bg-primary p-2 px-3 fw-semibold">5. Recommended Action</span></div>
+      <i class="bi bi-arrow-right text-warning"></i>
+      <div class="p-2"><span class="badge bg-success p-2 px-3 fw-semibold">6. Next Cohort (Before/After)</span></div>
+      <i class="bi bi-arrow-right text-warning"></i>
+      <div class="p-2"><span class="badge bg-white text-primary p-2 px-3 fw-bold">7. Impact Measured</span></div>
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- FEATURE 1 — OUTCOME RISK RADAR                       -->
+  <!-- ==================================================== -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="risk-radar">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div class="section-header mb-0">
+        <h4><i class="bi bi-radar text-danger me-2"></i>Outcome Risk Radar</h4>
+        <p>Proactive early-warning system identifying candidates at risk of attrition, wage stagnation, or skill mismatch</p>
+      </div>
+      <div class="d-flex gap-2">
+        <span class="badge bg-success px-3 py-2">Low Risk: {{ risk_summary.LOW }}</span>
+        <span class="badge bg-warning text-dark px-3 py-2">Medium Risk: {{ risk_summary.MEDIUM }}</span>
+        <span class="badge bg-danger px-3 py-2">High Risk: {{ risk_summary.HIGH }}</span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table custom-table table-bordered mb-0">
+        <thead>
+          <tr>
+            <th>Outcome ID</th>
+            <th>Trainee Name</th>
+            <th>Course</th>
+            <th>Current Status</th>
+            <th>Salary Growth</th>
+            <th>Relevance</th>
+            <th>Risk Level</th>
+            <th>Risk Factors & Recommended Intervention</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in risk_radar_trainees %}
+            <tr>
+              <td><span class="outcome-id-pill small">{{ r.outcome_id }}</span></td>
+              <td><strong>{{ r.name }}</strong></td>
+              <td>{{ r.course }}</td>
+              <td><span class="badge bg-light text-dark border">{{ r.employment_status }}</span></td>
+              <td>
+                <span class="{{ 'text-success fw-bold' if '+' in r.salary_growth else 'text-muted' }}">{{ r.salary_growth }}</span>
+              </td>
+              <td><strong>{{ r.relevance }}</strong></td>
+              <td>
+                <span class="badge bg-{{ r.badge_class }} text-uppercase px-2 py-1">
+                  {{ r.risk_level }} RISK
+                </span>
+              </td>
+              <td>
+                <div class="small">
+                  <span class="text-muted d-block"><strong>Factors:</strong> {{ r.factors|join(', ') }}</span>
+                  <span class="text-primary fw-semibold"><i class="bi bi-arrow-return-right me-1"></i><strong>Intervention:</strong> {{ r.recommended_intervention }}</span>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-muted small mt-2">
+      * Prototype Risk Assessment — Illustrative Rule-Based Metric (Demonstrating early intervention triggers before permanent job loss).
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- FEATURE 2 — DEDICATED "WHY ANALYSIS" SECTION         -->
+  <!-- ==================================================== -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="why-analysis">
     <div class="section-header">
-      <h4><i class="bi bi-search text-danger me-2"></i>"Why Analysis" — Root Causes for Outcome Bottlenecks</h4>
-      <p>Data-driven breakdown of why candidates remain unplaced and why placed candidates leave jobs</p>
+      <h4><i class="bi bi-question-circle-fill text-danger me-2"></i>Dedicated "Why Analysis" — Root Causes Behind the Numbers</h4>
+      <p>Converting raw employment percentages into actionable diagnostic root causes</p>
     </div>
 
     <div class="row g-4 mt-1">
+      <!-- Why is employment rate low? -->
       <div class="col-lg-6">
-        <h6 class="fw-bold text-danger mb-3">1. Non-Placement Causes (Why Candidates Are Unemployed)</h6>
-        <div style="position: relative; height: 260px;">
-          <canvas id="nonPlacementChart"></canvas>
+        <div class="p-3 rounded-4 border bg-light h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-danger mb-0"><i class="bi bi-x-octagon me-1"></i>WHY IS EMPLOYMENT RATE AT {{ employment_rate }}%?</h6>
+            <span class="badge bg-danger text-white">Non-Placement Causes</span>
+          </div>
+          <div style="position: relative; height: 230px;" class="mb-3">
+            <canvas id="nonPlacementChart"></canvas>
+          </div>
+          <div class="list-group list-group-flush small">
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-danger me-2" style="font-size: 0.6rem;"></i><strong>42% — Skill Gap</strong> (insufficient workplace spreadsheet/tool skills)</span>
+              <span class="badge bg-danger-subtle text-danger">Critical</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-warning me-2" style="font-size: 0.6rem;"></i><strong>23% — Salary Mismatch</strong> (entry wage below regional expectation)</span>
+              <span class="badge bg-warning-subtle text-warning">High</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-info me-2" style="font-size: 0.6rem;"></i><strong>18% — Location / Transportation Barriers</strong> (commute &gt;15km)</span>
+              <span class="badge bg-info-subtle text-info">Medium</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-secondary me-2" style="font-size: 0.6rem;"></i><strong>10% — Lack of Prior Experience</strong></span>
+              <span class="badge bg-light text-muted border">Low</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-muted me-2" style="font-size: 0.6rem;"></i><strong>7% — Other / Family Constraints</strong></span>
+              <span class="badge bg-light text-muted border">Low</span>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- Why are trainees leaving jobs? -->
       <div class="col-lg-6">
-        <h6 class="fw-bold text-warning text-dark mb-3">2. Early Job Attrition Causes (Why Trainees Leave Jobs)</h6>
-        <div style="position: relative; height: 260px;">
-          <canvas id="attritionChart"></canvas>
+        <div class="p-3 rounded-4 border bg-light h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-warning text-dark mb-0"><i class="bi bi-box-arrow-right me-1 text-warning"></i>WHY ARE TRAINEES LEAVING JOBS?</h6>
+            <span class="badge bg-warning text-dark">Job Attrition Causes</span>
+          </div>
+          <div style="position: relative; height: 230px;" class="mb-3">
+            <canvas id="attritionChart"></canvas>
+          </div>
+          <div class="list-group list-group-flush small">
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-warning me-2" style="font-size: 0.6rem;"></i><strong>35% — Low Salary & Stagnation</strong> (starting below regional benchmark)</span>
+              <span class="badge bg-danger-subtle text-danger">Critical</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-success me-2" style="font-size: 0.6rem;"></i><strong>25% — Skill Mismatch with Daily Demands</strong></span>
+              <span class="badge bg-warning-subtle text-warning">High</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-primary me-2" style="font-size: 0.6rem;"></i><strong>18% — Secured Better External Opportunity</strong></span>
+              <span class="badge bg-success-subtle text-success">Positive</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-info me-2" style="font-size: 0.6rem;"></i><strong>12% — Relocation to Hometown</strong></span>
+              <span class="badge bg-info-subtle text-info">Medium</span>
+            </div>
+            <div class="list-group-item d-flex justify-content-between px-0 py-1 bg-transparent">
+              <span><i class="bi bi-circle-fill text-secondary me-2" style="font-size: 0.6rem;"></i><strong>10% — Work Environment / Other</strong></span>
+              <span class="badge bg-light text-muted border">Low</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- FEATURE 5 & 6 — BEFORE vs AFTER & IMPACT SCORE       -->
+  <!-- ==================================================== -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="before-after-section">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div class="section-header mb-0">
+        <h4><i class="bi bi-arrow-left-right text-primary me-2"></i>Before vs. After Intervention (Did It Work?)</h4>
+        <p>Empirical cohort comparison measuring outcomes before and after modernizing curriculum</p>
+      </div>
+      <div class="badge bg-primary fs-6 px-3 py-2">
+        Impact: {{ cohort_comparison.impact_score.overall_assessment }}
+      </div>
+    </div>
+
+    <div class="alert alert-light border p-3 rounded-3 mb-4">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <strong>Demonstration Course:</strong> <span>{{ cohort_comparison.course_name }}</span> &bull;
+        <strong>Intervention Applied:</strong> <span class="text-primary">{{ cohort_comparison.intervention_applied }}</span>
+      </div>
+    </div>
+
+    <div class="row g-4 align-items-center mb-4">
+      <div class="col-lg-7">
+        <div style="position: relative; height: 280px;">
+          <canvas id="beforeAfterChart"></canvas>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="p-4 rounded-4 border bg-light">
+          <h6 class="fw-bold text-dark mb-3">Cohort Delta Scorecard</h6>
+          
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <span>Employment Conversion:</span>
+            <span class="fw-bold text-success fs-6">64% → 76% <span class="badge bg-success ms-1">+12 pp</span></span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <span>12-Month Job Retention:</span>
+            <span class="fw-bold text-success fs-6">58% → 71% <span class="badge bg-success ms-1">+13 pp</span></span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <span>Training → Job Relevance:</span>
+            <span class="fw-bold text-success fs-6">62% → 81% <span class="badge bg-success ms-1">+19 pp</span></span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+            <span>Average Monthly Salary:</span>
+            <span class="fw-bold text-success fs-6">₹14,500 → ₹17,200 <span class="badge bg-success ms-1">+₹2,700</span></span>
+          </div>
+
+          <!-- Feature 6: Prototype Intervention Impact Score -->
+          <div class="mt-3 p-3 rounded-3 bg-white border border-success">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="small text-muted fw-bold text-uppercase d-block">Intervention Impact Score</span>
+                <span class="text-success fw-bold fs-4">+{{ cohort_comparison.impact_score.score }}%</span>
+              </div>
+              <span class="badge bg-success fs-6 px-3 py-2">POSITIVE</span>
+            </div>
+            <div class="text-muted small mt-1" style="font-size: 0.72rem;">
+              * {{ cohort_comparison.impact_score.formula_explanation }} ({{ cohort_comparison.impact_score.metric_label }})
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-muted small">
+      * {{ cohort_comparison.disclaimer }}
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- FEATURE 7 — WHAT-IF POLICY SIMULATOR                 -->
+  <!-- ==================================================== -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="what-if-simulator">
+    <div class="section-header">
+      <h4><i class="bi bi-sliders text-warning text-dark me-2"></i>What-If Policy & Intervention Simulator</h4>
+      <p>Simulate the estimated impact of prospective policy levers before allocating public training funds</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <h6 class="fw-bold text-dark mb-3">Select Prospective Policy Interventions:</h6>
+        <div class="list-group mb-3">
+          {% for key, lever in policy_levers.items() %}
+            <label class="list-group-item d-flex gap-3 align-items-center py-3">
+              <input class="form-check-input flex-shrink-0 lever-checkbox" type="checkbox" value="{{ key }}" 
+                     {% if key in ('add_adv_excel', 'add_data_analytics') %}checked{% endif %}>
+              <span class="pt-1 form-checked-content flex-grow-1">
+                <span class="fw-bold text-dark d-block">{{ lever.label }}</span>
+                <small class="d-block text-muted">{{ lever.description }}</small>
+              </span>
+              <span class="badge bg-primary-subtle text-primary border">+{{ lever.emp_delta }}% Emp</span>
+            </label>
+          {% endfor %}
+        </div>
+
+        <button id="btnRunSimulator" class="btn btn-warning fw-bold px-4 text-dark w-100 py-2">
+          <i class="bi bi-play-circle-fill me-1"></i> Run What-If Simulation
+        </button>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="p-4 rounded-4 border h-100 bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-primary mb-0"><i class="bi bi-graph-up me-1"></i>Projected Policy Outcomes</h6>
+            <span class="badge bg-warning text-dark" id="simActiveCount">2 Levers Active</span>
+          </div>
+
+          <div class="row g-3 mb-3 text-center">
+            <div class="col-6">
+              <div class="p-3 bg-white rounded-3 border">
+                <span class="small text-muted text-uppercase fw-bold d-block">Current Employment</span>
+                <span class="fs-4 fw-bold text-secondary" id="simBaseEmp">68.0%</span>
+                <div class="small text-success mt-1">Projected: <strong id="simProjEmp" class="fs-5">77.5%</strong></div>
+                <span class="badge bg-success" id="simDeltaEmp">+9.5%</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 bg-white rounded-3 border">
+                <span class="small text-muted text-uppercase fw-bold d-block">Current Retention</span>
+                <span class="fs-4 fw-bold text-secondary" id="simBaseRet">63.0%</span>
+                <div class="small text-success mt-1">Projected: <strong id="simProjRet" class="fs-5">71.0%</strong></div>
+                <span class="badge bg-success" id="simDeltaRet">+8.0%</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 bg-white rounded-3 border">
+                <span class="small text-muted text-uppercase fw-bold d-block">Training Relevance</span>
+                <span class="fs-4 fw-bold text-secondary" id="simBaseRel">71.0%</span>
+                <div class="small text-success mt-1">Projected: <strong id="simProjRel" class="fs-5">85.5%</strong></div>
+                <span class="badge bg-success" id="simDeltaRel">+14.5%</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 bg-white rounded-3 border">
+                <span class="small text-muted text-uppercase fw-bold d-block">Prototype Outcome Score</span>
+                <span class="fs-4 fw-bold text-secondary" id="simBaseScore">68.5</span>
+                <div class="small text-warning mt-1">Projected: <strong id="simProjScore" class="fs-5 text-dark">79.2</strong></div>
+                <span class="badge bg-primary" id="simDeltaScore">+10.7</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warning-subtle border border-warning small mb-0" style="font-size: 0.76rem;">
+            <i class="bi bi-shield-exclamation me-1"></i>
+            <strong>Simulator Disclaimer:</strong> Prototype Simulation using Synthetic Data — Not an Official Forecast. Helps decision makers estimate potential returns before sanctioning curriculum overhauls.
+          </div>
         </div>
       </div>
     </div>
@@ -322,6 +622,80 @@ document.addEventListener('DOMContentLoaded', () => {
       maintainAspectRatio: false
     }
   });
+
+  // 5. Before vs. After Cohort Comparison Chart (Feature 5)
+  const baCtx = document.getElementById('beforeAfterChart');
+  if (baCtx) {
+    new Chart(baCtx.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Employment Rate (%)', 'Retention Rate (%)', 'Job Relevance (%)'],
+        datasets: [
+          {
+            label: 'Before Intervention (Cohort 2023-A)',
+            data: [64.0, 58.0, 62.0],
+            backgroundColor: '#94a3b8',
+            borderRadius: 6
+          },
+          {
+            label: 'After Intervention (Cohort 2024-B: Adv. Excel Added)',
+            data: [76.0, 71.0, 81.0],
+            backgroundColor: '#198754',
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 40, max: 100, ticks: { callback: v => v + '%' } }
+        }
+      }
+    });
+  }
+
+  // 6. What-If Policy Simulator Client Handler (Feature 7)
+  const simBtn = document.getElementById('btnRunSimulator');
+  if (simBtn) {
+    simBtn.addEventListener('click', () => {
+      const selected = Array.from(document.querySelectorAll('.lever-checkbox:checked')).map(cb => cb.value);
+      simBtn.disabled = true;
+      simBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Simulating...';
+
+      fetch('/api/simulator/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ levers: selected })
+      })
+      .then(res => res.json())
+      .then(data => {
+        simBtn.disabled = false;
+        simBtn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> Run What-If Simulation';
+        if (data.success && data.simulation) {
+          const s = data.simulation;
+          document.getElementById('simActiveCount').innerText = s.active_levers_count + ' Levers Active';
+          
+          document.getElementById('simProjEmp').innerText = s.projected.employment_rate + '%';
+          document.getElementById('simDeltaEmp').innerText = '+' + s.improvements.employment_delta + '%';
+
+          document.getElementById('simProjRet').innerText = s.projected.retention_rate + '%';
+          document.getElementById('simDeltaRet').innerText = '+' + s.improvements.retention_delta + '%';
+
+          document.getElementById('simProjRel').innerText = s.projected.relevance_score + '%';
+          document.getElementById('simDeltaRel').innerText = '+' + s.improvements.relevance_delta + '%';
+
+          document.getElementById('simProjScore').innerText = s.projected.outcome_score;
+          document.getElementById('simDeltaScore').innerText = '+' + s.improvements.score_delta;
+        }
+      })
+      .catch(err => {
+        simBtn.disabled = false;
+        simBtn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> Run What-If Simulation';
+        console.error(err);
+      });
+    });
+  }
 });
 </script>
 {% endblock %}

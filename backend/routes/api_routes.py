@@ -166,3 +166,24 @@ def evaluate_risk_radar():
 
     return jsonify({'success': True, 'risk_assessment': eval_result})
 
+
+@api_bp.route('/followup/run-engine', methods=['POST'])
+def run_followup_engine():
+    """
+    Executes automated follow-up engine simulation (Features 10, 11, 12).
+    Generates simulated notification dispatches across WhatsApp, Email, SMS.
+    """
+    from backend.services.notification_service import NotificationService
+    res = NotificationService.run_followup_engine()
+    return jsonify(res)
+
+
+@api_bp.route('/mobility/metrics')
+def get_mobility_metrics():
+    """
+    Returns interstate and international mobility distribution & migration corridors.
+    """
+    from backend.services.mobility_service import MobilityService
+    res = MobilityService.get_mobility_metrics()
+    return jsonify({'success': True, 'mobility': res})
+

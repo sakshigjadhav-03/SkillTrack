@@ -31,6 +31,11 @@
                   <i class="bi bi-shield-shaded me-1"></i>Risk: {{ risk_assessment.risk_level }}
                 </span>
               {% endif %}
+              {% if trainee.linkedin_url %}
+                <a href="{{ trainee.linkedin_url }}" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-2 text-decoration-none" title="Public LinkedIn Profile">
+                  <i class="bi bi-linkedin me-1"></i> LinkedIn Profile ↗
+                </a>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -273,6 +278,96 @@
         </div>
       </div>
       {% endif %}
+
+      <!-- Digital Document & Identity Verification (Features 7 & 8) -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
+        <div class="section-header mb-3">
+          <h4>Digital Trust & Verifications</h4>
+          <p>Decentralized credential & demographic trust layers</p>
+        </div>
+
+        <!-- 1. DigiLocker Certificate Mock -->
+        <div class="p-3 rounded-3 border mb-3 bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-bold small"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i>DigiLocker Skill Certificate</span>
+            {% if trainee.certificate_verified %}
+              <span class="badge bg-success-subtle text-success border border-success">✓ Demo Verified</span>
+            {% else %}
+              <span class="badge bg-secondary-subtle text-secondary border">Pending</span>
+            {% endif %}
+          </div>
+          <div class="text-muted small mb-2" style="font-size: 0.75rem;">
+            Issuer: State Skill Mission &bull; Doc: {{ trainee.certificate_number or 'CERT-MH-2023-000123' }}
+          </div>
+          {% if not trainee.certificate_verified %}
+            <form action="{{ url_for('trainee.verify_digilocker') }}" method="POST">
+              <button type="submit" class="btn btn-outline-primary btn-sm w-100 fw-semibold">
+                <i class="bi bi-cloud-arrow-down me-1"></i> Verify Certificate with DigiLocker
+              </button>
+            </form>
+          {% else %}
+            <div class="text-success small fw-semibold" style="font-size: 0.75rem;">
+              <i class="bi bi-check-circle me-1"></i> Verified on {{ trainee.certificate_verified_at or '05 Sep 2026' }} (Pull URI Active)
+            </div>
+          {% endif %}
+          <div class="text-muted mt-1" style="font-size: 0.68rem;">
+            * DigiLocker Integration — Simulated for Prototype
+          </div>
+        </div>
+
+        <!-- 2. Demo Identity Verification (Aadhaar Concept) -->
+        <div class="p-3 rounded-3 border bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-bold small"><i class="bi bi-person-check-fill text-success me-1"></i>Demographic Identity Verification</span>
+            <span class="badge bg-success-subtle text-success border border-success">✓ Demo Identity Verified</span>
+          </div>
+          <div class="text-muted small mb-1" style="font-size: 0.75rem;">
+            Method: Aadhaar-Based Demographics Match (Prototype Token)
+          </div>
+          <div class="p-1 px-2 bg-white rounded border small font-monospace text-primary mb-1" style="font-size: 0.75rem;">
+            Token: {{ trainee.identity_token or 'DEMO-ID-000123' }}
+          </div>
+          <div class="text-muted" style="font-size: 0.68rem;">
+            * Zero-Knowledge Token stored. Actual Aadhaar integration requires statutory UIDAI APIs & regulatory compliance.
+          </div>
+        </div>
+      </div>
+
+      <!-- Communication Preferences & Consent (Features 9 & 13) -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
+        <div class="section-header mb-3">
+          <h4>Communication & Privacy</h4>
+          <p>Follow-up notifications channel and data minimization</p>
+        </div>
+
+        <form action="{{ url_for('trainee.update_preferences') }}" method="POST">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Preferred Follow-Up Channel</label>
+            <select name="preferred_channel" class="form-select form-select-sm">
+              <option value="WhatsApp + Email" {% if trainee.preferred_channel == 'WhatsApp + Email' %}selected{% endif %}>WhatsApp + Email</option>
+              <option value="WhatsApp Only" {% if trainee.preferred_channel == 'WhatsApp Only' %}selected{% endif %}>WhatsApp Only</option>
+              <option value="Email Only" {% if trainee.preferred_channel == 'Email Only' %}selected{% endif %}>Email Only</option>
+              <option value="SMS" {% if trainee.preferred_channel == 'SMS' %}selected{% endif %}>SMS</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Public LinkedIn Profile URL</label>
+            <input type="url" name="linkedin_url" value="{{ trainee.linkedin_url or '' }}" class="form-control form-control-sm" placeholder="https://www.linkedin.com/in/username">
+          </div>
+
+          <div class="form-check mb-3 small">
+            <input class="form-check-input" type="checkbox" name="communication_consent" id="commConsent" checked>
+            <label class="form-check-label text-muted" for="commConsent">
+              I consent to receive milestone reminders on my selected channel.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold">
+            Save Preferences
+          </button>
+        </form>
+      </div>
 
     </div>
   </div>

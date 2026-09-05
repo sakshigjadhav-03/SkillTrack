@@ -222,6 +222,16 @@ def dashboard():
     # 9. What-If Policy Simulator Levers (Feature 7)
     policy_levers = PolicySimulator.LEVERS
 
+    # 10. Workforce Mobility Analytics (Features 4, 5, 6)
+    from backend.services.mobility_service import MobilityService
+    from backend.services.followup_service import FollowupService
+    from backend.services.notification_service import NotificationService
+
+    mobility_metrics = MobilityService.get_mobility_metrics()
+    followup_metrics = FollowupService.get_followup_center_metrics()
+    followup_directory = FollowupService.get_active_followup_directory()
+    recent_notifications = NotificationService.get_recent_logs(limit=5)
+
     return render_template(
         'government/dashboard.html',
         total_trainees=total_trainees,
@@ -244,7 +254,11 @@ def dashboard():
         risk_radar_trainees=risk_radar_trainees,
         risk_summary=risk_summary,
         cohort_comparison=cohort_comparison,
-        policy_levers=policy_levers
+        policy_levers=policy_levers,
+        mobility=mobility_metrics,
+        followup_center=followup_metrics,
+        followup_directory=followup_directory,
+        recent_notifications=recent_notifications
     )
 
 

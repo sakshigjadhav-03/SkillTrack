@@ -178,6 +178,35 @@ class SkillTrackTestCase(unittest.TestCase):
         self.assertEqual(res_radar.status_code, 200)
         self.assertEqual(res_radar.json['risk_assessment']['risk_level'], 'LOW')
 
+        # Test mobility endpoint
+        res_mob = self.client.get('/api/mobility/metrics')
+        self.assertEqual(res_mob.status_code, 200)
+        self.assertTrue(res_mob.json['success'])
+        self.assertEqual(res_mob.json['mobility']['distribution']['maharashtra_pct'], 62.0)
+
+        # Test follow-up engine simulation endpoint
+        res_fu = self.client.post('/api/followup/run-engine')
+        self.assertEqual(res_fu.status_code, 200)
+        self.assertTrue(res_fu.json['success'])
+        self.assertGreater(res_fu.json['summary']['total_queued'], 0)
+
+        # Test employer registration page
+        res_reg_emp = self.client.get('/register-employer')
+        self.assertEqual(res_reg_emp.status_code, 200)
+
+    def test_mock_verifications(self):
+        """Verify DigiLocker & Identity Verification mock services."""
+        from backend.services.document_verification_service import DocumentVerificationService
+        from backend.services.identity_verification_service import IdentityVerificationService
+
+        doc_res = DocumentVerificationService.verify_skill_certificate("CERT-MH-2023-000123")
+        self.assertTrue(doc_res['is_verified'])
+        self.assertEqual(doc_res['status'], 'Demo Verification Successful')
+
+        id_res = IdentityVerificationService.verify_identity("ST-MH-000123")
+        self.assertTrue(id_res['is_verified'])
+        self.assertIn('DEMO-ID', id_res['verification_token'])
+
 
 if __name__ == '__main__':
     unittest.main()

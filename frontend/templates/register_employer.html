@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Employer Registration — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="text-center mb-4">
+          <div class="d-inline-flex p-3 rounded-circle bg-success bg-opacity-10 text-success mb-2">
+            <i class="bi bi-building-add fs-2"></i>
+          </div>
+          <h4 class="fw-bold mb-1">Empanel as Hiring Employer</h4>
+          <p class="text-muted small">Register company node to verify candidate outcomes and report workplace skill gaps</p>
+          <span class="badge bg-warning-subtle text-dark border border-warning">
+            <i class="bi bi-info-circle me-1"></i> Prototype Employer Account — Simulated for Hackathon
+          </span>
+        </div>
+
+        <form action="{{ url_for('auth.register_employer') }}" method="POST">
+          <div class="row g-3 mb-3">
+            <div class="col-md-7">
+              <label class="form-label small fw-semibold">Company / Enterprise Name *</label>
+              <input type="text" name="company_name" class="form-control" placeholder="e.g. Infosys / Tata Motors" required>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small fw-semibold">Industry Sector *</label>
+              <select name="industry" class="form-select" required>
+                <option value="IT & ITES">IT & ITES</option>
+                <option value="Retail & Logistics">Retail & Logistics</option>
+                <option value="Renewable Energy">Renewable Energy</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Automotive & Manufacturing">Automotive & Manufacturing</option>
+                <option value="Construction & Infrastructure">Construction & Infrastructure</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Corporate Contact Email *</label>
+              <input type="email" name="company_email" class="form-control" placeholder="hr@company.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Account Password *</label>
+              <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Authorized HR / Contact Person *</label>
+              <input type="text" name="contact_person" class="form-control" placeholder="e.g. Ananya Sharma" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Designation</label>
+              <input type="text" name="designation" class="form-control" placeholder="e.g. Talent Acquisition Lead">
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-semibold">Primary Operating Location / District</label>
+            <select name="district_id" class="form-select">
+              {% for d in districts %}
+                <option value="{{ d.id }}">{{ d.name }}, Maharashtra</option>
+              {% endfor %}
+            </select>
+            <span class="text-muted small">Select primary office location in Maharashtra.</span>
+          </div>
+
+          <button type="submit" class="btn btn-success w-100 py-2 fw-semibold mb-3">
+            <i class="bi bi-shield-check me-1"></i> Register Prototype Employer Account
+          </button>
+        </form>
+
+        <div class="text-center small text-muted">
+          Existing employer? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-semibold">Sign In to Verification Portal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

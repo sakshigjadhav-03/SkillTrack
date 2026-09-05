@@ -9,8 +9,16 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     """User login supporting email & password or quick 1-click demo login."""
     if request.method == 'POST':
-        # Check if 1-click demo login was clicked
+        # Check if 1-click demo login or quick company email was clicked
         quick_role = request.form.get('quick_role')
+        quick_email = request.form.get('quick_email')
+        if quick_email:
+            user = query_db("SELECT * FROM users WHERE email = %s AND is_active = 1", (quick_email,), one=True)
+            if user:
+                return _setup_session_and_redirect(user)
+            flash('Demo company account not found.', 'danger')
+            return redirect(url_for('auth.login'))
+
         if quick_role:
             role_emails = {
                 'trainee': 'trainee@skilltrack.in',
@@ -80,7 +88,7 @@ def _setup_session_and_redirect(user):
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    """Trainee self-registration."""
+    """Trainee self-registration with optional LinkedIn profile."""
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         email = request.form.get('email', '').strip().lower()
@@ -90,6 +98,13 @@ def register():
         gender = request.form.get('gender', 'Other')
         district_id = request.form.get('district_id', type=int) or 1
         phone = request.form.get('phone', '').strip()
+        linkedin_url = request.form.get('linkedin_url', '').strip()
+
+        # Validate LinkedIn URL if provided
+        if linkedin_url and not ('linkedin.com/' in linkedin_url.lower()):
+            flash('Please provide a valid LinkedIn URL (e.g. https://www.linkedin.com/in/username).', 'warning')
+            districts = query_db("SELECT id, name FROM districts ORDER BY name")
+            return render_template('register.html', districts=districts)
 
         if not username or not email or not password or not first_name:
             flash('Please fill in all required fields.', 'warning')
@@ -118,10 +133,10 @@ def register():
             """
             INSERT INTO trainees (
                 user_id, outcome_id, first_name, last_name, gender, phone, email, district_id,
-                consent_status, current_employment_status
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pending', 'unemployed')
+                linkedin_url, consent_status, current_employment_status, identity_token, identity_verified
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', 'unemployed', %s, 1)
             """,
-            (user_id, outcome_id, first_name, last_name, gender, phone, email, district_id)
+            (user_id, outcome_id, first_name, last_name, gender, phone, email, district_id, linkedin_url, f"DEMO-ID-{outcome_id.split('-')[-1]}")
         )
 
         flash(f'Registration successful! Your Unique Outcome ID is {outcome_id}. Please log in to provide tracking consent.', 'success')
@@ -129,6 +144,55 @@ def register():
 
     districts = query_db("SELECT id, name FROM districts ORDER BY name")
     return render_template('register.html', districts=districts)
+
+
+@auth_bp.route('/register-employer', methods=['GET', 'POST'])
+def register_employer():
+    """Employer / Enterprise Partner self-registration (Prototype Demo Account)."""
+    if request.method == 'POST':
+        company_name = request.form.get('company_name', '').strip()
+        company_email = request.form.get('company_email', '').strip().lower()
+        industry = request.form.get('industry', '').strip()
+        district_id = request.form.get('district_id', type=int) or 1
+        contact_person = request.form.get('contact_person', '').strip()
+        designation = request.form.get('designation', '').strip()
+        password = request.form.get('password', '')
+
+        if not company_name or not company_email or not password or not contact_person:
+            flash('Please complete all required employer registration fields.', 'warning')
+            districts = query_db("SELECT id, name FROM districts ORDER BY name")
+            return render_template('register_employer.html', districts=districts)
+
+        # Check existing user
+        existing = query_db("SELECT id FROM users WHERE email = %s", (company_email,), one=True)
+        if existing:
+            flash('This corporate email is already registered. Please log in directly.', 'danger')
+            return redirect(url_for('auth.login'))
+
+        # Create employer user account
+        username = 'emp_' + company_email.split('@')[0].replace('.', '_').replace('-', '_')
+        pwd_hash = generate_password_hash(password)
+        res_u = execute_db(
+            "INSERT INTO users (username, email, password_hash, role) VALUES (%s, %s, %s, 'employer')",
+            (username, company_email, pwd_hash)
+        )
+        user_id = res_u['lastrowid']
+
+        # Create employer enterprise record
+        execute_db(
+            """
+            INSERT INTO employers (
+                user_id, company_name, industry, district_id, contact_person, contact_email, phone, is_verified
+            ) VALUES (%s, %s, %s, %s, %s, %s, '+91 20 66000000', 1)
+            """,
+            (user_id, company_name, industry, district_id, f"{contact_person} ({designation})" if designation else contact_person, company_email)
+        )
+
+        flash(f'Prototype Employer Account for "{company_name}" created successfully! Please sign in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    districts = query_db("SELECT id, name FROM districts ORDER BY name")
+    return render_template('register_employer.html', districts=districts)
 
 
 @auth_bp.route('/logout')

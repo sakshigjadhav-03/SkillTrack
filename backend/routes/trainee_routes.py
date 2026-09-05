@@ -288,15 +288,22 @@ def followup():
         retention_status = 'retained' if emp_status in ('employed', 'self_employed', 'apprentice') else 'left_job'
         today_str = datetime.now().strftime('%Y-%m-%d')
 
+        # Location details
+        loc_type = request.form.get('location_type', 'maharashtra')
+        state_name = request.form.get('state_name', 'Maharashtra')
+        country_name = request.form.get('country_name', 'India')
+        city_name = request.form.get('city_name', '').strip()
+
         # Insert or update followup record
         execute_db(
             """
             INSERT INTO followups (
                 trainee_id, milestone_months, status, due_date, completed_date, employment_status,
-                current_salary, salary_growth_pct, retention_status, non_placement_reason, attrition_reason, notes
-            ) VALUES (%s, %s, 'completed', %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                current_salary, salary_growth_pct, retention_status, non_placement_reason, attrition_reason,
+                notes, location_type, state_name, country_name, city_name, company_name, job_role
+            ) VALUES (%s, %s, 'completed', %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
-            (trainee_id, milestone, today_str, today_str, emp_status, current_salary, growth_pct, retention_status, non_placement_reason, attrition_reason, notes)
+            (trainee_id, milestone, today_str, today_str, emp_status, current_salary, growth_pct, retention_status, non_placement_reason, attrition_reason, notes, loc_type, state_name, country_name, city_name, company_name, job_role)
         )
 
         # Update trainee current employment status
@@ -307,13 +314,47 @@ def followup():
             execute_db(
                 """
                 INSERT INTO employment_records (
-                    trainee_id, employer_name, job_role, employment_type, joining_date, salary_monthly
-                ) VALUES (%s, %s, %s, 'Full-time', %s, %s)
+                    trainee_id, employer_name, job_role, employment_type, joining_date, salary_monthly,
+                    location_type, state_name, country_name, city_name
+                ) VALUES (%s, %s, %s, 'Full-time', %s, %s, %s, %s, %s, %s)
                 """,
-                (trainee_id, company_name, job_role, today_str, current_salary)
+                (trainee_id, company_name, job_role, today_str, current_salary, loc_type, state_name, country_name, city_name)
             )
 
         flash(f'Thank you! Your {milestone}-month outcome follow-up has been submitted.', 'success')
         return redirect(url_for('trainee.dashboard'))
 
     return render_template('trainee/followup.html', trainee=trainee)
+
+
+@trainee_bp.route('/verify-digilocker', methods=['POST'])
+@login_required
+@role_required('trainee')
+def verify_digilocker():
+    """Simulated DigiLocker certificate verification (Prototype Mock)."""
+    trainee_id = session.get('trainee_id')
+    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    execute_db(
+        "UPDATE trainees SET certificate_verified = 1, certificate_verified_at = %s WHERE id = %s",
+        (now_str, trainee_id)
+    )
+    flash('DigiLocker Integration — Prototype Mock: Certificate verified successfully from State Skill Authority repository.', 'success')
+    return redirect(url_for('trainee.dashboard'))
+
+
+@trainee_bp.route('/update-preferences', methods=['POST'])
+@login_required
+@role_required('trainee')
+def update_preferences():
+    """Updates trainee preferred communication channel and consent."""
+    trainee_id = session.get('trainee_id')
+    preferred = request.form.get('preferred_channel', 'WhatsApp + Email')
+    linkedin_url = request.form.get('linkedin_url', '').strip()
+    comm_consent = 1 if request.form.get('communication_consent') else 0
+
+    execute_db(
+        "UPDATE trainees SET preferred_channel = %s, communication_consent = %s, linkedin_url = %s WHERE id = %s",
+        (preferred, comm_consent, linkedin_url, trainee_id)
+    )
+    flash('Communication preferences and professional profile updated successfully.', 'success')
+    return redirect(url_for('trainee.dashboard'))

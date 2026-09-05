@@ -500,6 +500,212 @@
     </div>
   </div>
 
+  <!-- ==================================================== -->
+  <!-- WORKFORCE MOBILITY & DESTINATIONS (Features 4, 5, 6) -->
+  <!-- ==================================================== -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="workforce-mobility">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div class="section-header mb-0">
+        <span class="badge bg-info-subtle text-info border border-info mb-1">Geographic Mobility Intelligence</span>
+        <h4>Workforce Mobility & Regional Destinations</h4>
+        <p>Tracking post-placement migration corridors across Maharashtra, other Indian states, and abroad</p>
+      </div>
+      <span class="badge bg-warning text-dark px-3 py-2 fw-semibold">
+        <i class="bi bi-info-circle me-1"></i> Synthetic Prototype Data — Not Government Data
+      </span>
+    </div>
+
+    <!-- Macro Distribution Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <span class="text-muted small text-uppercase fw-bold d-block mb-1">Within Maharashtra</span>
+          <div class="display-6 fw-bold text-primary">{{ mobility.distribution.maharashtra_pct }}%</div>
+          <span class="badge bg-primary-subtle text-primary border">{{ mobility.distribution.maharashtra_count }} Trainees</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <span class="text-muted small text-uppercase fw-bold d-block mb-1">Interstate (Other Indian States)</span>
+          <div class="display-6 fw-bold text-info">{{ mobility.distribution.interstate_pct }}%</div>
+          <span class="badge bg-info-subtle text-info border">{{ mobility.distribution.interstate_count }} Trainees</span>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <span class="text-muted small text-uppercase fw-bold d-block mb-1">International (Abroad)</span>
+          <div class="display-6 fw-bold text-success">{{ mobility.distribution.abroad_pct }}%</div>
+          <span class="badge bg-success-subtle text-success border">{{ mobility.distribution.abroad_count }} Trainees</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <!-- Top Interstate Destinations -->
+      <div class="col-lg-6">
+        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-building me-1"></i> Top Interstate Destinations</h6>
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 small">
+            <thead>
+              <tr>
+                <th>State & Hub</th>
+                <th>Trainees</th>
+                <th>Share</th>
+                <th>Primary Sector</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for is_dest in mobility.top_interstate %}
+                <tr>
+                  <td><strong>{{ is_dest.state }}</strong> ({{ is_dest.city }})</td>
+                  <td><span class="fw-bold">{{ is_dest.count }}</span></td>
+                  <td><span class="badge bg-info text-dark">{{ is_dest.share_pct }}%</span></td>
+                  <td><span class="text-muted">{{ is_dest.primary_sector }}</span></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Top International Destinations -->
+      <div class="col-lg-6">
+        <h6 class="fw-bold text-success mb-3"><i class="bi bi-globe-americas me-1"></i> Top International Destinations</h6>
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 small">
+            <thead>
+              <tr>
+                <th>Country & City</th>
+                <th>Trainees</th>
+                <th>Share</th>
+                <th>Primary Sector</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for intl in mobility.top_international %}
+                <tr>
+                  <td><strong>{{ intl.country }}</strong> ({{ intl.city }})</td>
+                  <td><span class="fw-bold text-success">{{ intl.count }}</span></td>
+                  <td><span class="badge bg-success">{{ intl.share_pct }}%</span></td>
+                  <td><span class="text-muted">{{ intl.primary_sector }}</span></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Migration Corridors -->
+    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-signpost-split me-1 text-primary"></i> High-Volume Workforce Migration Corridors</h6>
+    <div class="row g-2">
+      {% for corr in mobility.corridors[:4] %}
+        <div class="col-md-3">
+          <div class="p-3 rounded-3 border bg-light h-100">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="badge bg-secondary-subtle text-secondary border" style="font-size: 0.7rem;">{{ corr.type }}</span>
+              <span class="fw-bold text-primary small">{{ corr.trainees_count }} Placements</span>
+            </div>
+            <div class="fw-bold text-dark mb-1">
+              {{ corr.origin }} <i class="bi bi-arrow-right text-muted mx-1"></i> {{ corr.destination }}
+            </div>
+            <div class="small text-muted">Avg. Wage: <strong>₹{{ "{:,.0f}".format(corr.avg_salary) }}/mo</strong></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- AUTOMATED FOLLOW-UP REMINDER CENTER (Features 10-13)  -->
+  <!-- ==================================================== -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="followup-center">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div class="section-header mb-0">
+        <span class="badge bg-primary-subtle text-primary border border-primary mb-1">Automated Communications</span>
+        <h4>Follow-up Reminder Center & Multi-Channel Engine</h4>
+        <p>Automated 3M, 6M, 12M, and 24M milestone follow-up orchestration across WhatsApp, Email, and SMS</p>
+      </div>
+      <button class="btn btn-success fw-bold px-4 shadow-sm" id="btnRunFollowupEngine">
+        <i class="bi bi-play-circle-fill me-1"></i> RUN FOLLOW-UP ENGINE
+      </button>
+    </div>
+
+    <!-- KPI Metric Blocks -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <div class="text-muted small text-uppercase fw-bold mb-1">Due Today</div>
+          <div class="display-6 fw-bold text-danger">{{ followup_center.due_today }}</div>
+          <span class="text-muted small">Immediate reminder priority</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <div class="text-muted small text-uppercase fw-bold mb-1">Due This Week</div>
+          <div class="display-6 fw-bold text-warning">{{ followup_center.due_this_week }}</div>
+          <span class="text-muted small">Active milestone window</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <div class="text-muted small text-uppercase fw-bold mb-1">Completed Follow-ups</div>
+          <div class="display-6 fw-bold text-success">{{ followup_center.completed }}</div>
+          <span class="text-success small fw-semibold">78.5% Completion Rate</span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light text-center">
+          <div class="text-muted small text-uppercase fw-bold mb-1">Missed Check-ins</div>
+          <div class="display-6 fw-bold text-secondary">{{ followup_center.missed }}</div>
+          <span class="text-muted small">Auto-escalated to outreach</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Engine Run Result Alert Box (Dynamically Filled) -->
+    <div id="engineResultAlert" class="alert alert-success border border-success d-none mb-4 shadow-sm">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <h6 class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-1"></i> Follow-up Engine Completed (Simulation Mode)</h6>
+          <p class="mb-0 small" id="engineResultText">Scanned 12 milestones due. Queued simulated notifications.</p>
+        </div>
+        <span class="badge bg-warning text-dark px-3 py-2 border">Demo Notification — No Real External Message Sent</span>
+      </div>
+    </div>
+
+    <!-- Active Milestone Follow-up Directory Table -->
+    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-list-task me-1 text-primary"></i> Trainee Follow-Up Queue</h6>
+    <div class="table-responsive">
+      <table class="table custom-table table-bordered mb-0 small">
+        <thead>
+          <tr>
+            <th>Outcome ID</th>
+            <th>Candidate Name</th>
+            <th>Course</th>
+            <th>Milestone</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Preferred Channel</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in followup_directory[:6] %}
+            <tr>
+              <td><span class="outcome-id-pill small">{{ f.outcome_id }}</span></td>
+              <td><strong>{{ f.name }}</strong></td>
+              <td>{{ f.course }}</td>
+              <td><strong>{{ f.milestone }}</strong></td>
+              <td>{{ f.due_date }}</td>
+              <td><span class="badge bg-{{ f.badge_class }}">{{ f.status }}</span></td>
+              <td><i class="bi bi-chat-dots text-primary me-1"></i>{{ f.channel }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Top Actionable Recommendations (Feature 20) -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -692,6 +898,37 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(err => {
         simBtn.disabled = false;
         simBtn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> Run What-If Simulation';
+        console.error(err);
+      });
+    });
+  }
+
+  // 7. Automated Follow-up Engine Runner Handler
+  const engineBtn = document.getElementById('btnRunFollowupEngine');
+  const alertBox = document.getElementById('engineResultAlert');
+  const alertText = document.getElementById('engineResultText');
+
+  if (engineBtn) {
+    engineBtn.addEventListener('click', () => {
+      engineBtn.disabled = true;
+      engineBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Running Engine...';
+
+      fetch('/api/followup/run-engine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.json())
+      .then(data => {
+        engineBtn.disabled = false;
+        engineBtn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> RUN FOLLOW-UP ENGINE';
+        if (data.success) {
+          alertBox.classList.remove('d-none');
+          alertText.innerHTML = `<strong>${data.summary.identified_count} follow-ups identified</strong> &bull; Queued: <span class="badge bg-success">${data.summary.whatsapp_queued} WhatsApp</span> <span class="badge bg-primary">${data.summary.email_queued} Email</span> <span class="badge bg-secondary">${data.summary.sms_queued} SMS</span>. Sample message: <em>"${data.sample_message}"</em>`;
+        }
+      })
+      .catch(err => {
+        engineBtn.disabled = false;
+        engineBtn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> RUN FOLLOW-UP ENGINE';
         console.error(err);
       });
     });

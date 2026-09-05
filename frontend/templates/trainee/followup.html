@@ -66,7 +66,7 @@
                 <input type="text" name="job_role" class="form-control" placeholder="e.g. Operations Associate">
               </div>
             </div>
-            <div class="mb-2">
+            <div class="mb-3">
               <label class="form-label small fw-semibold">Current Monthly In-Hand Salary (INR) *</label>
               <div class="input-group">
                 <span class="input-group-text">₹</span>
@@ -74,6 +74,50 @@
                 <span class="input-group-text">/ month</span>
               </div>
               <span class="text-muted small">SkillTrack tracks wage progression over time to measure sustainable growth.</span>
+            </div>
+
+            <!-- Geographic Mobility Selection -->
+            <div class="p-3 bg-white border rounded-3 mb-2">
+              <label class="form-label small fw-bold text-dark mb-2">
+                <i class="bi bi-geo-alt-fill text-danger me-1"></i> Employment Location Type *
+              </label>
+              <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                  <input type="radio" class="btn-check" name="location_type" id="locMh" value="maharashtra" checked>
+                  <label class="btn btn-outline-primary w-100 py-2 btn-sm fw-semibold" for="locMh">Within Maharashtra</label>
+                </div>
+                <div class="col-md-4">
+                  <input type="radio" class="btn-check" name="location_type" id="locState" value="other_state">
+                  <label class="btn btn-outline-info w-100 py-2 btn-sm fw-semibold" for="locState">Other Indian State</label>
+                </div>
+                <div class="col-md-4">
+                  <input type="radio" class="btn-check" name="location_type" id="locAbroad" value="abroad">
+                  <label class="btn btn-outline-success w-100 py-2 btn-sm fw-semibold" for="locAbroad">Outside India (Abroad)</label>
+                </div>
+              </div>
+
+              <!-- Location conditional sub-fields -->
+              <div id="locStateFields" class="row g-2 mb-2 d-none">
+                <div class="col-md-6">
+                  <label class="form-label small">State (e.g. Karnataka, Gujarat, Telangana)</label>
+                  <input type="text" name="state_name" class="form-control form-control-sm" placeholder="e.g. Karnataka">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small">City (e.g. Bengaluru, Hyderabad)</label>
+                  <input type="text" name="city_name" class="form-control form-control-sm" placeholder="e.g. Bengaluru">
+                </div>
+              </div>
+
+              <div id="locAbroadFields" class="row g-2 mb-2 d-none">
+                <div class="col-md-6">
+                  <label class="form-label small">Country (e.g. UAE, Germany, Canada, UK)</label>
+                  <input type="text" name="country_name" class="form-control form-control-sm" placeholder="e.g. Germany">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small">City (e.g. Berlin, Dubai, Toronto)</label>
+                  <input type="text" name="abroad_city" class="form-control form-control-sm" placeholder="e.g. Berlin">
+                </div>
+              </div>
             </div>
           </div>
 
@@ -148,6 +192,26 @@ document.addEventListener('DOMContentLoaded', () => {
       empFields.classList.add('d-none');
       unempFields.classList.add('d-none');
     }
+  });
+
+  // Location type toggles
+  const locStateFields = document.getElementById('locStateFields');
+  const locAbroadFields = document.getElementById('locAbroadFields');
+  const locRadios = document.querySelectorAll('input[name="location_type"]');
+
+  locRadios.forEach(r => {
+    r.addEventListener('change', () => {
+      if (r.value === 'other_state') {
+        locStateFields.classList.remove('d-none');
+        locAbroadFields.classList.add('d-none');
+      } else if (r.value === 'abroad') {
+        locAbroadFields.classList.remove('d-none');
+        locStateFields.classList.add('d-none');
+      } else {
+        locStateFields.classList.add('d-none');
+        locAbroadFields.classList.add('d-none');
+      }
+    });
   });
 });
 </script>

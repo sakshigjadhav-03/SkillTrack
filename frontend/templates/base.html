@@ -43,7 +43,7 @@
   </header>
 
   <!-- Fixed Left Sidebar -->
-  <aside class="app-sidebar" id="appSidebar">
+  <aside class="app-sidebar sidebar" id="appSidebar">
     <!-- Logo Container -->
     <div class="sidebar-logo-container">
       <a href="{{ url_for('index') }}" class="text-decoration-none d-block">
@@ -173,7 +173,7 @@
   </aside>
 
   <!-- Main Content Wrapper -->
-  <div class="main-content-wrapper">
+  <div class="main-content-wrapper main-content">
     <!-- Flash Notifications -->
     <div class="container-fluid px-lg-4 px-3 mt-3">
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -192,6 +192,28 @@
     <main class="flex-grow-1">
       {% block content %}{% endblock %}
     </main>
+
+    <!-- Global Shared Footer -->
+    {% block footer %}
+    <footer class="bg-white border-top py-3 px-lg-4 px-3 mt-auto" id="contact">
+      <div class="container-fluid">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <img src="{{ url_for('static', filename='img/skilltrack_logo.jpg') }}" alt="SkillTrack" style="height: 28px;" class="rounded">
+            <span class="fw-bold text-dark fs-6">SkillTrack</span>
+          </div>
+
+          <div class="text-muted small text-center">
+            SkillTrack • From Training to Sustainable Employment | Outcome Intelligence Platform
+          </div>
+
+          <div class="small fw-semibold text-secondary">
+            🇮🇳 Building a Skilled, Employable &amp; Self-Reliant Bharat
+          </div>
+        </div>
+      </div>
+    </footer>
+    {% endblock %}
   </div>
 
   <!-- Bootstrap 5.3 Bundle JS -->

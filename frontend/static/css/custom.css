@@ -1,4 +1,5 @@
 :root {
+  --sidebar-width: 260px;
   --primary-gov: #0e385f;
   --primary-dark: #08223a;
   --secondary-accent: #2b70c9;
@@ -184,14 +185,16 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Fixed Left Sidebar Layout & Responsive Shell
+   Fixed Left Sidebar Layout & Responsive Shell (260px Desktop)
    ========================================================================== */
+.sidebar,
 .app-sidebar {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
-  width: 250px;
+  width: 260px;
+  width: var(--sidebar-width, 260px);
   height: 100vh;
   background: linear-gradient(180deg, #07192f 0%, #092240 60%, #061527 100%);
   color: #e2e8f0;
@@ -205,8 +208,10 @@ footer a:hover {
   transition: transform 0.3s ease;
 }
 
+.main-content,
 .main-content-wrapper {
-  margin-left: 250px;
+  margin-left: 260px;
+  margin-left: var(--sidebar-width, 260px);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -215,7 +220,7 @@ footer a:hover {
 }
 
 .sidebar-logo-container {
-  padding: 20px 16px 12px 16px;
+  padding: 20px 18px 12px 18px;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -233,10 +238,10 @@ footer a:hover {
 }
 
 .sidebar-nav {
-  padding: 14px 10px;
+  padding: 14px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .sidebar-nav-item {
@@ -300,14 +305,19 @@ footer a:hover {
 }
 
 @media (max-width: 991.98px) {
+  .sidebar,
   .app-sidebar {
+    width: min(260px, 85vw);
+    width: min(var(--sidebar-width, 260px), 85vw);
     transform: translateX(-100%);
   }
+  .sidebar.show,
   .app-sidebar.show {
     transform: translateX(0);
   }
+  .main-content,
   .main-content-wrapper {
-    margin-left: 0;
+    margin-left: 0 !important;
   }
   .mobile-top-bar {
     display: flex;

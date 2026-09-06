@@ -422,5 +422,97 @@ def init_database():
     print("    - Government: admin@skilltrack.gov.in         (admin123)")
     print("=" * 65)
 
+def run_schema_migrations():
+    """
+    Checks and safely updates database schema on startup:
+    1. Executes schema.sql (CREATE TABLE IF NOT EXISTS for all tables)
+    2. Checks for missing columns and adds them via ALTER TABLE if needed
+    3. Verifies default users exist and seeds if missing
+    """
+    try:
+        conn, db_type = get_db_connection()
+    except Exception as e:
+        print(f"[Migration Warning] Could not connect to DB: {e}")
+        return
+
+    try:
+        schema_file = BASE_DIR / "database" / "schema.sql"
+        if schema_file.exists():
+            with open(schema_file, "r", encoding="utf-8") as f:
+                schema_sql = f.read()
+            execute_script(schema_sql)
+
+        # Helper to get existing columns for a table
+        def get_columns(table_name):
+            try:
+                if db_type == 'sqlite':
+                    rows = query_db(f"PRAGMA table_info({table_name})")
+                    return [r['name'] for r in rows] if rows else []
+                else:
+                    rows = query_db("SELECT column_name FROM information_schema.columns WHERE table_name = %s", (table_name,))
+                    return [r['column_name'] for r in rows] if rows else []
+            except Exception:
+                return []
+
+        # 1. Trainees columns
+        trainee_cols = get_columns('trainees')
+        if trainee_cols:
+            if 'preferred_channel' not in trainee_cols:
+                try:
+                    execute_db("ALTER TABLE trainees ADD COLUMN preferred_channel TEXT DEFAULT 'WhatsApp'")
+                    print("[Migration] Added preferred_channel to trainees")
+                except Exception as e:
+                    print(f"[Migration] preferred_channel: {e}")
+            if 'linkedin_url' not in trainee_cols:
+                try:
+                    execute_db("ALTER TABLE trainees ADD COLUMN linkedin_url TEXT")
+                    print("[Migration] Added linkedin_url to trainees")
+                except Exception as e:
+                    print(f"[Migration] linkedin_url: {e}")
+
+        # 2. Apprenticeships columns
+        appr_cols = get_columns('apprenticeships')
+        if appr_cols:
+            if 'company_name' not in appr_cols:
+                try:
+                    execute_db("ALTER TABLE apprenticeships ADD COLUMN company_name TEXT")
+                    print("[Migration] Added company_name to apprenticeships")
+                except Exception as e:
+                    print(f"[Migration] company_name: {e}")
+
+        # 3. Employment records columns
+        emp_cols = get_columns('employment_records')
+        if emp_cols:
+            if 'latitude' not in emp_cols:
+                try:
+                    execute_db("ALTER TABLE employment_records ADD COLUMN latitude REAL")
+                    print("[Migration] Added latitude to employment_records")
+                except Exception as e:
+                    print(f"[Migration] latitude: {e}")
+            if 'longitude' not in emp_cols:
+                try:
+                    execute_db("ALTER TABLE employment_records ADD COLUMN longitude REAL")
+                    print("[Migration] Added longitude to employment_records")
+                except Exception as e:
+                    print(f"[Migration] longitude: {e}")
+
+        # 4. Ensure demo users exist
+        try:
+            users_check = query_db("SELECT COUNT(*) AS c FROM users", one=True)
+            if not users_check or users_check.get('c', 0) == 0:
+                print("[Migration] Users table empty. Initializing synthetic prototype data...")
+                init_database()
+        except Exception:
+            init_database()
+
+    except Exception as e:
+        print(f"[Migration Error] {e}")
+    finally:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
 if __name__ == "__main__":
     init_database()
+

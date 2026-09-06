@@ -57,13 +57,52 @@ def create_app(config_class=Config):
             "sih_code": "SIH26135"
         }, 200
 
-    # Friendly Error Handlers (No raw tracebacks to judges)
+    # Cloud Self-Diagnosis & Repair Endpoint
+    @app.route('/api/diagnostic')
+    def cloud_diagnostic():
+        import sqlite3
+        diag = {
+            "status": "ok",
+            "db_type": "sqlite" if Config.USE_SQLITE else "mysql",
+            "tables": [],
+            "users_count": 0,
+            "trainees_count": 0,
+            "columns": {},
+            "errors": []
+        }
+        try:
+            from backend.database import query_db, get_db_connection
+            conn, db_type = get_db_connection()
+            if db_type == 'sqlite':
+                tables = query_db("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
+                diag["tables"] = [t['name'] for t in tables] if tables else []
+                # Check trainee columns
+                if 'trainees' in diag["tables"]:
+                    cols = query_db("PRAGMA table_info(trainees)")
+                    diag["columns"]["trainees"] = [c['name'] for c in cols] if cols else []
+            else:
+                tables = query_db("SHOW TABLES")
+                diag["tables"] = [list(t.values())[0] for t in tables] if tables else []
+            
+            u = query_db("SELECT COUNT(*) AS c FROM users", one=True)
+            diag["users_count"] = u['c'] if u else 0
+            t = query_db("SELECT COUNT(*) AS c FROM trainees", one=True)
+            diag["trainees_count"] = t['c'] if t else 0
+        except Exception as e:
+            diag["errors"].append(str(e))
+            diag["status"] = "error"
+        return diag, 200
+
+    # Friendly Error Handlers with Server Logs
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('errors/404.html'), 404
 
     @app.errorhandler(500)
     def internal_server_error(e):
-        return render_template('errors/500.html'), 500
+        import traceback
+        tb = traceback.format_exc()
+        app.logger.error(f"500 Internal Server Error: {e}\n{tb}")
+        return render_template('errors/500.html', error_details=str(e), traceback_str=tb), 500
 
     return app

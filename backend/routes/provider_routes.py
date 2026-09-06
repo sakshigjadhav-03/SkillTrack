@@ -53,8 +53,9 @@ def dashboard():
         one=True
     )
     retention_rate = 74.5
-    if retention_stat and retention_stat.get('total_6m', 0) > 0:
-        retention_rate = round((retention_stat['retained_6m'] / retention_stat['total_6m']) * 100, 1)
+    if retention_stat and (retention_stat.get('total_6m') or 0) > 0:
+        ret_6m = retention_stat.get('retained_6m') or 0
+        retention_rate = round((ret_6m / retention_stat['total_6m']) * 100, 1)
 
     # Trainees under this provider
     trainees = query_db(

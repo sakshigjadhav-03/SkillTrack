@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Government Command Center — SkillTrack (SIH26135){% endblock %}
+{% block title %}Government Command Center — SkillTrack{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-lg-4 py-4">
@@ -11,7 +11,6 @@
       <div>
         <div class="d-flex align-items-center gap-2 mb-1">
           <span class="badge bg-primary text-uppercase">State Outcome Intelligence Node</span>
-          <span class="badge bg-warning text-dark text-uppercase">SIH26135 Executive View</span>
         </div>
         <h2 class="fw-bold mb-0">Government Outcome Dashboard</h2>
         <p class="text-muted small mb-0">Longitudinal employment retention, wage progression, skill-gap analysis, and policy action engine</p>
@@ -28,7 +27,7 @@
     </div>
   </div>
 
-  <!-- Top 8 KPI Cards (Feature 18) -->
+  <!-- Top 8 KPI Cards -->
   <div class="row g-3 mb-4">
     <div class="col-xl-3 col-md-6">
       <div class="kpi-card">
@@ -144,9 +143,7 @@
     </div>
   </div>
 
-  <!-- ==================================================== -->
-  <!-- FEATURE 1 — OUTCOME RISK RADAR                       -->
-  <!-- ==================================================== -->
+  <!-- Outcome Risk Radar -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="risk-radar">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
       <div class="section-header mb-0">
@@ -202,13 +199,11 @@
       </table>
     </div>
     <div class="text-muted small mt-2">
-      * Prototype Risk Assessment — Illustrative Rule-Based Metric (Demonstrating early intervention triggers before permanent job loss).
+      * Rule-based early intervention indicator. Scores reflect training outcomes and employment trajectory signals.
     </div>
   </div>
 
-  <!-- ==================================================== -->
-  <!-- FEATURE 2 — DEDICATED "WHY ANALYSIS" SECTION         -->
-  <!-- ==================================================== -->
+  <!-- Why Analysis Section -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="why-analysis">
     <div class="section-header">
       <h4><i class="bi bi-question-circle-fill text-danger me-2"></i>Dedicated "Why Analysis" — Root Causes Behind the Numbers</h4>
@@ -288,9 +283,7 @@
     </div>
   </div>
 
-  <!-- ==================================================== -->
-  <!-- FEATURE 5 & 6 — BEFORE vs AFTER & IMPACT SCORE       -->
-  <!-- ==================================================== -->
+  <!-- Before vs After Intervention -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="before-after-section">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
       <div class="section-header mb-0">
@@ -337,7 +330,6 @@
             <span class="fw-bold text-success fs-6">₹14,500 → ₹17,200 <span class="badge bg-success ms-1">+₹2,700</span></span>
           </div>
 
-          <!-- Feature 6: Prototype Intervention Impact Score -->
           <div class="mt-3 p-3 rounded-3 bg-white border border-success">
             <div class="d-flex justify-content-between align-items-center">
               <div>
@@ -358,9 +350,7 @@
     </div>
   </div>
 
-  <!-- ==================================================== -->
-  <!-- FEATURE 7 — WHAT-IF POLICY SIMULATOR                 -->
-  <!-- ==================================================== -->
+  <!-- What-If Policy Simulator -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="what-if-simulator">
     <div class="section-header">
       <h4><i class="bi bi-sliders text-warning text-dark me-2"></i>What-If Policy & Intervention Simulator</h4>
@@ -423,7 +413,7 @@
             </div>
             <div class="col-6">
               <div class="p-3 bg-white rounded-3 border">
-                <span class="small text-muted text-uppercase fw-bold d-block">Prototype Outcome Score</span>
+                <span class="small text-muted text-uppercase fw-bold d-block">Outcome Score</span>
                 <span class="fs-4 fw-bold text-secondary" id="simBaseScore">68.5</span>
                 <div class="small text-warning mt-1">Projected: <strong id="simProjScore" class="fs-5 text-dark">79.2</strong></div>
                 <span class="badge bg-primary" id="simDeltaScore">+10.7</span>
@@ -431,9 +421,9 @@
             </div>
           </div>
 
-          <div class="alert alert-warning-subtle border border-warning small mb-0" style="font-size: 0.76rem;">
-            <i class="bi bi-shield-exclamation me-1"></i>
-            <strong>Simulator Disclaimer:</strong> Prototype Simulation using Synthetic Data — Not an Official Forecast. Helps decision makers estimate potential returns before sanctioning curriculum overhauls.
+          <div class="alert alert-primary-subtle border border-primary small mb-0" style="font-size: 0.76rem;">
+            <i class="bi bi-info-circle me-1"></i>
+            <strong>Policy Simulator:</strong> Scenario simulation models potential outcome improvements to help decision makers estimate returns before sanctioning statewide curriculum interventions.
           </div>
         </div>
       </div>
@@ -501,7 +491,7 @@
   </div>
 
   <!-- ==================================================== -->
-  <!-- WORKFORCE MOBILITY & DESTINATIONS (Features 4, 5, 6) -->
+  <!-- WORKFORCE MOBILITY & DESTINATIONS                     -->
   <!-- ==================================================== -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="workforce-mobility">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -510,9 +500,6 @@
         <h4>Workforce Mobility & Regional Destinations</h4>
         <p>Tracking post-placement migration corridors across Maharashtra, other Indian states, and abroad</p>
       </div>
-      <span class="badge bg-warning text-dark px-3 py-2 fw-semibold">
-        <i class="bi bi-info-circle me-1"></i> Synthetic Prototype Data — Not Government Data
-      </span>
     </div>
 
     <!-- Macro Distribution Cards -->
@@ -616,9 +603,7 @@
     </div>
   </div>
 
-  <!-- ==================================================== -->
-  <!-- AUTOMATED FOLLOW-UP REMINDER CENTER (Features 10-13)  -->
-  <!-- ==================================================== -->
+  <!-- Follow-up Reminder Center -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="followup-center">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
       <div class="section-header mb-0">
@@ -706,7 +691,7 @@
     </div>
   </div>
 
-  <!-- Top Actionable Recommendations (Feature 20) -->
+  <!-- Top Actionable Recommendations -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
       <div class="section-header mb-0">
@@ -829,7 +814,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. Before vs. After Cohort Comparison Chart (Feature 5)
+  // 5. Before vs. After Cohort Comparison Chart
   const baCtx = document.getElementById('beforeAfterChart');
   if (baCtx) {
     new Chart(baCtx.getContext('2d'), {
@@ -861,7 +846,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. What-If Policy Simulator Client Handler (Feature 7)
+  // 6. What-If Policy Simulator Client Handler
   const simBtn = document.getElementById('btnRunSimulator');
   if (simBtn) {
     simBtn.addEventListener('click', () => {

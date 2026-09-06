@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS trainees (
     phone VARCHAR(20),
     email VARCHAR(150),
     district_id INTEGER NOT NULL,
+    linkedin_url VARCHAR(255) DEFAULT NULL,
+    preferred_channel VARCHAR(50) DEFAULT 'WhatsApp',
     consent_status VARCHAR(20) DEFAULT 'pending' CHECK (consent_status IN ('pending', 'agreed', 'declined')),
     consent_date TIMESTAMP,
     consent_version VARCHAR(20),
@@ -264,6 +266,41 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     ip_address VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS notification_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trainee_id INTEGER,
+    outcome_id VARCHAR(50),
+    channel VARCHAR(50),
+    recipient VARCHAR(150),
+    message_body TEXT,
+    status VARCHAR(50) DEFAULT 'queued',
+    is_simulated INTEGER DEFAULT 1,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trainee_id) REFERENCES trainees(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS document_verifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trainee_id INTEGER,
+    document_type VARCHAR(100) DEFAULT 'Skill Certificate',
+    certificate_number VARCHAR(100),
+    issuer VARCHAR(150) DEFAULT 'Maharashtra State Skill Authority',
+    verification_status VARCHAR(50) DEFAULT 'verified',
+    verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    notes TEXT,
+    FOREIGN KEY (trainee_id) REFERENCES trainees(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS identity_verifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trainee_id INTEGER,
+    method VARCHAR(100) DEFAULT 'Aadhaar-based verification (Prototype)',
+    verification_token VARCHAR(100) DEFAULT 'DEMO-ID-000123',
+    is_verified INTEGER DEFAULT 1,
+    verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trainee_id) REFERENCES trainees(id) ON DELETE CASCADE
 );
 
 -- Optimization indexes for high-frequency queries

@@ -47,24 +47,44 @@ class FollowupService:
         """
         Returns list of trainees and their active follow-up milestone status.
         """
-        rows = query_db("""
-            SELECT 
-                t.id AS trainee_id,
-                t.outcome_id,
-                t.first_name,
-                t.last_name,
-                t.phone,
-                t.email,
-                t.preferred_channel,
-                t.current_employment_status,
-                c.course_name,
-                tr.completion_date
-            FROM trainees t
-            LEFT JOIN training_records tr ON t.id = tr.trainee_id
-            LEFT JOIN courses c ON tr.course_id = c.id
-            ORDER BY t.id ASC
-            LIMIT 15
-        """)
+        try:
+            rows = query_db("""
+                SELECT 
+                    t.id AS trainee_id,
+                    t.outcome_id,
+                    t.first_name,
+                    t.last_name,
+                    t.phone,
+                    t.email,
+                    COALESCE(t.preferred_channel, 'WhatsApp') AS preferred_channel,
+                    t.current_employment_status,
+                    c.course_name,
+                    tr.completion_date
+                FROM trainees t
+                LEFT JOIN training_records tr ON t.id = tr.trainee_id
+                LEFT JOIN courses c ON tr.course_id = c.id
+                ORDER BY t.id ASC
+                LIMIT 15
+            """)
+        except Exception:
+            rows = query_db("""
+                SELECT 
+                    t.id AS trainee_id,
+                    t.outcome_id,
+                    t.first_name,
+                    t.last_name,
+                    t.phone,
+                    t.email,
+                    'WhatsApp' AS preferred_channel,
+                    t.current_employment_status,
+                    c.course_name,
+                    tr.completion_date
+                FROM trainees t
+                LEFT JOIN training_records tr ON t.id = tr.trainee_id
+                LEFT JOIN courses c ON tr.course_id = c.id
+                ORDER BY t.id ASC
+                LIMIT 15
+            """)
 
         directory = []
         today = date.today().strftime("%Y-%m-%d")

@@ -138,6 +138,8 @@ CREATE TABLE IF NOT EXISTS employment_records (
     employment_type VARCHAR(50) DEFAULT 'Full-time' CHECK (employment_type IN ('Full-time', 'Part-time', 'Contract')),
     joining_date DATE NOT NULL,
     salary_monthly REAL NOT NULL,
+    latitude REAL DEFAULT NULL,
+    longitude REAL DEFAULT NULL,
     location_district_id INTEGER,
     skills_used_text TEXT,
     is_active INTEGER DEFAULT 1,
@@ -163,6 +165,18 @@ CREATE TABLE IF NOT EXISTS followups (
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (trainee_id) REFERENCES trainees(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS apprenticeships (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trainee_id INTEGER NOT NULL,
+    employer_id INTEGER,
+    start_date DATE NOT NULL,
+    end_date DATE,
+    converted_to_regular_job INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trainee_id) REFERENCES trainees(id) ON DELETE CASCADE,
+    FOREIGN KEY (employer_id) REFERENCES employers(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS employer_verifications (

@@ -1,0 +1,15 @@
+﻿services:
+  - type: web
+    name: skilltrack
+    runtime: python
+    buildCommand: "pip install -r requirements.txt && python database/init_db.py"
+    startCommand: "gunicorn run:app"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "False"
+      - key: USE_SQLITE
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true

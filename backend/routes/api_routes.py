@@ -187,3 +187,10 @@ def get_mobility_metrics():
     res = MobilityService.get_mobility_metrics()
     return jsonify({'success': True, 'mobility': res})
 
+@api_bp.route('/mobility/world')
+def get_mobility_world():
+    """Return global employment records with latitude/longitude for map visualization."""
+    from backend.services.mobility_service import MobilityService
+    data = MobilityService.get_global_employment_geo()
+    return jsonify({'success': True, 'data': data})
+

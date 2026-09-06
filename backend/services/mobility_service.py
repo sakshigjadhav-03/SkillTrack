@@ -57,3 +57,29 @@ class MobilityService:
             'top_international': top_international,
             'corridors': corridors
         }
+
+    @classmethod
+    def get_global_employment_geo(cls) -> List[Dict[str, Any]]:
+        """Return list of employment records with geo coordinates for world map.
+        Each item contains outcome_id, employer_name, job_role, salary_monthly, lat, lon.
+        """
+        from backend.database import query_db
+        rows = query_db(
+            """
+            SELECT er.latitude, er.longitude, er.employer_name, er.job_role, er.salary_monthly, t.outcome_id
+            FROM employment_records er
+            JOIN trainees t ON er.trainee_id = t.id
+            WHERE er.latitude IS NOT NULL AND er.longitude IS NOT NULL
+            """
+        )
+        result = []
+        for row in rows:
+            result.append({
+                "lat": row["latitude"],
+                "lon": row["longitude"],
+                "employer_name": row["employer_name"],
+                "job_role": row["job_role"],
+                "salary_monthly": row["salary_monthly"],
+                "outcome_id": row["outcome_id"]
+            })
+        return result

@@ -349,9 +349,17 @@ def update_preferences():
     """Updates trainee preferred communication channel and consent."""
     trainee_id = session.get('trainee_id')
     preferred = request.form.get('preferred_channel', 'WhatsApp + Email')
+    # Extract and normalize LinkedIn URL
     linkedin_url = request.form.get('linkedin_url', '').strip()
+    if linkedin_url:
+        if not (linkedin_url.startswith('http://') or linkedin_url.startswith('https://')):
+            linkedin_url = 'https://' + linkedin_url
+        if 'linkedin.com/' not in linkedin_url.lower():
+            flash('Please provide a valid LinkedIn URL.', 'warning')
+            return redirect(url_for('trainee.dashboard'))
+    # Communication consent flag
     comm_consent = 1 if request.form.get('communication_consent') else 0
-
+    
     execute_db(
         "UPDATE trainees SET preferred_channel = %s, communication_consent = %s, linkedin_url = %s WHERE id = %s",
         (preferred, comm_consent, linkedin_url, trainee_id)

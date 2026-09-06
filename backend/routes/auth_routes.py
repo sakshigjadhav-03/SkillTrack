@@ -100,11 +100,14 @@ def register():
         phone = request.form.get('phone', '').strip()
         linkedin_url = request.form.get('linkedin_url', '').strip()
 
-        # Validate LinkedIn URL if provided
-        if linkedin_url and not ('linkedin.com/' in linkedin_url.lower()):
-            flash('Please provide a valid LinkedIn URL (e.g. https://www.linkedin.com/in/username).', 'warning')
-            districts = query_db("SELECT id, name FROM districts ORDER BY name")
-            return render_template('register.html', districts=districts)
+        # Normalize and validate LinkedIn URL
+        if linkedin_url:
+            if not linkedin_url.startswith('http'):
+                linkedin_url = 'https://' + linkedin_url
+            if 'linkedin.com/' not in linkedin_url.lower():
+                flash('Please provide a valid LinkedIn URL.', 'warning')
+                districts = query_db("SELECT id, name FROM districts ORDER BY name")
+                return render_template('register.html', districts=districts)
 
         if not username or not email or not password or not first_name:
             flash('Please fill in all required fields.', 'warning')

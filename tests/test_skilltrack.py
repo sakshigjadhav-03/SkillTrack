@@ -183,6 +183,13 @@ class SkillTrackTestCase(unittest.TestCase):
         self.assertEqual(res_mob.status_code, 200)
         self.assertTrue(res_mob.json['success'])
         self.assertEqual(res_mob.json['mobility']['distribution']['maharashtra_pct'], 62.0)
+        # Test global world map endpoint
+        res_world = self.client.get('/api/mobility/world')
+        self.assertEqual(res_world.status_code, 200)
+        self.assertTrue(res_world.json['success'])
+        self.assertIn('data', res_world.json)
+        # Ensure at least one record contains latitude and longitude
+        self.assertTrue(any(item.get('lat') is not None and item.get('lon') is not None for item in res_world.json['data']))
 
         # Test follow-up engine simulation endpoint
         res_fu = self.client.post('/api/followup/run-engine')

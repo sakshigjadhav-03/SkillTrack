@@ -47,13 +47,23 @@ def create_app(config_class=Config):
     def index():
         return render_template('index.html')
 
-    # Error Handlers
+    # Health Check Endpoint for Cloud Monitoring
+    @app.route('/health')
+    def health_check():
+        return {
+            "status": "ok",
+            "app": "SkillTrack",
+            "service": "Longitudinal Skilling Outcomes Engine",
+            "sih_code": "SIH26135"
+        }, 200
+
+    # Friendly Error Handlers (No raw tracebacks to judges)
     @app.errorhandler(404)
     def page_not_found(e):
-        return render_template('base.html', error_message="Page Not Found (404)"), 404
+        return render_template('errors/404.html'), 404
 
     @app.errorhandler(500)
     def internal_server_error(e):
-        return render_template('base.html', error_message="Internal Server Error (500)"), 500
+        return render_template('errors/500.html'), 500
 
     return app

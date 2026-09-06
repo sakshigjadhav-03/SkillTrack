@@ -270,6 +270,13 @@ def map_view():
     districts = query_db("SELECT * FROM districts ORDER BY name ASC")
     return render_template('government/map_view.html', districts=districts)
 
+@gov_bp.route('/world-map')
+@login_required
+@role_required('government', 'admin')
+def world_map_view():
+    """Global employment map page showing markers for worldwide employment records."""
+    return render_template('government/world_map.html')
+
 
 @gov_bp.route('/skill-gaps')
 @login_required

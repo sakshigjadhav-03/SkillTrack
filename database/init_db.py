@@ -193,9 +193,9 @@ def init_database():
     execute_db(
         """
         INSERT INTO employment_records (
-            trainee_id, employer_id, employer_name, job_role, employment_type, joining_date, salary_monthly, location_district_id, skills_used_text
+            trainee_id, employer_id, employer_name, job_role, employment_type, joining_date, salary_monthly, location_district_id, skills_used_text, latitude, longitude
         ) VALUES (
-            1, 1, 'TCS BPS Services', 'Junior Data Operations Executive', 'Full-time', '2023-09-01', 20000.0, 2, 'MS Excel, ERP data entry, verification, email drafting'
+            1, 1, 'TCS BPS Services', 'Junior Data Operations Executive', 'Full-time', '2023-09-01', 20000.0, 2, 'MS Excel, ERP data entry, verification, email drafting', 18.5204, 73.8567
         )
         """
     )
@@ -297,13 +297,24 @@ def init_database():
 
         if emp_status == 'employed':
             eid = ((i - 2) % 5) + 1
+            demo_coords = [
+                (18.5204, 73.8567), # Pune
+                (19.0760, 72.8777), # Mumbai
+                (19.9975, 73.7898), # Nashik
+                (21.1458, 79.0882), # Nagpur
+                (12.9716, 77.5946), # Bengaluru (Interstate)
+                (28.6139, 77.2090), # Delhi (Interstate)
+                (25.2048, 55.2708), # Dubai (International)
+                (40.7128, -74.0060) # New York (International)
+            ]
+            c_lat, c_lon = demo_coords[(i - 2) % len(demo_coords)]
             execute_db(
                 """
                 INSERT INTO employment_records (
-                    trainee_id, employer_id, employer_name, job_role, employment_type, joining_date, salary_monthly, location_district_id
-                ) VALUES (%s, %s, 'Partner Employer Pvt Ltd', 'Associate Operations Executive', 'Full-time', '2023-09-15', %s, %s)
+                    trainee_id, employer_id, employer_name, job_role, employment_type, joining_date, salary_monthly, location_district_id, latitude, longitude
+                ) VALUES (%s, %s, 'Partner Employer Pvt Ltd', 'Associate Operations Executive', 'Full-time', '2023-09-15', %s, %s, %s, %s)
                 """,
-                (i, eid, base_sal + 3000, did)
+                (i, eid, base_sal + 3000, did, c_lat, c_lon)
             )
             # Add follow-ups
             execute_db(

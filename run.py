@@ -7,32 +7,35 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT_DIR))
 
-# Auto-detect and switch to .venv if running outside the virtual environment
-venv_python = ROOT_DIR / '.venv' / 'Scripts' / 'python.exe'
-if venv_python.exists() and Path(sys.executable).resolve() != venv_python.resolve():
-    print(f"[SkillTrack] Automatically activating virtual environment: {venv_python}")
-    sys.exit(subprocess.call([str(venv_python)] + sys.argv))
-
-# Now import project dependencies
+# Import project dependencies
 from backend.config import Config
 from backend.app import create_app
 from database.init_db import init_database
 
-def main():
-    """Main launcher script for SkillTrack."""
-    # Ensure database is initialized
+def ensure_database():
+    """Ensures database is initialized with tables and synthetic demo data on container start."""
     db_file = Path(Config.SQLITE_DB_PATH)
     if Config.USE_SQLITE and (not db_file.exists() or db_file.stat().st_size == 0):
-        print("[SkillTrack Launcher] Database file not found. Auto-initializing with synthetic demo data...")
+        print("[SkillTrack] SQLite database not found or empty. Auto-initializing with synthetic demo data...")
         init_database()
 
-    app = create_app()
-    print("=" * 65)
-    print("  SkillTrack: From Training to Sustainable Employment (SIH26135)")
-    print(f"  Starting local server at http://127.0.0.1:{Config.PORT}")
-    print("  Synthetic Prototype Data -- Not Government Data")
-    print("=" * 65)
-    app.run(host='127.0.0.1', port=Config.PORT, debug=Config.DEBUG)
+# Initialize DB if necessary and create WSGI application instance
+ensure_database()
+app = create_app()
 
 if __name__ == '__main__':
-    main()
+    # Auto-detect and switch to .venv only for direct local Windows python execution
+    if os.name == 'nt':
+        venv_python = ROOT_DIR / '.venv' / 'Scripts' / 'python.exe'
+        if venv_python.exists() and Path(sys.executable).resolve() != venv_python.resolve():
+            print(f"[SkillTrack] Activating local virtual environment: {venv_python}")
+            sys.exit(subprocess.call([str(venv_python)] + sys.argv))
+
+    port = int(os.environ.get('PORT', Config.PORT))
+    host = os.environ.get('HOST', '0.0.0.0')
+    print("=" * 65)
+    print("  SkillTrack: From Training to Sustainable Employment (SIH26135)")
+    print(f"  Starting web server at http://{host}:{port}")
+    print("  Synthetic Prototype Data -- Not Government Data")
+    print("=" * 65)
+    app.run(host=host, port=port, debug=Config.DEBUG)

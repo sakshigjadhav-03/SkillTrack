@@ -34,3 +34,6 @@ database/*.sqlite3
 .vscode/
 .idea/
 *.swp
+.DS_Store
+node_modules/
+*.log

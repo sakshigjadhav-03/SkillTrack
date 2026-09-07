@@ -39,23 +39,8 @@
       {% else %}
         <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-sm py-1 px-2 text-dark fw-bold" data-i18n="auto_2">{{ 'Login' }}</a>
       {% endif %}
-        </ul>
-      </div>
     </div>
   </header>
-<header class="desktop-top-bar d-none d-lg-flex align-items-center justify-content-end px-3 py-2 bg-light">
-  <!-- Language Selector for desktop -->
-  <div class="dropdown me-3">
-    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdownDesktop" data-bs-toggle="dropdown" aria-expanded="false">
-      <span id="currentLangDesktop" data-i18n="auto_7">{{ 'English' }}</span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="langDropdownDesktop">
-      <li><a class="dropdown-item lang-option" href="#" data-lang="en" data-i18n="auto_8">{{ 'English' }}</a></li>
-      <li><a class="dropdown-item lang-option" href="#" data-lang="hi" data-i18n="auto_9">{{ 'हिंदी' }}</a></li>
-      <li><a class="dropdown-item lang-option" href="#" data-lang="mr" data-i18n="auto_10">{{ 'मराठी' }}</a></li>
-    </ul>
-  </div>
-</header>
 
   <!-- Fixed Left Sidebar -->
   <aside class="app-sidebar sidebar" id="appSidebar">
@@ -69,7 +54,7 @@
     <!-- Language Selector in Sidebar -->
     <div class="dropdown ms-2 mb-3">
       <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdownSidebar" data-bs-toggle="dropdown" aria-expanded="false">
-        <span id="currentLangSidebar" data-i18n="auto_12">{{ 'English' }}</span>
+        <span id="currentLang" data-i18n="auto_12">{{ 'English' }}</span>
       </button>
       <ul class="dropdown-menu" aria-labelledby="langDropdownSidebar">
         <li><a class="dropdown-item lang-option" href="#" data-lang="en" data-i18n="auto_13">{{ 'English' }}</a></li>

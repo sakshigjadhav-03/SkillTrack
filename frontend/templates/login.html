@@ -11,17 +11,17 @@
           <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-2">
             <i class="bi bi-shield-lock fs-2"></i>
           </div>
-          <h4 class="fw-bold mb-1">Sign In to SkillTrack</h4>
-          <p class="text-muted small">Select your role or enter credentials to access your portal</p>
+          <h4 class="fw-bold mb-1" data-i18n="auto_89">{{ 'Sign In to SkillTrack' }}</h4>
+          <p class="text-muted small" data-i18n="auto_90">{{ 'Select your role or enter credentials to access your portal' }}</p>
         </div>
 
         <form action="{{ url_for('auth.login') }}" method="POST">
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Registered Email Address</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_91">{{ 'Registered Email Address' }}</label>
             <input type="email" name="email" class="form-control" placeholder="name@domain.com" required>
           </div>
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Password</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_92">{{ 'Password' }}</label>
             <input type="password" name="password" class="form-control" placeholder="••••••••" required>
           </div>
           
@@ -31,39 +31,37 @@
         </form>
 
         <div class="d-flex justify-content-between small text-muted mb-4">
-          <span>New trainee? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-semibold">Register Profile</a></span>
-          <span>Hiring enterprise? <a href="{{ url_for('auth.register_employer') }}" class="text-decoration-none fw-semibold text-success">Empanel Company</a></span>
+          <span>New trainee? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-semibold" data-i18n="auto_93">{{ 'Register Profile' }}</a></span>
+          <span>Hiring enterprise? <a href="{{ url_for('auth.register_employer') }}" class="text-decoration-none fw-semibold text-success" data-i18n="auto_94">{{ 'Empanel Company' }}</a></span>
         </div>
 
         <!-- 1-Click Demo Logins for Hackathon Evaluators -->
         <div class="border-top pt-3">
-          <div class="text-uppercase small fw-bold text-muted mb-2 text-center" style="font-size: 0.75rem;">
-            ⚡ 1-Click Evaluator Demo Access
-          </div>
+          <div class="text-uppercase small fw-bold text-muted mb-2 text-center" style="font-size: 0.75rem;" data-i18n="auto_95">{{ '⚡ 1-Click Evaluator Demo Access' }}</div>
           <form action="{{ url_for('auth.login') }}" method="POST" class="d-grid gap-2">
             <button type="submit" name="quick_role" value="trainee" class="btn btn-outline-primary btn-sm text-start d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-person me-2"></i><strong>Trainee Demo</strong></span>
-              <span class="badge bg-primary">ST-MH-000123</span>
+              <span><i class="bi bi-person me-2"></i><strong data-i18n="auto_96">{{ 'Trainee Demo' }}</strong></span>
+              <span class="badge bg-primary" data-i18n="auto_97">{{ 'ST-MH-000123' }}</span>
             </button>
             <button type="submit" name="quick_role" value="employer" class="btn btn-outline-success btn-sm text-start d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-building-check me-2"></i><strong>Employer: TCS BPS</strong></span>
-              <span class="badge bg-success">TCS Demo</span>
+              <span><i class="bi bi-building-check me-2"></i><strong data-i18n="auto_98">{{ 'Employer: TCS BPS' }}</strong></span>
+              <span class="badge bg-success" data-i18n="auto_99">{{ 'TCS Demo' }}</span>
             </button>
             <button type="submit" name="quick_email" value="hr@infosys-bpm.in" class="btn btn-outline-success btn-sm text-start d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-building me-2"></i><strong>Employer: Infosys BPM</strong></span>
-              <span class="badge bg-success-subtle text-success border">Infosys Demo</span>
+              <span><i class="bi bi-building me-2"></i><strong data-i18n="auto_100">{{ 'Employer: Infosys BPM' }}</strong></span>
+              <span class="badge bg-success-subtle text-success border" data-i18n="auto_101">{{ 'Infosys Demo' }}</span>
             </button>
             <button type="submit" name="quick_email" value="jobs@tatamotors-demo.in" class="btn btn-outline-success btn-sm text-start d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-truck me-2"></i><strong>Employer: Tata Motors</strong></span>
-              <span class="badge bg-success-subtle text-success border">Tata Motors Demo</span>
+              <span><i class="bi bi-truck me-2"></i><strong data-i18n="auto_102">{{ 'Employer: Tata Motors' }}</strong></span>
+              <span class="badge bg-success-subtle text-success border" data-i18n="auto_103">{{ 'Tata Motors Demo' }}</span>
             </button>
             <button type="submit" name="quick_role" value="provider" class="btn btn-outline-info btn-sm text-start d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-mortarboard me-2"></i><strong>Provider Demo</strong></span>
-              <span class="badge bg-info text-dark">Pune Center</span>
+              <span><i class="bi bi-mortarboard me-2"></i><strong data-i18n="auto_104">{{ 'Provider Demo' }}</strong></span>
+              <span class="badge bg-info text-dark" data-i18n="auto_105">{{ 'Pune Center' }}</span>
             </button>
             <button type="submit" name="quick_role" value="government" class="btn btn-outline-warning btn-sm text-dark text-start d-flex justify-content-between align-items-center">
-              <span><i class="bi bi-shield-shaded me-2"></i><strong>Government Admin</strong></span>
-              <span class="badge bg-warning text-dark">Full Access</span>
+              <span><i class="bi bi-shield-shaded me-2"></i><strong data-i18n="auto_106">{{ 'Government Admin' }}</strong></span>
+              <span class="badge bg-warning text-dark" data-i18n="auto_107">{{ 'Full Access' }}</span>
             </button>
           </form>
         </div>

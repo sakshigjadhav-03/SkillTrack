@@ -43,16 +43,14 @@
 
       <div class="col-lg-5 text-lg-end">
         <div class="p-3 rounded-3 border bg-light d-inline-block text-start text-lg-end w-100">
-          <span class="text-muted small text-uppercase fw-bold d-block mb-1">Permanent Outcome ID</span>
+          <span class="text-muted small text-uppercase fw-bold d-block mb-1" data-i18n="auto_480">{{ 'Permanent Outcome ID' }}</span>
           <div class="d-flex align-items-center justify-content-lg-end gap-2">
             <span class="outcome-id-pill fs-5">{{ trainee.outcome_id }}</span>
             <button class="btn btn-outline-primary btn-sm btn-copy-outcome-id" data-outcome-id="{{ trainee.outcome_id }}">
               <i class="bi bi-clipboard"></i> Copy
             </button>
           </div>
-          <div class="text-muted" style="font-size: 0.75rem; margin-top: 4px;">
-            Single ID linking training, certification, employer verification & outcomes.
-          </div>
+          <div class="text-muted" style="font-size: 0.75rem; margin-top: 4px;" data-i18n="auto_481">{{ 'Single ID linking training, certification, employer verification & outcomes.' }}</div>
         </div>
       </div>
     </div>
@@ -66,8 +64,8 @@
       <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <div class="section-header mb-0">
-            <h4>Longitudinal Outcome Timeline</h4>
-            <p>Milestone progress from enrollment through sustained multi-year employment</p>
+            <h4 data-i18n="auto_482">{{ 'Longitudinal Outcome Timeline' }}</h4>
+            <p data-i18n="auto_483">{{ 'Milestone progress from enrollment through sustained multi-year employment' }}</p>
           </div>
           <a href="{{ url_for('trainee.followup') }}" class="btn btn-primary btn-sm fw-semibold">
             <i class="bi bi-plus-circle me-1"></i> Update Milestone
@@ -103,19 +101,19 @@
       {% if followups %}
       <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
         <div class="section-header">
-          <h4>Salary & Career Progression</h4>
-          <p>Longitudinal wage trajectory tracked across post-training check-ins</p>
+          <h4 data-i18n="auto_484">{{ 'Salary & Career Progression' }}</h4>
+          <p data-i18n="auto_485">{{ 'Longitudinal wage trajectory tracked across post-training check-ins' }}</p>
         </div>
 
         <div class="table-responsive">
           <table class="table custom-table table-bordered mb-0">
             <thead>
               <tr>
-                <th>Milestone</th>
-                <th>Status</th>
-                <th>Monthly Salary</th>
-                <th>Salary Growth</th>
-                <th>Retention State</th>
+                <th data-i18n="auto_486">{{ 'Milestone' }}</th>
+                <th data-i18n="auto_487">{{ 'Status' }}</th>
+                <th data-i18n="auto_488">{{ 'Monthly Salary' }}</th>
+                <th data-i18n="auto_489">{{ 'Salary Growth' }}</th>
+                <th data-i18n="auto_490">{{ 'Retention State' }}</th>
               </tr>
             </thead>
             <tbody>
@@ -129,23 +127,23 @@
                     {% if f.current_salary %}
                       <strong>₹{{ "{:,.0f}".format(f.current_salary) }}</strong>
                     {% else %}
-                      <span class="text-muted">N/A</span>
+                      <span class="text-muted" data-i18n="auto_491">{{ 'N/A' }}</span>
                     {% endif %}
                   </td>
                   <td>
                     {% if f.salary_growth_pct > 0 %}
                       <span class="text-success fw-bold"><i class="bi bi-arrow-up-right"></i> +{{ f.salary_growth_pct }}%</span>
                     {% else %}
-                      <span class="text-muted">Baseline</span>
+                      <span class="text-muted" data-i18n="auto_492">{{ 'Baseline' }}</span>
                     {% endif %}
                   </td>
                   <td>
                     {% if f.retention_status == 'retained' %}
-                      <span class="badge bg-success-subtle text-success border border-success-subtle">Retained</span>
+                      <span class="badge bg-success-subtle text-success border border-success-subtle" data-i18n="auto_493">{{ 'Retained' }}</span>
                     {% elif f.retention_status == 'at_risk' %}
-                      <span class="badge bg-warning-subtle text-warning border border-warning-subtle">At Risk</span>
+                      <span class="badge bg-warning-subtle text-warning border border-warning-subtle" data-i18n="auto_494">{{ 'At Risk' }}</span>
                     {% else %}
-                      <span class="badge bg-secondary-subtle text-secondary border">Not Active</span>
+                      <span class="badge bg-secondary-subtle text-secondary border" data-i18n="auto_495">{{ 'Not Active' }}</span>
                     {% endif %}
                   </td>
                 </tr>
@@ -163,15 +161,15 @@
       
       <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
         <div class="section-header">
-          <h4>Skill Relevance Engine</h4>
-          <p>TF-IDF & Cosine Similarity analysis between training and workplace requirements</p>
+          <h4 data-i18n="auto_496">{{ 'Skill Relevance Engine' }}</h4>
+          <p data-i18n="auto_497">{{ 'TF-IDF & Cosine Similarity analysis between training and workplace requirements' }}</p>
         </div>
 
         <div class="text-center my-3">
           <div class="display-4 fw-extrabold text-primary mb-1">
             {{ relevance.relevance_percentage }}%
           </div>
-          <div class="small fw-semibold text-muted text-uppercase">Training → Job Relevance Score</div>
+          <div class="small fw-semibold text-muted text-uppercase" data-i18n="auto_498">{{ 'Training → Job Relevance Score' }}</div>
           <div class="progress mt-2" style="height: 8px;">
             <div class="progress-bar bg-primary" role="progressbar" style="width: {{ relevance.relevance_percentage }}%"></div>
           </div>
@@ -199,38 +197,36 @@
               </span>
             {% endfor %}
           </div>
-          <div class="text-muted mt-2" style="font-size: 0.75rem;">
-            * Identified from employer validation and job workflow feedback.
-          </div>
+          <div class="text-muted mt-2" style="font-size: 0.75rem;" data-i18n="auto_499">{{ '* Identified from employer validation and job workflow feedback.' }}</div>
         </div>
       </div>
 
       {% if feedback %}
       <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
         <div class="section-header">
-          <h4>Employer Feedback</h4>
+          <h4 data-i18n="auto_500">{{ 'Employer Feedback' }}</h4>
           <p>6-Pillar evaluation from {{ feedback.company_name }}</p>
         </div>
 
         <div class="small mb-3">
           <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted">Technical Skills:</span>
+            <span class="text-muted" data-i18n="auto_501">{{ 'Technical Skills:' }}</span>
             <strong>{{ "★" * feedback.technical_skills_rating }}{{ "☆" * (5 - feedback.technical_skills_rating) }} ({{ feedback.technical_skills_rating }}/5)</strong>
           </div>
           <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted">Communication:</span>
+            <span class="text-muted" data-i18n="auto_502">{{ 'Communication:' }}</span>
             <strong>{{ "★" * feedback.communication_rating }}{{ "☆" * (5 - feedback.communication_rating) }} ({{ feedback.communication_rating }}/5)</strong>
           </div>
           <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted">Practical Application:</span>
+            <span class="text-muted" data-i18n="auto_503">{{ 'Practical Application:' }}</span>
             <strong>{{ "★" * feedback.practical_skills_rating }}{{ "☆" * (5 - feedback.practical_skills_rating) }} ({{ feedback.practical_skills_rating }}/5)</strong>
           </div>
           <div class="d-flex justify-content-between py-1 border-bottom">
-            <span class="text-muted">Problem Solving:</span>
+            <span class="text-muted" data-i18n="auto_504">{{ 'Problem Solving:' }}</span>
             <strong>{{ "★" * feedback.problem_solving_rating }}{{ "☆" * (5 - feedback.problem_solving_rating) }} ({{ feedback.problem_solving_rating }}/5)</strong>
           </div>
           <div class="d-flex justify-content-between py-1">
-            <span class="text-muted">Industry Readiness:</span>
+            <span class="text-muted" data-i18n="auto_505">{{ 'Industry Readiness:' }}</span>
             <strong>{{ "★" * feedback.industry_readiness_rating }}{{ "☆" * (5 - feedback.industry_readiness_rating) }} ({{ feedback.industry_readiness_rating }}/5)</strong>
           </div>
         </div>
@@ -246,19 +242,19 @@
       {% if risk_assessment %}
       <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
         <div class="section-header">
-          <h4>Outcome Risk Radar</h4>
-          <p>Early-warning assessment of employment retention & trajectory</p>
+          <h4 data-i18n="auto_506">{{ 'Outcome Risk Radar' }}</h4>
+          <p data-i18n="auto_507">{{ 'Early-warning assessment of employment retention & trajectory' }}</p>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-muted small">Assessed Risk Level:</span>
+          <span class="text-muted small" data-i18n="auto_508">{{ 'Assessed Risk Level:' }}</span>
           <span class="badge bg-{{ risk_assessment.badge_class }} fs-6 px-3 py-1">
             <i class="bi bi-shield-shaded me-1"></i> {{ risk_assessment.risk_level }} RISK
           </span>
         </div>
 
         <div class="small mb-3">
-          <span class="text-muted d-block fw-semibold mb-1">Trajectory Factors:</span>
+          <span class="text-muted d-block fw-semibold mb-1" data-i18n="auto_509">{{ 'Trajectory Factors:' }}</span>
           <ul class="ps-3 mb-0 text-secondary">
             {% for f in risk_assessment.risk_factors %}
               <li>{{ f }}</li>
@@ -278,8 +274,8 @@
 
       <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
         <div class="section-header mb-3">
-          <h4>Digital Trust & Verifications</h4>
-          <p>Decentralized credential & demographic trust layers</p>
+          <h4 data-i18n="auto_510">{{ 'Digital Trust & Verifications' }}</h4>
+          <p data-i18n="auto_511">{{ 'Decentralized credential & demographic trust layers' }}</p>
         </div>
 
         <!-- 1. DigiLocker Certificate Mock -->
@@ -287,9 +283,9 @@
           <div class="d-flex justify-content-between align-items-center mb-1">
             <span class="fw-bold small"><i class="bi bi-file-earmark-check-fill text-primary me-1"></i>DigiLocker Skill Certificate</span>
             {% if trainee.certificate_verified %}
-              <span class="badge bg-success-subtle text-success border border-success">✓ Demo Verified</span>
+              <span class="badge bg-success-subtle text-success border border-success" data-i18n="auto_512">{{ '✓ Demo Verified' }}</span>
             {% else %}
-              <span class="badge bg-secondary-subtle text-secondary border">Pending</span>
+              <span class="badge bg-secondary-subtle text-secondary border" data-i18n="auto_513">{{ 'Pending' }}</span>
             {% endif %}
           </div>
           <div class="text-muted small mb-2" style="font-size: 0.75rem;">
@@ -306,61 +302,51 @@
               <i class="bi bi-check-circle me-1"></i> Verified on {{ trainee.certificate_verified_at or '05 Sep 2026' }} (Pull URI Active)
             </div>
           {% endif %}
-          <div class="text-muted mt-1" style="font-size: 0.68rem;">
-            * DigiLocker Integration — Simulated for Prototype
-          </div>
+          <div class="text-muted mt-1" style="font-size: 0.68rem;" data-i18n="auto_514">{{ '* DigiLocker Integration — Simulated for Prototype' }}</div>
         </div>
 
         <!-- 2. Demo Identity Verification (Aadhaar Concept) -->
         <div class="p-3 rounded-3 border bg-light">
           <div class="d-flex justify-content-between align-items-center mb-1">
             <span class="fw-bold small"><i class="bi bi-person-check-fill text-success me-1"></i>Demographic Identity Verification</span>
-            <span class="badge bg-success-subtle text-success border border-success">✓ Demo Identity Verified</span>
+            <span class="badge bg-success-subtle text-success border border-success" data-i18n="auto_515">{{ '✓ Demo Identity Verified' }}</span>
           </div>
-          <div class="text-muted small mb-1" style="font-size: 0.75rem;">
-            Method: Aadhaar-Based Demographics Match (Prototype Token)
-          </div>
+          <div class="text-muted small mb-1" style="font-size: 0.75rem;" data-i18n="auto_516">{{ 'Method: Aadhaar-Based Demographics Match (Prototype Token)' }}</div>
           <div class="p-1 px-2 bg-white rounded border small font-monospace text-primary mb-1" style="font-size: 0.75rem;">
             Token: {{ trainee.identity_token or 'DEMO-ID-000123' }}
           </div>
-          <div class="text-muted" style="font-size: 0.68rem;">
-            * Zero-Knowledge Token stored. Actual Aadhaar integration requires statutory UIDAI APIs & regulatory compliance.
-          </div>
+          <div class="text-muted" style="font-size: 0.68rem;" data-i18n="auto_517">{{ '* Zero-Knowledge Token stored. Actual Aadhaar integration requires statutory UIDAI APIs & regulatory compliance.' }}</div>
         </div>
       </div>
 
       <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
         <div class="section-header mb-3">
-          <h4>Communication & Privacy</h4>
-          <p>Follow-up notifications channel and data minimization</p>
+          <h4 data-i18n="auto_518">{{ 'Communication & Privacy' }}</h4>
+          <p data-i18n="auto_519">{{ 'Follow-up notifications channel and data minimization' }}</p>
         </div>
 
         <form action="{{ url_for('trainee.update_preferences') }}" method="POST">
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Preferred Follow-Up Channel</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_520">{{ 'Preferred Follow-Up Channel' }}</label>
             <select name="preferred_channel" class="form-select form-select-sm">
-              <option value="WhatsApp + Email" {% if trainee.preferred_channel == 'WhatsApp + Email' %}selected{% endif %}>WhatsApp + Email</option>
-              <option value="WhatsApp Only" {% if trainee.preferred_channel == 'WhatsApp Only' %}selected{% endif %}>WhatsApp Only</option>
-              <option value="Email Only" {% if trainee.preferred_channel == 'Email Only' %}selected{% endif %}>Email Only</option>
-              <option value="SMS" {% if trainee.preferred_channel == 'SMS' %}selected{% endif %}>SMS</option>
+              <option value="WhatsApp + Email" {% if trainee.preferred_channel == 'WhatsApp + Email' %}selected{% endif %} data-i18n="auto_521">{{ 'WhatsApp + Email' }}</option>
+              <option value="WhatsApp Only" {% if trainee.preferred_channel == 'WhatsApp Only' %}selected{% endif %} data-i18n="auto_522">{{ 'WhatsApp Only' }}</option>
+              <option value="Email Only" {% if trainee.preferred_channel == 'Email Only' %}selected{% endif %} data-i18n="auto_523">{{ 'Email Only' }}</option>
+              <option value="SMS" {% if trainee.preferred_channel == 'SMS' %}selected{% endif %} data-i18n="auto_524">{{ 'SMS' }}</option>
             </select>
           </div>
 
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Public LinkedIn Profile URL</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_525">{{ 'Public LinkedIn Profile URL' }}</label>
             <input type="url" name="linkedin_url" value="{{ trainee.linkedin_url or '' }}" class="form-control form-control-sm" placeholder="https://www.linkedin.com/in/username">
           </div>
 
           <div class="form-check mb-3 small">
             <input class="form-check-input" type="checkbox" name="communication_consent" id="commConsent" checked>
-            <label class="form-check-label text-muted" for="commConsent">
-              I consent to receive milestone reminders on my selected channel.
-            </label>
+            <label class="form-check-label text-muted" for="commConsent" data-i18n="auto_526">{{ 'I consent to receive milestone reminders on my selected channel.' }}</label>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold">
-            Save Preferences
-          </button>
+          <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold" data-i18n="auto_527">{{ 'Save Preferences' }}</button>
         </form>
       </div>
 

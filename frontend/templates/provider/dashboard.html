@@ -20,9 +20,7 @@
         </div>
       </div>
       <div class="text-end">
-        <span class="badge bg-primary-subtle text-primary border px-3 py-2">
-          Affiliated Training Center
-        </span>
+        <span class="badge bg-primary-subtle text-primary border px-3 py-2" data-i18n="auto_436">{{ 'Affiliated Training Center' }}</span>
       </div>
     </div>
   </div>
@@ -31,30 +29,30 @@
   <div class="row g-3 mb-4">
     <div class="col-md-3">
       <div class="kpi-card">
-        <div class="kpi-title">Total Candidates Trained</div>
+        <div class="kpi-title" data-i18n="auto_437">{{ 'Total Candidates Trained' }}</div>
         <div class="kpi-value text-primary">{{ total_trained }}</div>
-        <div class="kpi-subtext">Across accredited vocational curricula</div>
+        <div class="kpi-subtext" data-i18n="auto_438">{{ 'Across accredited vocational curricula' }}</div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="kpi-card">
-        <div class="kpi-title">Employment Conversion</div>
+        <div class="kpi-title" data-i18n="auto_439">{{ 'Employment Conversion' }}</div>
         <div class="kpi-value text-success">{{ placement_rate }}%</div>
-        <div class="kpi-subtext">Wage & self-employment combined</div>
+        <div class="kpi-subtext" data-i18n="auto_440">{{ 'Wage & self-employment combined' }}</div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="kpi-card">
-        <div class="kpi-title">6-Month Retention Rate</div>
+        <div class="kpi-title" data-i18n="auto_441">{{ '6-Month Retention Rate' }}</div>
         <div class="kpi-value text-info">{{ retention_rate }}%</div>
-        <div class="kpi-subtext">Sustained post-placement work</div>
+        <div class="kpi-subtext" data-i18n="auto_442">{{ 'Sustained post-placement work' }}</div>
       </div>
     </div>
     <div class="col-md-3">
       <div class="kpi-card">
-        <div class="kpi-title">Prototype Outcome Score</div>
-        <div class="kpi-value text-warning">{{ outcome_score.outcome_score }} <span style="font-size: 1rem; color: #64748b;">/ 100</span></div>
-        <div class="kpi-subtext" style="font-size: 0.72rem;">* Experimental prototype formula</div>
+        <div class="kpi-title" data-i18n="auto_443">{{ 'Prototype Outcome Score' }}</div>
+        <div class="kpi-value text-warning">{{ outcome_score.outcome_score }} <span style="font-size: 1rem; color: #64748b;" data-i18n="auto_444">{{ '/ 100' }}</span></div>
+        <div class="kpi-subtext" style="font-size: 0.72rem;" data-i18n="auto_445">{{ '* Experimental prototype formula' }}</div>
       </div>
     </div>
   </div>
@@ -64,21 +62,21 @@
     <div class="col-lg-8">
       <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
         <div class="section-header">
-          <h4>Course Outcome Intelligence</h4>
-          <p>Enrolment, certification and active employment conversion rates by course</p>
+          <h4 data-i18n="auto_446">{{ 'Course Outcome Intelligence' }}</h4>
+          <p data-i18n="auto_447">{{ 'Enrolment, certification and active employment conversion rates by course' }}</p>
         </div>
 
         <div class="table-responsive">
           <table class="table custom-table table-bordered mb-0">
             <thead>
               <tr>
-                <th>Code</th>
-                <th>Course Name</th>
-                <th>Sector</th>
-                <th>Trained</th>
-                <th>Certified</th>
-                <th>Placed</th>
-                <th>Placement %</th>
+                <th data-i18n="auto_448">{{ 'Code' }}</th>
+                <th data-i18n="auto_449">{{ 'Course Name' }}</th>
+                <th data-i18n="auto_450">{{ 'Sector' }}</th>
+                <th data-i18n="auto_451">{{ 'Trained' }}</th>
+                <th data-i18n="auto_452">{{ 'Certified' }}</th>
+                <th data-i18n="auto_453">{{ 'Placed' }}</th>
+                <th data-i18n="auto_454">{{ 'Placement %' }}</th>
               </tr>
             </thead>
             <tbody>
@@ -111,8 +109,8 @@
     <div class="col-lg-4">
       <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
         <div class="section-header">
-          <h4>Curriculum Skill Gaps</h4>
-          <p>Top missing workplace skills reported by employers hiring your graduates</p>
+          <h4 data-i18n="auto_455">{{ 'Curriculum Skill Gaps' }}</h4>
+          <p data-i18n="auto_456">{{ 'Top missing workplace skills reported by employers hiring your graduates' }}</p>
         </div>
 
         {% if skill_gaps %}
@@ -129,10 +127,10 @@
           </div>
           <div class="alert alert-warning-subtle border border-warning small mt-3 mb-0">
             <i class="bi bi-info-circle me-1"></i>
-            <strong>Action Alert:</strong> Consider integrating these topics into practical lab sessions before next cohort certification.
+            <strong data-i18n="auto_457">{{ 'Action Alert:' }}</strong> Consider integrating these topics into practical lab sessions before next cohort certification.
           </div>
         {% else %}
-          <p class="text-muted small">No significant skill gaps reported yet.</p>
+          <p class="text-muted small" data-i18n="auto_458">{{ 'No significant skill gaps reported yet.' }}</p>
         {% endif %}
       </div>
     </div>
@@ -141,22 +139,22 @@
   <!-- Trainees Cohort Table -->
   <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
     <div class="section-header">
-      <h4>Enrolled Trainee Cohort Directory</h4>
-      <p>Tracking longitudinal outcomes for graduates under this training provider</p>
+      <h4 data-i18n="auto_459">{{ 'Enrolled Trainee Cohort Directory' }}</h4>
+      <p data-i18n="auto_460">{{ 'Tracking longitudinal outcomes for graduates under this training provider' }}</p>
     </div>
 
     <div class="table-responsive">
       <table class="table custom-table table-bordered mb-0">
         <thead>
           <tr>
-            <th>Outcome ID</th>
-            <th>Candidate Name</th>
-            <th>Course</th>
-            <th>Certified</th>
-            <th>Livelihood Status</th>
-            <th>Risk Radar</th>
-            <th>Employer Verification</th>
-            <th>12M Salary</th>
+            <th data-i18n="auto_461">{{ 'Outcome ID' }}</th>
+            <th data-i18n="auto_462">{{ 'Candidate Name' }}</th>
+            <th data-i18n="auto_463">{{ 'Course' }}</th>
+            <th data-i18n="auto_464">{{ 'Certified' }}</th>
+            <th data-i18n="auto_465">{{ 'Livelihood Status' }}</th>
+            <th data-i18n="auto_466">{{ 'Risk Radar' }}</th>
+            <th data-i18n="auto_467">{{ 'Employer Verification' }}</th>
+            <th data-i18n="auto_468">{{ '12M Salary' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -188,7 +186,7 @@
                 {% if t.verification_status == 'verified' %}
                   <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified ✓</span>
                 {% else %}
-                  <span class="text-muted small">Pending</span>
+                  <span class="text-muted small" data-i18n="auto_469">{{ 'Pending' }}</span>
                 {% endif %}
               </td>
               <td>
@@ -198,7 +196,7 @@
                     <span class="text-success small">(+{{ t.salary_growth_pct }}%)</span>
                   {% endif %}
                 {% else %}
-                  <span class="text-muted small">N/A</span>
+                  <span class="text-muted small" data-i18n="auto_470">{{ 'N/A' }}</span>
                 {% endif %}
               </td>
             </tr>

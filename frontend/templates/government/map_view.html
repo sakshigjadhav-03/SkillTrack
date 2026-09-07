@@ -51,10 +51,10 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div>
         <div class="d-flex align-items-center gap-2 mb-1">
-          <span class="badge bg-primary text-uppercase">Geographic Outcome Mapping</span>
+          <span class="badge bg-primary text-uppercase" data-i18n="auto_369">{{ 'Geographic Outcome Mapping' }}</span>
         </div>
-        <h3 class="fw-bold mb-0">Maharashtra District-Level Outcome Map</h3>
-        <p class="text-muted small mb-0">Interactive Leaflet.js map with OpenStreetMap basemap tracking regional employment and retention</p>
+        <h3 class="fw-bold mb-0" data-i18n="auto_370">{{ 'Maharashtra District-Level Outcome Map' }}</h3>
+        <p class="text-muted small mb-0" data-i18n="auto_371">{{ 'Interactive Leaflet.js map with OpenStreetMap basemap tracking regional employment and retention' }}</p>
       </div>
       <div>
         <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-secondary">
@@ -72,21 +72,21 @@
   <!-- District Summary Table -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
     <div class="section-header">
-      <h4>Maharashtra Regional Cohort Distribution</h4>
-      <p>Regional metrics aggregated across Maharashtra administrative divisions</p>
+      <h4 data-i18n="auto_372">{{ 'Maharashtra Regional Cohort Distribution' }}</h4>
+      <p data-i18n="auto_373">{{ 'Regional metrics aggregated across Maharashtra administrative divisions' }}</p>
     </div>
 
     <div class="table-responsive">
       <table class="table custom-table table-bordered mb-0">
         <thead>
           <tr>
-            <th>District</th>
-            <th>Division</th>
-            <th>Total Trained</th>
-            <th>Employment %</th>
-            <th>Retention %</th>
-            <th>Avg. Salary</th>
-            <th>Top Detected Skill Gaps</th>
+            <th data-i18n="auto_374">{{ 'District' }}</th>
+            <th data-i18n="auto_375">{{ 'Division' }}</th>
+            <th data-i18n="auto_376">{{ 'Total Trained' }}</th>
+            <th data-i18n="auto_377">{{ 'Employment %' }}</th>
+            <th data-i18n="auto_378">{{ 'Retention %' }}</th>
+            <th data-i18n="auto_379">{{ 'Avg. Salary' }}</th>
+            <th data-i18n="auto_380">{{ 'Top Detected Skill Gaps' }}</th>
           </tr>
         </thead>
         <tbody id="districtsTableBody">
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // OpenStreetMap Tile Layer
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | SkillTrack Prototype'
+    attribution: '© <a href="https://www.openstreetmap.org/copyright" data-i18n="auto_381">{{ 'OpenStreetMap' }}</a> contributors | SkillTrack Prototype'
   }).addTo(map);
 
   // Fetch district data from API
@@ -137,23 +137,23 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="custom-popup" style="min-width: 220px;">
               <h6>${d.name} (${d.division})</h6>
               <div class="metric-row">
-                <span class="text-muted">Total Trained:</span>
+                <span class="text-muted" data-i18n="auto_382">{{ 'Total Trained:' }}</span>
                 <strong>${d.total_trained}</strong>
               </div>
               <div class="metric-row">
-                <span class="text-muted">Employment Rate:</span>
+                <span class="text-muted" data-i18n="auto_383">{{ 'Employment Rate:' }}</span>
                 <strong class="text-success">${d.employment_rate}%</strong>
               </div>
               <div class="metric-row">
-                <span class="text-muted">12M Retention:</span>
+                <span class="text-muted" data-i18n="auto_384">{{ '12M Retention:' }}</span>
                 <strong class="text-primary">${d.retention_rate}%</strong>
               </div>
               <div class="metric-row">
-                <span class="text-muted">Average Wage:</span>
+                <span class="text-muted" data-i18n="auto_385">{{ 'Average Wage:' }}</span>
                 <strong>₹${d.avg_salary.toLocaleString()}</strong>
               </div>
               <div class="mt-2">
-                <span class="text-muted small d-block">Top Skill Gaps:</span>
+                <span class="text-muted small d-block" data-i18n="auto_386">{{ 'Top Skill Gaps:' }}</span>
                 <span class="badge bg-warning-subtle text-dark border small mt-1">${d.top_skill_gaps.join(', ')}</span>
               </div>
             </div>

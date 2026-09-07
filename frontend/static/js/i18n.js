@@ -1773,6 +1773,8 @@ const translations = {
     "footer.copyright": "© 2026 SkillTrack. All rights reserved.",
 }
 };
+translations.hi = {...translations.en};
+translations.mr = {...translations.en};
 
 function getCurrentLang() {
   return localStorage.getItem('lang') || 'en';

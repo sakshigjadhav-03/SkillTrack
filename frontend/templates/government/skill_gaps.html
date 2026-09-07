@@ -10,10 +10,10 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div>
         <div class="d-flex align-items-center gap-2 mb-1">
-          <span class="badge bg-primary text-uppercase">NLP Skill Matching Engine</span>
+          <span class="badge bg-primary text-uppercase" data-i18n="auto_394">{{ 'NLP Skill Matching Engine' }}</span>
         </div>
-        <h3 class="fw-bold mb-0">Statewide Skill Gap Analysis & Relevance Engine</h3>
-        <p class="text-muted small mb-0">Powered by TF-IDF Vectorizer and Cosine Similarity comparing vocational curricula against workplace demands</p>
+        <h3 class="fw-bold mb-0" data-i18n="auto_395">{{ 'Statewide Skill Gap Analysis & Relevance Engine' }}</h3>
+        <p class="text-muted small mb-0" data-i18n="auto_396">{{ 'Powered by TF-IDF Vectorizer and Cosine Similarity comparing vocational curricula against workplace demands' }}</p>
       </div>
       <div>
         <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-secondary">
@@ -27,21 +27,21 @@
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
     <div class="section-header">
       <h4><i class="bi bi-cpu text-primary me-2"></i>Live TF-IDF & Cosine Similarity Sandbox</h4>
-      <p>Test real-time semantic alignment between training skills and employer expectations</p>
+      <p data-i18n="auto_397">{{ 'Test real-time semantic alignment between training skills and employer expectations' }}</p>
     </div>
 
     <div class="row g-4">
       <div class="col-lg-6">
         <div class="mb-3">
-          <label class="form-label fw-semibold small">1. Training Curriculum Skills (Taught to Trainee)</label>
-          <textarea id="curriculumInput" class="form-control" rows="3">Basic Excel, Communication, Data Entry, English Typing</textarea>
-          <span class="text-muted small">Comma-separated list of competencies taught by the training institute.</span>
+          <label class="form-label fw-semibold small" data-i18n="auto_398">{{ '1. Training Curriculum Skills (Taught to Trainee)' }}</label>
+          <textarea id="curriculumInput" class="form-control" rows="3" data-i18n="auto_399">{{ 'Basic Excel, Communication, Data Entry, English Typing' }}</textarea>
+          <span class="text-muted small" data-i18n="auto_400">{{ 'Comma-separated list of competencies taught by the training institute.' }}</span>
         </div>
 
         <div class="mb-3">
-          <label class="form-label fw-semibold small">2. Workplace Required Skills (Reported by Employer)</label>
-          <textarea id="workplaceInput" class="form-control" rows="3">Advanced Excel, Data Analysis, Client Communication, Report Automation</textarea>
-          <span class="text-muted small">Actual skill set requested on the job by recruiting enterprises.</span>
+          <label class="form-label fw-semibold small" data-i18n="auto_401">{{ '2. Workplace Required Skills (Reported by Employer)' }}</label>
+          <textarea id="workplaceInput" class="form-control" rows="3" data-i18n="auto_402">{{ 'Advanced Excel, Data Analysis, Client Communication, Report Automation' }}</textarea>
+          <span class="text-muted small" data-i18n="auto_403">{{ 'Actual skill set requested on the job by recruiting enterprises.' }}</span>
         </div>
 
         <button id="btnRunTfidf" class="btn btn-primary px-4 fw-semibold">
@@ -51,11 +51,11 @@
 
       <div class="col-lg-6">
         <div class="p-4 rounded-4 border h-100" style="background-color: #f8fafc;">
-          <h6 class="fw-bold text-dark mb-3">Analysis Results:</h6>
+          <h6 class="fw-bold text-dark mb-3" data-i18n="auto_404">{{ 'Analysis Results:' }}</h6>
 
           <div class="text-center py-2 mb-3">
-            <div class="display-3 fw-bold text-primary" id="relevanceScoreDisplay">78.0%</div>
-            <div class="text-muted small text-uppercase fw-semibold">Training → Job Relevance Score</div>
+            <div class="display-3 fw-bold text-primary" id="relevanceScoreDisplay" data-i18n="auto_405">{{ '78.0%' }}</div>
+            <div class="text-muted small text-uppercase fw-semibold" data-i18n="auto_406">{{ 'Training → Job Relevance Score' }}</div>
             <div class="progress mt-2" style="height: 10px;">
               <div id="relevanceProgressBar" class="progress-bar bg-primary" style="width: 78%"></div>
             </div>
@@ -66,7 +66,7 @@
               <i class="bi bi-check-circle-fill me-1"></i> Matched Competencies:
             </span>
             <div id="matchedSkillsList" class="d-flex flex-wrap gap-1">
-              <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2">✓ Communication</span>
+              <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2" data-i18n="auto_407">{{ '✓ Communication' }}</span>
             </div>
           </div>
 
@@ -75,15 +75,15 @@
               <i class="bi bi-exclamation-triangle-fill me-1"></i> Detected Missing Skills (Skill Gaps):
             </span>
             <div id="missingSkillsList" class="d-flex flex-wrap gap-1">
-              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2">⚠ Advanced Excel</span>
-              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2">⚠ Data Analysis</span>
-              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2">⚠ Report Automation</span>
+              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2" data-i18n="auto_408">{{ '⚠ Advanced Excel' }}</span>
+              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2" data-i18n="auto_409">{{ '⚠ Data Analysis' }}</span>
+              <span class="badge bg-warning-subtle text-danger border border-warning-subtle py-1 px-2" data-i18n="auto_410">{{ '⚠ Report Automation' }}</span>
             </div>
           </div>
 
           <div class="alert alert-info-subtle border border-info small mt-3 mb-0" style="font-size: 0.78rem;">
             <i class="bi bi-info-circle me-1"></i>
-            <strong>Explainability:</strong> Scikit-learn TF-IDF Vectorizer computes token frequency-inverse document frequency weighting, followed by pairwise cosine distance and discrete term overlap ratio.
+            <strong data-i18n="auto_411">{{ 'Explainability:' }}</strong> Scikit-learn TF-IDF Vectorizer computes token frequency-inverse document frequency weighting, followed by pairwise cosine distance and discrete term overlap ratio.
           </div>
         </div>
       </div>
@@ -93,43 +93,43 @@
   <!-- Sectoral Skill Gap Priority Matrix -->
   <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
     <div class="section-header">
-      <h4>Maharashtra Priority Skill Gaps by Sector</h4>
-      <p>Deficits extracted across 500+ employer validation interactions</p>
+      <h4 data-i18n="auto_412">{{ 'Maharashtra Priority Skill Gaps by Sector' }}</h4>
+      <p data-i18n="auto_413">{{ 'Deficits extracted across 500+ employer validation interactions' }}</p>
     </div>
 
     <div class="row g-3">
       <div class="col-md-4">
         <div class="p-3 border rounded-3 h-100">
-          <span class="badge bg-primary mb-2">IT & ITES</span>
-          <h6 class="fw-bold">Data Operations & Back-Office</h6>
+          <span class="badge bg-primary mb-2" data-i18n="auto_414">{{ 'IT & ITES' }}</span>
+          <h6 class="fw-bold" data-i18n="auto_415">{{ 'Data Operations & Back-Office' }}</h6>
           <ul class="small ps-3 text-secondary mb-0">
-            <li><strong>Advanced Excel</strong> (VLOOKUP, Pivot, Dashboards) &bull; 68% frequency</li>
-            <li><strong>Data Analysis</strong> &bull; 45% frequency</li>
-            <li><strong>ERP Software Navigation</strong> &bull; 34% frequency</li>
+            <li><strong data-i18n="auto_416">{{ 'Advanced Excel' }}</strong> (VLOOKUP, Pivot, Dashboards) &bull; 68% frequency</li>
+            <li><strong data-i18n="auto_417">{{ 'Data Analysis' }}</strong> &bull; 45% frequency</li>
+            <li><strong data-i18n="auto_418">{{ 'ERP Software Navigation' }}</strong> &bull; 34% frequency</li>
           </ul>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="p-3 border rounded-3 h-100">
-          <span class="badge bg-success mb-2">Renewable Energy</span>
-          <h6 class="fw-bold">Solar & Power Infrastructure</h6>
+          <span class="badge bg-success mb-2" data-i18n="auto_419">{{ 'Renewable Energy' }}</span>
+          <h6 class="fw-bold" data-i18n="auto_420">{{ 'Solar & Power Infrastructure' }}</h6>
           <ul class="small ps-3 text-secondary mb-0">
-            <li><strong>Solar Inverter Maintenance</strong> &bull; 54% frequency</li>
-            <li><strong>Industrial Electrical Safety</strong> &bull; 41% frequency</li>
-            <li><strong>Battery Management Diagnostics</strong> &bull; 32% frequency</li>
+            <li><strong data-i18n="auto_421">{{ 'Solar Inverter Maintenance' }}</strong> &bull; 54% frequency</li>
+            <li><strong data-i18n="auto_422">{{ 'Industrial Electrical Safety' }}</strong> &bull; 41% frequency</li>
+            <li><strong data-i18n="auto_423">{{ 'Battery Management Diagnostics' }}</strong> &bull; 32% frequency</li>
           </ul>
         </div>
       </div>
 
       <div class="col-md-4">
         <div class="p-3 border rounded-3 h-100">
-          <span class="badge bg-info text-dark mb-2">Retail & Services</span>
-          <h6 class="fw-bold">Sales & Customer Operations</h6>
+          <span class="badge bg-info text-dark mb-2" data-i18n="auto_424">{{ 'Retail & Services' }}</span>
+          <h6 class="fw-bold" data-i18n="auto_425">{{ 'Sales & Customer Operations' }}</h6>
           <ul class="small ps-3 text-secondary mb-0">
-            <li><strong>POS Cashless Systems</strong> &bull; 48% frequency</li>
-            <li><strong>Client Communication & Upselling</strong> &bull; 42% frequency</li>
-            <li><strong>Inventory Stock Audit</strong> &bull; 30% frequency</li>
+            <li><strong data-i18n="auto_426">{{ 'POS Cashless Systems' }}</strong> &bull; 48% frequency</li>
+            <li><strong data-i18n="auto_427">{{ 'Client Communication & Upselling' }}</strong> &bull; 42% frequency</li>
+            <li><strong data-i18n="auto_428">{{ 'Inventory Stock Audit' }}</strong> &bull; 30% frequency</li>
           </ul>
         </div>
       </div>
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update matched skills
         matchedList.innerHTML = '';
         if (r.matched_skills.length === 0) {
-          matchedList.innerHTML = '<span class="text-muted small">No direct match</span>';
+          matchedList.innerHTML = '<span class="text-muted small" data-i18n="auto_429">{{ 'No direct match' }}</span>';
         } else {
           r.matched_skills.forEach(s => {
             const span = document.createElement('span');
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update missing skills
         missingList.innerHTML = '';
         if (r.missing_skills.length === 0) {
-          missingList.innerHTML = '<span class="text-success small">No missing skills detected! Complete coverage.</span>';
+          missingList.innerHTML = '<span class="text-success small" data-i18n="auto_430">{{ 'No missing skills detected! Complete coverage.' }}</span>';
         } else {
           r.missing_skills.forEach(s => {
             const span = document.createElement('span');

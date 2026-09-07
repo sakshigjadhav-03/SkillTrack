@@ -11,48 +11,48 @@
           <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-2">
             <i class="bi bi-person-plus fs-2"></i>
           </div>
-          <h4 class="fw-bold mb-1">Create Trainee Profile</h4>
-          <p class="text-muted small">Register to obtain your permanent SkillTrack Outcome ID</p>
+          <h4 class="fw-bold mb-1" data-i18n="auto_108">{{ 'Create Trainee Profile' }}</h4>
+          <p class="text-muted small" data-i18n="auto_109">{{ 'Register to obtain your permanent SkillTrack Outcome ID' }}</p>
         </div>
 
         <form action="{{ url_for('auth.register') }}" method="POST">
           <div class="row g-3 mb-3">
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">First Name *</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_110">{{ 'First Name *' }}</label>
               <input type="text" name="first_name" class="form-control" placeholder="e.g. Rahul" required>
             </div>
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">Last Name *</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_111">{{ 'Last Name *' }}</label>
               <input type="text" name="last_name" class="form-control" placeholder="e.g. Sharma" required>
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Username *</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_112">{{ 'Username *' }}</label>
             <input type="text" name="username" class="form-control" placeholder="rahul_sharma" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Email Address *</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_113">{{ 'Email Address *' }}</label>
             <input type="email" name="email" class="form-control" placeholder="rahul@example.com" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label small fw-semibold">Password *</label>
+            <label class="form-label small fw-semibold" data-i18n="auto_114">{{ 'Password *' }}</label>
             <input type="password" name="password" class="form-control" placeholder="••••••••" required>
           </div>
 
           <div class="row g-3 mb-3">
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">Gender</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_115">{{ 'Gender' }}</label>
               <select name="gender" class="form-select">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="Male" data-i18n="auto_116">{{ 'Male' }}</option>
+                <option value="Female" data-i18n="auto_117">{{ 'Female' }}</option>
+                <option value="Other" data-i18n="auto_118">{{ 'Other' }}</option>
               </select>
             </div>
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">District (Maharashtra)</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_119">{{ 'District (Maharashtra)' }}</label>
               <select name="district_id" class="form-select">
                 {% for d in districts %}
                   <option value="{{ d.id }}">{{ d.name }}</option>
@@ -63,7 +63,7 @@
 
           <div class="row g-3 mb-4">
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">Mobile Number</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_120">{{ 'Mobile Number' }}</label>
               <input type="tel" name="phone" class="form-control" placeholder="+91 98XXXXXXXX">
             </div>
             <div class="col-md-6">
@@ -78,7 +78,7 @@
         </form>
 
         <div class="text-center small text-muted">
-          Already registered? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-semibold">Sign In</a>
+          Already registered? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-semibold" data-i18n="auto_121">{{ 'Sign In' }}</a>
         </div>
       </div>
     </div>

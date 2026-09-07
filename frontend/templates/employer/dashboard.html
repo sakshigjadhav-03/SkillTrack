@@ -28,8 +28,8 @@
   <!-- Search by Permanent Outcome ID -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
     <div class="section-header">
-      <h4>Look Up Candidate by Unique Outcome ID</h4>
-      <p>Enter the candidate's permanent identifier (e.g., <code>ST-MH-000123</code>) to verify employment</p>
+      <h4 data-i18n="auto_139">{{ 'Look Up Candidate by Unique Outcome ID' }}</h4>
+      <p>Enter the candidate's permanent identifier (e.g., <code data-i18n="auto_140">{{ 'ST-MH-000123' }}</code>) to verify employment</p>
     </div>
 
     <form action="{{ url_for('employer.dashboard') }}" method="GET" class="row g-2 align-items-center mb-3">
@@ -45,9 +45,7 @@
         </button>
       </div>
       <div class="col-auto">
-        <a href="{{ url_for('employer.dashboard', outcome_id='ST-MH-000123') }}" class="btn btn-outline-secondary btn-sm">
-          Try Demo ID (ST-MH-000123)
-        </a>
+        <a href="{{ url_for('employer.dashboard', outcome_id='ST-MH-000123') }}" class="btn btn-outline-secondary btn-sm" data-i18n="auto_141">{{ 'Try Demo ID (ST-MH-000123)' }}</a>
       </div>
     </form>
 
@@ -56,7 +54,7 @@
       <div class="border rounded-4 p-4 mt-4" style="background-color: #f8fafc;">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <div>
-            <span class="badge bg-primary mb-1">Consent Verified</span>
+            <span class="badge bg-primary mb-1" data-i18n="auto_142">{{ 'Consent Verified' }}</span>
             <h5 class="fw-bold mb-0">{{ searched_trainee.first_name }} {{ searched_trainee.last_name }}</h5>
           </div>
           <span class="outcome-id-pill">{{ searched_trainee.outcome_id }}</span>
@@ -64,15 +62,15 @@
 
         <div class="row g-3 mb-4 small">
           <div class="col-md-4">
-            <span class="text-muted d-block">Completed Training Course:</span>
+            <span class="text-muted d-block" data-i18n="auto_143">{{ 'Completed Training Course:' }}</span>
             <strong>{{ searched_trainee.course_name }}</strong>
           </div>
           <div class="col-md-4">
-            <span class="text-muted d-block">Training Provider:</span>
+            <span class="text-muted d-block" data-i18n="auto_144">{{ 'Training Provider:' }}</span>
             <strong>{{ searched_trainee.provider_name }}</strong>
           </div>
           <div class="col-md-4">
-            <span class="text-muted d-block">Certification Status:</span>
+            <span class="text-muted d-block" data-i18n="auto_145">{{ 'Certification Status:' }}</span>
             <span class="badge bg-success">{{ searched_trainee.certification_status|upper }}</span>
           </div>
         </div>
@@ -86,36 +84,36 @@
           
           <div class="row g-3 mb-3">
             <div class="col-md-4">
-              <label class="form-label small fw-semibold">Verification Status</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_146">{{ 'Verification Status' }}</label>
               <select name="verification_status" class="form-select">
-                <option value="verified" selected>Verified (Currently Employed on Rolls)</option>
-                <option value="rejected">Rejected (Candidate not on rolls)</option>
-                <option value="pending">Pending Review</option>
+                <option value="verified" selected data-i18n="auto_147">{{ 'Verified (Currently Employed on Rolls)' }}</option>
+                <option value="rejected" data-i18n="auto_148">{{ 'Rejected (Candidate not on rolls)' }}</option>
+                <option value="pending" data-i18n="auto_149">{{ 'Pending Review' }}</option>
               </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label small fw-semibold">Designation / Job Role</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_150">{{ 'Designation / Job Role' }}</label>
               <input type="text" name="verified_role" class="form-control" value="{{ existing_verification.verified_role if existing_verification else 'Junior Data Operations Executive' }}" required>
             </div>
             <div class="col-md-4">
-              <label class="form-label small fw-semibold">Joining Date</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_151">{{ 'Joining Date' }}</label>
               <input type="date" name="verified_joining_date" class="form-control" value="{{ existing_verification.verified_joining_date if existing_verification else '2023-09-01' }}" required>
             </div>
           </div>
 
           <div class="row g-3 mb-4">
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">Monthly Salary Range</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_152">{{ 'Monthly Salary Range' }}</label>
               <select name="verified_salary_range" class="form-select">
-                <option value="₹12,000 - ₹15,000">₹12,000 - ₹15,000</option>
-                <option value="₹15,000 - ₹18,000">₹15,000 - ₹18,000</option>
-                <option value="₹18,000 - ₹22,000" selected>₹18,000 - ₹22,000</option>
-                <option value="₹22,000 - ₹28,000">₹22,000 - ₹28,000</option>
-                <option value="₹28,000+">₹28,000+</option>
+                <option value="₹12,000 - ₹15,000" data-i18n="auto_153">{{ '₹12,000 - ₹15,000' }}</option>
+                <option value="₹15,000 - ₹18,000" data-i18n="auto_154">{{ '₹15,000 - ₹18,000' }}</option>
+                <option value="₹18,000 - ₹22,000" selected data-i18n="auto_155">{{ '₹18,000 - ₹22,000' }}</option>
+                <option value="₹22,000 - ₹28,000" data-i18n="auto_156">{{ '₹22,000 - ₹28,000' }}</option>
+                <option value="₹28,000+" data-i18n="auto_157">{{ '₹28,000+' }}</option>
               </select>
             </div>
             <div class="col-md-6">
-              <label class="form-label small fw-semibold">Verification Remarks</label>
+              <label class="form-label small fw-semibold" data-i18n="auto_158">{{ 'Verification Remarks' }}</label>
               <input type="text" name="remarks" class="form-control" placeholder="e.g. Role and active status confirmed by HR" value="{{ existing_verification.remarks if existing_verification else 'Confirmed on payroll.' }}">
             </div>
           </div>
@@ -136,21 +134,21 @@
   <!-- Verified Trainees History Table -->
   <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
     <div class="section-header">
-      <h4>Verified Candidate Records</h4>
-      <p>Candidates validated under this enterprise with verified status badges</p>
+      <h4 data-i18n="auto_159">{{ 'Verified Candidate Records' }}</h4>
+      <p data-i18n="auto_160">{{ 'Candidates validated under this enterprise with verified status badges' }}</p>
     </div>
 
     <div class="table-responsive">
       <table class="table custom-table table-bordered mb-0">
         <thead>
           <tr>
-            <th>Outcome ID</th>
-            <th>Candidate Name</th>
-            <th>Training Course</th>
-            <th>Verified Job Role</th>
-            <th>Status</th>
-            <th>Feedback & Skill Gaps</th>
-            <th>Actions</th>
+            <th data-i18n="auto_161">{{ 'Outcome ID' }}</th>
+            <th data-i18n="auto_162">{{ 'Candidate Name' }}</th>
+            <th data-i18n="auto_163">{{ 'Training Course' }}</th>
+            <th data-i18n="auto_164">{{ 'Verified Job Role' }}</th>
+            <th data-i18n="auto_165">{{ 'Status' }}</th>
+            <th data-i18n="auto_166">{{ 'Feedback & Skill Gaps' }}</th>
+            <th data-i18n="auto_167">{{ 'Actions' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -165,7 +163,7 @@
                 {% if v.missing_skills_text %}
                   <span class="badge bg-warning-subtle text-danger border">Gaps: {{ v.missing_skills_text }}</span>
                 {% else %}
-                  <span class="text-muted small">Pending rating</span>
+                  <span class="text-muted small" data-i18n="auto_168">{{ 'Pending rating' }}</span>
                 {% endif %}
               </td>
               <td>

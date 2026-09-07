@@ -39,15 +39,6 @@
       {% else %}
         <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-sm py-1 px-2 text-dark fw-bold" data-i18n="auto_2">{{ 'Login' }}</a>
       {% endif %}
-      
-      
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <span id="currentLang" data-i18n="auto_3">{{ 'English' }}</span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="langDropdown">
-          <li><a class="dropdown-item lang-option" href="#" data-lang="en" data-i18n="auto_4">{{ 'English' }}</a></li>
-          <li><a class="dropdown-item lang-option" href="#" data-lang="hi" data-i18n="auto_5">{{ 'हिंदी' }}</a></li>
-          <li><a class="dropdown-item lang-option" href="#" data-lang="mr" data-i18n="auto_6">{{ 'मराठी' }}</a></li>
         </ul>
       </div>
     </div>

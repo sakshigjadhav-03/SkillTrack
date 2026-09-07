@@ -52,6 +52,19 @@
       </div>
     </div>
   </header>
+<header class="desktop-top-bar d-none d-lg-flex align-items-center justify-content-end px-3 py-2 bg-light">
+  <!-- Language Selector for desktop -->
+  <div class="dropdown me-3">
+    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdownDesktop" data-bs-toggle="dropdown" aria-expanded="false">
+      <span id="currentLangDesktop">English</span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="langDropdownDesktop">
+      <li><a class="dropdown-item lang-option" href="#" data-lang="en">English</a></li>
+      <li><a class="dropdown-item lang-option" href="#" data-lang="hi">हिंदी</a></li>
+      <li><a class="dropdown-item lang-option" href="#" data-lang="mr">मराठी</a></li>
+    </ul>
+  </div>
+</header>
 
   <!-- Fixed Left Sidebar -->
   <aside class="app-sidebar sidebar" id="appSidebar">
@@ -64,12 +77,23 @@
         From Training to Sustainable Employment
       </div>
     </div>
+    <!-- Language Selector in Sidebar -->
+    <div class="dropdown ms-2 mb-3">
+      <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdownSidebar" data-bs-toggle="dropdown" aria-expanded="false">
+        <span id="currentLangSidebar">English</span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="langDropdownSidebar">
+        <li><a class="dropdown-item lang-option" href="#" data-lang="en">English</a></li>
+        <li><a class="dropdown-item lang-option" href="#" data-lang="hi">हिंदी</a></li>
+        <li><a class="dropdown-item lang-option" href="#" data-lang="mr">मराठी</a></li>
+      </ul>
+    </div>
 
     <!-- Navigation Links -->
     <nav class="sidebar-nav">
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'index' else '' }}" href="{{ url_for('index') }}">
         <i class="bi bi-house-door-fill text-primary fs-5"></i>
-        <span>Home</span>
+        <span data-i18n="nav.home">Home</span>
       </a>
 
       <div class="sidebar-divider"></div>

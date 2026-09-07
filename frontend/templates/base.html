@@ -39,6 +39,17 @@
       {% else %}
         <a href="{{ url_for('auth.login') }}" class="btn btn-warning btn-sm py-1 px-2 text-dark fw-bold">Login</a>
       {% endif %}
+      <!-- Language Selector -->
+      <div class="dropdown ms-2">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <span id="currentLang">English</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="langDropdown">
+          <li><a class="dropdown-item lang-option" href="#" data-lang="en">English</a></li>
+          <li><a class="dropdown-item lang-option" href="#" data-lang="hi">हिंदी</a></li>
+          <li><a class="dropdown-item lang-option" href="#" data-lang="mr">मराठी</a></li>
+        </ul>
+      </div>
     </div>
   </header>
 
@@ -224,6 +235,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Custom JS -->
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
   
   <script>
     // Mobile sidebar toggle handler

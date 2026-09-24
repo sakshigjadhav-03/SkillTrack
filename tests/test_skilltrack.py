@@ -237,7 +237,65 @@ class SkillTrackTestCase(unittest.TestCase):
         map_res = self.client.get('/government/map')
         self.assertEqual(map_res.status_code, 200)
 
+    def test_new_trainee_registration_and_enrollment(self):
+        """Verify full multi-step registration, unique profile creation, and course enrollment."""
+        # 1. GET registration wizard
+        res_get = self.client.get('/register')
+        self.assertEqual(res_get.status_code, 200)
+        self.assertIn(b'Create Trainee Profile', res_get.data)
+
+        # 2. POST 5-step registration data
+        test_email = 'rohit.deshmukh.test@example.com'
+        reg_payload = {
+            'first_name': 'Rohit',
+            'last_name': 'Deshmukh',
+            'email': test_email,
+            'phone': '+91 9123456780',
+            'dob': '2001-08-20',
+            'gender': 'Male',
+            'country': 'India',
+            'state': 'Maharashtra',
+            'city': 'Nashik',
+            'district_id': 1,
+            'highest_education': "Bachelor's Degree",
+            'field_of_study': 'Mechanical Engineering',
+            'institution': 'Nashik Engineering College',
+            'graduation_year': 2023,
+            'provider_id': 1,
+            'course_id': 1,
+            'training_start_date': '2023-01-01',
+            'training_completion_date': '2023-05-30',
+            'skills_learned': ['1', '4', '6'],
+            'employment_status': 'employed',
+            'employer_name': 'Nashik Auto Systems',
+            'job_role': 'Quality Analyst',
+            'employment_location': 'Nashik',
+            'employment_start_date': '2023-06-15',
+            'salary_monthly': 21000,
+            'username': 'rohit_deshmukh_test',
+            'password': 'rohitpassword123',
+            'confirm_password': 'rohitpassword123'
+        }
+
+        res_post = self.client.post('/register', data=reg_payload, follow_redirects=True)
+        self.assertEqual(res_post.status_code, 200)
+        self.assertIn(b'Welcome to SkillTrack, Rohit!', res_post.data)
+        self.assertIn(b'Rohit Deshmukh', res_post.data)
+
+        # Verify unique trainee record in database
+        trainee = query_db("SELECT * FROM trainees WHERE email = %s", (test_email,), one=True)
+        self.assertIsNotNone(trainee)
+        self.assertTrue(trainee['outcome_id'].startswith('ST-MH-'))
+        self.assertNotEqual(trainee['outcome_id'], 'ST-MH-000123')
+        self.assertEqual(trainee['city'], 'Nashik')
+
+        # Test Course Enrollment
+        res_enroll = self.client.post('/trainee/enroll', data={'course_id': 2, 'provider_id': 3}, follow_redirects=True)
+        self.assertEqual(res_enroll.status_code, 200)
+        self.assertIn(b'Successfully enrolled', res_enroll.data)
+
 
 if __name__ == '__main__':
     unittest.main()
+
 

@@ -32,6 +32,10 @@ def create_app(config_class=Config):
     app.register_blueprint(gov_bp)
     app.register_blueprint(api_bp)
 
+    # Ensure schema columns exist on startup
+    from backend.database import ensure_schema_compatibility
+    ensure_schema_compatibility()
+
     # Global Context Processor
     @app.context_processor
     def inject_globals():

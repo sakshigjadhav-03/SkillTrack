@@ -56,6 +56,180 @@
     </div>
   </div>
 
+  <!-- Row 1: Personal Info & Education Overview -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="row g-4">
+      <!-- Personal Info -->
+      <div class="col-md-6 border-end-md">
+        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-person-lines-fill text-primary me-2"></i>Personal Information</h5>
+        <div class="row g-2 small text-secondary">
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Full Name</span>
+            <strong class="text-dark">{{ trainee.first_name }} {{ trainee.last_name }}</strong>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Email Address</span>
+            <span class="text-dark">{{ trainee.email or 'N/A' }}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Mobile Phone</span>
+            <span class="text-dark">{{ trainee.phone or 'N/A' }}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Date of Birth</span>
+            <span class="text-dark">{{ trainee.dob or 'N/A' }}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Gender</span>
+            <span class="text-dark">{{ trainee.gender or 'Other' }}</span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Location</span>
+            <span class="text-dark">{{ trainee.city or trainee.district_name or 'Pune' }}, {{ trainee.state or 'Maharashtra' }}, {{ trainee.country or 'India' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Education Info -->
+      <div class="col-md-6">
+        <h5 class="fw-bold mb-3 text-dark"><i class="bi bi-mortarboard-fill text-success me-2"></i>Educational Background</h5>
+        <div class="row g-2 small text-secondary">
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Highest Qualification</span>
+            <strong class="text-dark">{{ trainee.highest_education or '12th Standard / HSC' }}</strong>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Field of Study</span>
+            <span class="text-dark">{{ trainee.field_of_study or 'Science & Vocational' }}</span>
+          </div>
+          <div class="col-sm-8">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Institution / College</span>
+            <span class="text-dark">{{ trainee.institution or 'Maharashtra Vocational Institute' }}</span>
+          </div>
+          <div class="col-sm-4">
+            <span class="text-muted d-block" style="font-size: 0.75rem;">Completion Year</span>
+            <span class="text-dark">{{ trainee.graduation_year or '2023' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Training Journey & Course Enrollment Card -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-book-half text-info me-2"></i>Training Programs &amp; Enrolled Courses</h5>
+        <p class="text-muted small mb-0">Track accredited vocational courses, completion milestones, and provider linkages</p>
+      </div>
+      <button type="button" class="btn btn-outline-primary btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#enrollModal">
+        <i class="bi bi-plus-circle me-1"></i> Browse &amp; Enroll in Programs
+      </button>
+    </div>
+
+    {% if training_history %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+          <thead class="table-light">
+            <tr>
+              <th>Course Program</th>
+              <th>Sector &amp; Duration</th>
+              <th>Training Provider</th>
+              <th>Timeline</th>
+              <th>Status &amp; Certificate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for tr in training_history %}
+              <tr>
+                <td>
+                  <strong class="text-dark">{{ tr.course_name }}</strong>
+                  <div class="text-muted small">Code: <code>{{ tr.course_code }}</code></div>
+                </td>
+                <td>
+                  <span class="badge bg-secondary-subtle text-secondary">{{ tr.sector }}</span>
+                  <div class="text-muted small mt-1"><i class="bi bi-clock me-1"></i>{{ tr.duration_hours }} Hours</div>
+                </td>
+                <td>
+                  <strong class="text-primary">{{ tr.provider_name }}</strong>
+                  <div class="text-muted small">Center: <code>{{ tr.provider_code }}</code></div>
+                </td>
+                <td>
+                  <div class="small text-secondary">{{ tr.start_date }} &rarr; {{ tr.completion_date }}</div>
+                </td>
+                <td>
+                  <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 text-capitalize">
+                    ✓ {{ tr.certification_status }}
+                  </span>
+                  {% if tr.certificate_number %}
+                    <div class="text-muted small mt-1 font-monospace">{{ tr.certificate_number }} (Grade {{ tr.grade }})</div>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-4 text-center bg-light rounded-3">
+        <p class="text-muted mb-2">No training programs enrolled yet.</p>
+        <button type="button" class="btn btn-primary btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#enrollModal">
+          <i class="bi bi-plus-circle me-1"></i> Enroll in a Training Program
+        </button>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Row 3: Employment Status & Employer Validation Overview -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-briefcase-fill text-success me-2"></i>Employment Status &amp; Employer Validation</h5>
+        <p class="text-muted small mb-0">Live workplace outcome, verified compensation, and enterprise endorsement</p>
+      </div>
+      <div>
+        <span class="badge bg-primary text-capitalize fs-6 px-3 py-1">
+          {{ trainee.current_employment_status|replace('_', ' ') }}
+        </span>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light">
+          <span class="text-muted small d-block mb-1">Employer / Enterprise</span>
+          <strong class="text-dark">{{ employment.employer_name or employment.registered_employer or 'Not Employed / Seeking' }}</strong>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light">
+          <span class="text-muted small d-block mb-1">Job Role</span>
+          <strong class="text-dark">{{ employment.job_role or 'Candidate' }}</strong>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light">
+          <span class="text-muted small d-block mb-1">Monthly Salary</span>
+          {% if employment and employment.salary_monthly %}
+            <strong class="text-success fs-5">₹{{ "{:,.0f}".format(employment.salary_monthly) }}</strong>
+          {% else %}
+            <strong class="text-muted">N/A</strong>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="p-3 rounded-3 border bg-light">
+          <span class="text-muted small d-block mb-1">Employer Verification</span>
+          {% if verification and verification.verification_status == 'verified' %}
+            <span class="badge bg-success-subtle text-success border border-success fw-bold">✓ Verified by {{ verification.company_name }}</span>
+          {% else %}
+            <span class="badge bg-warning-subtle text-warning border border-warning">Pending Employer Confirmation</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row g-4">
     <!-- Left Column: Outcome Timeline & Career Progression -->
     <div class="col-lg-8">
@@ -350,8 +524,68 @@
         </form>
       </div>
 
+</div>
+
+<!-- Program Enrollment Modal -->
+<div class="modal fade" id="enrollModal" tabindex="-1" aria-labelledby="enrollModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-bottom p-4">
+        <div>
+          <h5 class="modal-title fw-bold text-dark" id="enrollModalLabel">
+            <i class="bi bi-mortarboard text-primary me-2"></i>Browse &amp; Enroll in Training Programs
+          </h5>
+          <p class="text-muted small mb-0">Select an accredited vocational course and institutional provider</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('trainee.enroll') }}" method="POST">
+        <div class="modal-body p-4">
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Select Course / Qualification Program <span class="text-danger">*</span></label>
+              <select name="course_id" id="modalCourseSelect" class="form-select" required>
+                {% for p in available_programs|unique(attribute='course_id') %}
+                  <option value="{{ p.course_id }}" data-sector="{{ p.sector }}" data-hours="{{ p.duration_hours }}" data-desc="{{ p.description }}">
+                    {{ p.course_name }} ({{ p.course_code }})
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Select Training Provider / Institution <span class="text-danger">*</span></label>
+              <select name="provider_id" id="modalProviderSelect" class="form-select" required>
+                {% for p in available_programs|unique(attribute='provider_id') %}
+                  <option value="{{ p.provider_id }}" data-rating="{{ p.rating }}">
+                    {{ p.name }} &bull; Rating: {{ p.rating }}/5.0
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="p-3 bg-light rounded-3 border">
+            <h6 class="fw-bold small text-dark mb-2"><i class="bi bi-info-circle text-primary me-1"></i> Program Details &amp; Governance</h6>
+            <div class="small text-secondary">
+              <p class="mb-1">
+                Upon enrollment, your unique Outcome ID (<code>{{ trainee.outcome_id }}</code>) is linked to this institutional center. Your training completion, attendance, and skills assessment will be certified by the provider.
+              </p>
+              <div class="d-flex gap-3 mt-2 text-muted" style="font-size: 0.78rem;">
+                <span><i class="bi bi-patch-check text-success me-1"></i>State Accredited</span>
+                <span><i class="bi bi-shield-check text-primary me-1"></i>Longitudinal Tracking</span>
+                <span><i class="bi bi-briefcase text-info me-1"></i>Employer Linked</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top p-3 px-4">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold">
+            <i class="bi bi-check2-circle me-1"></i> Confirm Program Enrollment
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-
 </div>
 {% endblock %}

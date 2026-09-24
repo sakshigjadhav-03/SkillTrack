@@ -119,3 +119,58 @@ def execute_script(sql_script: str):
             conn.commit()
     finally:
         conn.close()
+
+
+def ensure_schema_compatibility():
+    """
+    Ensures that extended profile and registration columns exist in the trainees table.
+    Works for both SQLite and MySQL without breaking existing databases.
+    """
+    try:
+        conn, db_type = get_db_connection()
+        cursor = conn.cursor()
+        if db_type == 'sqlite':
+            cursor.execute("PRAGMA table_info(trainees)")
+            existing = [row[1] for row in cursor.fetchall()]
+            needed = [
+                ('country', "VARCHAR(100) DEFAULT 'India'"),
+                ('state', "VARCHAR(100) DEFAULT 'Maharashtra'"),
+                ('city', "VARCHAR(100)"),
+                ('highest_education', "VARCHAR(100)"),
+                ('field_of_study', "VARCHAR(150)"),
+                ('institution', "VARCHAR(200)"),
+                ('graduation_year', "INTEGER"),
+                ('identity_token', "VARCHAR(100)"),
+                ('identity_verified', "INTEGER DEFAULT 0"),
+                ('certificate_verified', "INTEGER DEFAULT 0"),
+                ('certificate_verified_at', "TIMESTAMP"),
+                ('communication_consent', "INTEGER DEFAULT 1")
+            ]
+            for col_name, col_type in needed:
+                if col_name not in existing:
+                    cursor.execute(f"ALTER TABLE trainees ADD COLUMN {col_name} {col_type}")
+            conn.commit()
+        else:
+            for col_name, col_type in [
+                ('country', "VARCHAR(100) DEFAULT 'India'"),
+                ('state', "VARCHAR(100) DEFAULT 'Maharashtra'"),
+                ('city', "VARCHAR(100)"),
+                ('highest_education', "VARCHAR(100)"),
+                ('field_of_study', "VARCHAR(150)"),
+                ('institution', "VARCHAR(200)"),
+                ('graduation_year', "INT"),
+                ('identity_token', "VARCHAR(100)"),
+                ('identity_verified', "TINYINT DEFAULT 0"),
+                ('certificate_verified', "TINYINT DEFAULT 0"),
+                ('certificate_verified_at', "TIMESTAMP NULL"),
+                ('communication_consent', "TINYINT DEFAULT 1")
+            ]:
+                try:
+                    cursor.execute(f"ALTER TABLE trainees ADD COLUMN {col_name} {col_type}")
+                except Exception:
+                    pass
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        # Ignore if tables do not exist yet before init_db
+        pass

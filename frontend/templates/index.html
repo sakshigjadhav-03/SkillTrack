@@ -80,60 +80,79 @@
             <div class="text-muted small" style="font-size: 0.8rem;">Select a role persona to explore the platform live</div>
           </div>
 
-          <form action="{{ url_for('auth.login') }}" method="POST">
-            <div class="d-flex flex-column gap-2">
-              <!-- 1. Trainee Card -->
-              <div class="role-card-box border p-3" style="background: #f0f7ff; border-color: #dbeafe !important;">
-                <div class="d-flex align-items-center justify-content-between gap-2">
-                  <div class="d-flex align-items-center gap-3 text-start">
-                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dbeafe; color: #2563eb; width: 40px; height: 40px;">
-                      <i class="bi bi-person-fill"></i>
-                    </div>
-                    <div>
-                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Trainee Portal</div>
-                      <div class="text-muted" style="font-size: 0.74rem;">Track verified employment journey, wage progression & skill pathways</div>
-                    </div>
-                  </div>
-                  <button type="submit" name="quick_role" value="trainee" class="btn btn-primary btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2" style="background: #1d4ed8; font-size: 0.75rem;">Login ›</button>
+          <div class="d-flex flex-column gap-3">
+            <!-- 1. Trainee Card with 2 Clear Options -->
+            <div class="role-card-box border p-3" style="background: #f0f7ff; border-color: #dbeafe !important;">
+              <div class="d-flex align-items-center gap-3 text-start mb-2">
+                <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dbeafe; color: #2563eb; width: 42px; height: 42px;">
+                  <i class="bi bi-person-fill fs-5"></i>
+                </div>
+                <div>
+                  <div class="fw-bold text-dark" style="font-size: 0.95rem;">Continue as Trainee</div>
+                  <div class="text-muted" style="font-size: 0.76rem;">Track your training, skills &amp; verified employment journey</div>
                 </div>
               </div>
-
-              <!-- 2. Employer Card -->
-              <div class="role-card-box border p-3" style="background: #f0fdf4; border-color: #dcfce7 !important;">
-                <div class="d-flex align-items-center justify-content-between gap-2">
-                  <div class="d-flex align-items-center gap-3 text-start">
-                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dcfce7; color: #16a34a; width: 40px; height: 40px;">
-                      <i class="bi bi-briefcase-fill"></i>
-                    </div>
-                    <div>
-                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Employer Portal</div>
-                      <div class="text-muted" style="font-size: 0.74rem;">Verify graduate hires, rate workplace readiness & report skill gaps</div>
-                    </div>
-                  </div>
-                  <button type="submit" name="quick_role" value="employer" class="btn btn-success btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2" style="background: #15803d; font-size: 0.75rem;">Login ›</button>
+              <div class="row g-2 mt-1">
+                <div class="col-6">
+                  <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-sm w-100 fw-semibold py-2 rounded-2" style="font-size: 0.78rem;">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Login as Trainee
+                  </a>
+                  <div class="text-muted text-center mt-1" style="font-size: 0.68rem;">Existing Account</div>
                 </div>
-              </div>
-
-              <!-- 3. Provider Card -->
-              <div class="role-card-box border p-3" style="background: #faf5ff; border-color: #f3e8ff !important;">
-                <div class="d-flex align-items-center justify-content-between gap-2">
-                  <div class="d-flex align-items-center gap-3 text-start">
-                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #f3e8ff; color: #7c3aed; width: 40px; height: 40px;">
-                      <i class="bi bi-mortarboard-fill"></i>
-                    </div>
-                    <div>
-                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Training Provider</div>
-                      <div class="text-muted" style="font-size: 0.74rem;">Outcome intelligence, cohort risk radar, curriculum gaps & interventions</div>
-                    </div>
-                  </div>
-                  <button type="submit" name="quick_role" value="provider" class="btn btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;">Login ›</button>
+                <div class="col-6">
+                  <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm w-100 fw-semibold py-2 rounded-2" style="background: #1d4ed8; font-size: 0.78rem;">
+                    <i class="bi bi-person-plus me-1"></i> Register as New Trainee
+                  </a>
+                  <div class="text-muted text-center mt-1" style="font-size: 0.68rem;">New Profile (5 Steps)</div>
                 </div>
               </div>
             </div>
-          </form>
 
-          <div class="text-center mt-3 pt-2 border-top text-muted" style="font-size: 0.75rem;">
-            <i class="bi bi-shield-check text-primary me-1"></i> Pre-configured Demo Accounts &bull; No registration required
+            <!-- 2. Employer Card -->
+            <div class="role-card-box border p-3" style="background: #f0fdf4; border-color: #dcfce7 !important;">
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <div class="d-flex align-items-center gap-3 text-start">
+                  <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dcfce7; color: #16a34a; width: 40px; height: 40px;">
+                    <i class="bi bi-briefcase-fill"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.92rem;">Employer Portal</div>
+                    <div class="text-muted" style="font-size: 0.74rem;">Verify graduate hires, rate workplace readiness &amp; report skill gaps</div>
+                  </div>
+                </div>
+                <form action="{{ url_for('auth.login') }}" method="POST" class="m-0">
+                  <button type="submit" name="quick_role" value="employer" class="btn btn-success btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2" style="background: #15803d; font-size: 0.75rem;">Login ›</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- 3. Provider Card -->
+            <div class="role-card-box border p-3" style="background: #faf5ff; border-color: #f3e8ff !important;">
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <div class="d-flex align-items-center gap-3 text-start">
+                  <div class="role-icon-circle m-0 flex-shrink-0" style="background: #f3e8ff; color: #7c3aed; width: 40px; height: 40px;">
+                    <i class="bi bi-mortarboard-fill"></i>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.92rem;">Training Provider</div>
+                    <div class="text-muted" style="font-size: 0.74rem;">Outcome intelligence, cohort risk radar, curriculum gaps &amp; interventions</div>
+                  </div>
+                </div>
+                <form action="{{ url_for('auth.login') }}" method="POST" class="m-0">
+                  <button type="submit" name="quick_role" value="provider" class="btn btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;">Login ›</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Separated Demo Trainee Button for Hackathon Evaluators -->
+          <div class="text-center mt-3 pt-2 border-top">
+            <form action="{{ url_for('auth.login') }}" method="POST" class="d-inline">
+              <span class="text-muted small me-2" style="font-size: 0.75rem;">Evaluator Demo:</span>
+              <button type="submit" name="quick_role" value="trainee" class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.72rem;">
+                <i class="bi bi-lightning-charge me-1"></i> Demo Trainee (Rahul — ST-MH-000123)
+              </button>
+            </form>
           </div>
         </div>
       </div>

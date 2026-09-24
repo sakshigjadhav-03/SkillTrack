@@ -69,15 +69,15 @@
         </div>
       </div>
 
-      <!-- Right Column: Quick 1-Click Role Login Card (3 Roles) -->
+      <!-- Right Column: Role Portals Card -->
       <div class="col-xl-5 col-lg-5" id="role-portals">
         <div class="card border-0 shadow-lg rounded-4 p-4 text-dark bg-white" style="max-width: 490px; margin: 0 auto;">
           <div class="text-center mb-3">
             <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-2" style="width: 38px; height: 38px;">
-              <i class="bi bi-lightning-charge-fill fs-5 text-primary"></i>
+              <i class="bi bi-door-open-fill fs-5 text-primary"></i>
             </div>
-            <h5 class="fw-bold mb-0 text-dark">Quick 1-Click Demo Access</h5>
-            <div class="text-muted small" style="font-size: 0.8rem;">Select a role persona to explore the platform live</div>
+            <h5 class="fw-bold mb-0 text-dark">SkillTrack Portals</h5>
+            <div class="text-muted small" style="font-size: 0.8rem;">Select your portal to access SkillTrack</div>
           </div>
 
           <div class="d-flex flex-column gap-3">
@@ -108,25 +108,7 @@
               </div>
             </div>
 
-            <!-- 2. Employer Card -->
-            <div class="role-card-box border p-3" style="background: #f0fdf4; border-color: #dcfce7 !important;">
-              <div class="d-flex align-items-center justify-content-between gap-2">
-                <div class="d-flex align-items-center gap-3 text-start">
-                  <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dcfce7; color: #16a34a; width: 40px; height: 40px;">
-                    <i class="bi bi-briefcase-fill"></i>
-                  </div>
-                  <div>
-                    <div class="fw-bold text-dark" style="font-size: 0.92rem;">Employer Portal</div>
-                    <div class="text-muted" style="font-size: 0.74rem;">Verify graduate hires, rate workplace readiness &amp; report skill gaps</div>
-                  </div>
-                </div>
-                <form action="{{ url_for('auth.login') }}" method="POST" class="m-0">
-                  <button type="submit" name="quick_role" value="employer" class="btn btn-success btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2" style="background: #15803d; font-size: 0.75rem;">Login ›</button>
-                </form>
-              </div>
-            </div>
-
-            <!-- 3. Provider Card -->
+            <!-- 2. Training Provider Card -->
             <div class="role-card-box border p-3" style="background: #faf5ff; border-color: #f3e8ff !important;">
               <div class="d-flex align-items-center justify-content-between gap-2">
                 <div class="d-flex align-items-center gap-3 text-start">
@@ -138,21 +120,11 @@
                     <div class="text-muted" style="font-size: 0.74rem;">Outcome intelligence, cohort risk radar, curriculum gaps &amp; interventions</div>
                   </div>
                 </div>
-                <form action="{{ url_for('auth.login') }}" method="POST" class="m-0">
-                  <button type="submit" name="quick_role" value="provider" class="btn btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;">Login ›</button>
-                </form>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-sm flex-shrink-0 fw-semibold px-3 py-2 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;">
+                  <i class="bi bi-box-arrow-in-right me-1"></i> Login ›
+                </a>
               </div>
             </div>
-          </div>
-
-          <!-- Separated Demo Trainee Button for Hackathon Evaluators -->
-          <div class="text-center mt-3 pt-2 border-top">
-            <form action="{{ url_for('auth.login') }}" method="POST" class="d-inline">
-              <span class="text-muted small me-2" style="font-size: 0.75rem;">Evaluator Demo:</span>
-              <button type="submit" name="quick_role" value="trainee" class="btn btn-outline-secondary btn-sm py-0 px-2" style="font-size: 0.72rem;">
-                <i class="bi bi-lightning-charge me-1"></i> Demo Trainee (Rahul — ST-MH-000123)
-              </button>
-            </form>
           </div>
         </div>
       </div>

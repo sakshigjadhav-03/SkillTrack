@@ -101,10 +101,6 @@
         <i class="bi bi-mortarboard text-purple fs-5" style="color: #a855f7;"></i>
         <span>Training Provider</span>
       </a>
-      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'employer.dashboard' else '' }}" href="{{ url_for('employer.dashboard') }}">
-        <i class="bi bi-briefcase text-success fs-5"></i>
-        <span>Employer Portal</span>
-      </a>
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'trainee.dashboard' else '' }}" href="{{ url_for('trainee.dashboard') }}">
         <i class="bi bi-person text-primary fs-5"></i>
         <span>Trainee Portal</span>

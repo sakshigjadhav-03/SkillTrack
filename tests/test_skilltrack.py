@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT_DIR))
 import unittest
 from backend.config import Config
 from backend.app import create_app
-from backend.database import query_db
+from backend.database import query_db, execute_db
 from backend.services.outcome_id_service import is_valid_outcome_id, lookup_by_outcome_id
 from backend.services.skill_matcher import SkillMatcher
 from backend.services.outcome_score import OutcomeScoreCalculator
@@ -239,13 +239,27 @@ class SkillTrackTestCase(unittest.TestCase):
 
     def test_new_trainee_registration_and_enrollment(self):
         """Verify full multi-step registration, unique profile creation, and course enrollment."""
+        test_email = 'rohit.deshmukh.test@example.com'
+        test_username = 'rohit_deshmukh_test'
+
+        # Ensure clean state for test trainee
+        trainee_exists = query_db("SELECT id FROM trainees WHERE email = %s", (test_email,), one=True)
+        if trainee_exists:
+            tid = trainee_exists['id']
+            execute_db("DELETE FROM training_records WHERE trainee_id = %s", (tid,))
+            execute_db("DELETE FROM employment_records WHERE trainee_id = %s", (tid,))
+            execute_db("DELETE FROM followups WHERE trainee_id = %s", (tid,))
+            execute_db("DELETE FROM trainee_skills WHERE trainee_id = %s", (tid,))
+            execute_db("DELETE FROM consents WHERE trainee_id = %s", (tid,))
+            execute_db("DELETE FROM trainees WHERE id = %s", (tid,))
+        execute_db("DELETE FROM users WHERE email = %s OR username = %s", (test_email, test_username))
+
         # 1. GET registration wizard
         res_get = self.client.get('/register')
         self.assertEqual(res_get.status_code, 200)
         self.assertIn(b'Create Trainee Profile', res_get.data)
 
         # 2. POST 5-step registration data
-        test_email = 'rohit.deshmukh.test@example.com'
         reg_payload = {
             'first_name': 'Rohit',
             'last_name': 'Deshmukh',

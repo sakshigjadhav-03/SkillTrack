@@ -74,24 +74,18 @@
 
           <div class="row g-2">
             <!-- Trainee Card -->
-            <div class="col-12">
+            <div class="col-6">
               <div class="role-card-box border p-3" style="background: #f0f7ff; border-color: #dbeafe !important;">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 text-start">
-                  <div class="d-flex align-items-center gap-2">
-                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dbeafe; color: #2563eb; width: 38px; height: 38px;">
-                      <i class="bi bi-person-fill"></i>
-                    </div>
-                    <div>
-                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Trainee</div>
-                      <div class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Personal training and employment journey</div>
-                    </div>
-                  </div>
-                  <a href="{{ url_for('auth.login', role='trainee') }}" class="btn btn-primary btn-sm fw-semibold px-3 rounded-2 text-nowrap" style="background: #1d4ed8; font-size: 0.75rem;">Login as Trainee ›</a>
+                <div class="role-icon-circle" style="background: #dbeafe; color: #2563eb;">
+                  <i class="bi bi-person-fill"></i>
                 </div>
+                <div class="fw-bold text-dark" style="font-size: 0.9rem;">Trainee</div>
+                <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">Personal training and employment journey</div>
+                <a href="{{ url_for('auth.login', role='trainee') }}" class="btn btn-primary btn-sm w-100 fw-semibold mt-2 rounded-2" style="background: #1d4ed8; font-size: 0.75rem;">Login as Trainee ›</a>
               </div>
             </div>
 
-            <!-- Provider Card -->
+            <!-- Training Provider Card -->
             <div class="col-6">
               <div class="role-card-box border p-3" style="background: #faf5ff; border-color: #f3e8ff !important;">
                 <div class="role-icon-circle" style="background: #f3e8ff; color: #7c3aed;">
@@ -112,6 +106,18 @@
                 <div class="fw-bold text-dark" style="font-size: 0.9rem;">Administrator</div>
                 <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">High-level intelligence &amp; policy engine</div>
                 <a href="{{ url_for('auth.login', role='administrator') }}" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #ea580c; font-size: 0.75rem;">Login as Admin ›</a>
+              </div>
+            </div>
+
+            <!-- Employer Card -->
+            <div class="col-6">
+              <div class="role-card-box border p-3" style="background: #f0fdf4; border-color: #dcfce7 !important;">
+                <div class="role-icon-circle" style="background: #dcfce7; color: #16a34a;">
+                  <i class="bi bi-briefcase-fill"></i>
+                </div>
+                <div class="fw-bold text-dark" style="font-size: 0.9rem;">Employer</div>
+                <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">Verify employment &amp; provide workplace feedback</div>
+                <a href="{{ url_for('employer.dashboard') }}" class="btn btn-success btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #15803d; font-size: 0.75rem;">Verify Employment ›</a>
               </div>
             </div>
           </div>

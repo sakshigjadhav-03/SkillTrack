@@ -8,7 +8,7 @@ sys.path.insert(0, str(ROOT_DIR))
 import unittest
 from backend.config import Config
 from backend.app import create_app
-from backend.database import query_db, execute_db
+from backend.database import query_db
 from backend.services.outcome_id_service import is_valid_outcome_id, lookup_by_outcome_id
 from backend.services.skill_matcher import SkillMatcher
 from backend.services.outcome_score import OutcomeScoreCalculator
@@ -214,102 +214,6 @@ class SkillTrackTestCase(unittest.TestCase):
         self.assertTrue(id_res['is_verified'])
         self.assertIn('DEMO-ID', id_res['verification_token'])
 
-    def test_provider_outcome_intelligence_access(self):
-        """Verify Training Provider has full access to the Outcome Intelligence suite."""
-        # 1. Quick login as provider
-        login_res = self.client.post('/login', data={'quick_role': 'provider'}, follow_redirects=False)
-        self.assertEqual(login_res.status_code, 302)
-
-        # 2. Access Outcome Dashboard
-        dash_res = self.client.get('/government/dashboard')
-        self.assertEqual(dash_res.status_code, 200)
-        self.assertIn(b'Outcome Intelligence Dashboard', dash_res.data)
-
-        # 3. Access Skill Gap Analysis
-        skill_res = self.client.get('/government/skill-gaps')
-        self.assertEqual(skill_res.status_code, 200)
-
-        # 4. Access Recommendations & Action Engine
-        rec_res = self.client.get('/government/recommendations')
-        self.assertEqual(rec_res.status_code, 200)
-
-        # 5. Access Interactive District Map
-        map_res = self.client.get('/government/map')
-        self.assertEqual(map_res.status_code, 200)
-
-    def test_new_trainee_registration_and_enrollment(self):
-        """Verify full multi-step registration, unique profile creation, and course enrollment."""
-        test_email = 'rohit.deshmukh.test@example.com'
-        test_username = 'rohit_deshmukh_test'
-
-        # Ensure clean state for test trainee
-        trainee_exists = query_db("SELECT id FROM trainees WHERE email = %s", (test_email,), one=True)
-        if trainee_exists:
-            tid = trainee_exists['id']
-            execute_db("DELETE FROM training_records WHERE trainee_id = %s", (tid,))
-            execute_db("DELETE FROM employment_records WHERE trainee_id = %s", (tid,))
-            execute_db("DELETE FROM followups WHERE trainee_id = %s", (tid,))
-            execute_db("DELETE FROM trainee_skills WHERE trainee_id = %s", (tid,))
-            execute_db("DELETE FROM consents WHERE trainee_id = %s", (tid,))
-            execute_db("DELETE FROM trainees WHERE id = %s", (tid,))
-        execute_db("DELETE FROM users WHERE email = %s OR username = %s", (test_email, test_username))
-
-        # 1. GET registration wizard
-        res_get = self.client.get('/register')
-        self.assertEqual(res_get.status_code, 200)
-        self.assertIn(b'Create Trainee Profile', res_get.data)
-
-        # 2. POST 5-step registration data
-        reg_payload = {
-            'first_name': 'Rohit',
-            'last_name': 'Deshmukh',
-            'email': test_email,
-            'phone': '+91 9123456780',
-            'dob': '2001-08-20',
-            'gender': 'Male',
-            'country': 'India',
-            'state': 'Maharashtra',
-            'city': 'Nashik',
-            'district_id': 1,
-            'highest_education': "Bachelor's Degree",
-            'field_of_study': 'Mechanical Engineering',
-            'institution': 'Nashik Engineering College',
-            'graduation_year': 2023,
-            'provider_id': 1,
-            'course_id': 1,
-            'training_start_date': '2023-01-01',
-            'training_completion_date': '2023-05-30',
-            'skills_learned': ['1', '4', '6'],
-            'employment_status': 'employed',
-            'employer_name': 'Nashik Auto Systems',
-            'job_role': 'Quality Analyst',
-            'employment_location': 'Nashik',
-            'employment_start_date': '2023-06-15',
-            'salary_monthly': 21000,
-            'username': 'rohit_deshmukh_test',
-            'password': 'rohitpassword123',
-            'confirm_password': 'rohitpassword123'
-        }
-
-        res_post = self.client.post('/register', data=reg_payload, follow_redirects=True)
-        self.assertEqual(res_post.status_code, 200)
-        self.assertIn(b'Welcome to SkillTrack, Rohit!', res_post.data)
-        self.assertIn(b'Rohit Deshmukh', res_post.data)
-
-        # Verify unique trainee record in database
-        trainee = query_db("SELECT * FROM trainees WHERE email = %s", (test_email,), one=True)
-        self.assertIsNotNone(trainee)
-        self.assertTrue(trainee['outcome_id'].startswith('ST-MH-'))
-        self.assertNotEqual(trainee['outcome_id'], 'ST-MH-000123')
-        self.assertEqual(trainee['city'], 'Nashik')
-
-        # Test Course Enrollment
-        res_enroll = self.client.post('/trainee/enroll', data={'course_id': 2, 'provider_id': 3}, follow_redirects=True)
-        self.assertEqual(res_enroll.status_code, 200)
-        self.assertIn(b'Successfully enrolled', res_enroll.data)
-
 
 if __name__ == '__main__':
     unittest.main()
-
-

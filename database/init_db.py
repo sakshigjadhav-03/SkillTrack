@@ -221,9 +221,9 @@ def init_database():
     execute_db(
         """
         INSERT INTO employer_verifications (
-            employer_id, trainee_id, outcome_id, token, verification_status, verified_role, verified_joining_date, verified_salary_range, remarks
+            employer_id, trainee_id, outcome_id, verification_status, verified_role, verified_joining_date, verified_salary_range, remarks
         ) VALUES (
-            1, 1, 'ST-MH-000123', 'EV-DEMO-000123', 'verified', 'Junior Data Operations Executive', '2023-09-01', '₹18,000 - ₹22,000', 'Employment and role verified. Candidate is confirmed on rolls.'
+            1, 1, 'ST-MH-000123', 'verified', 'Junior Data Operations Executive', '2023-09-01', '₹18,000 - ₹22,000', 'Employment and role verified. Candidate is confirmed on rolls.'
         )
         """
     )

@@ -131,48 +131,7 @@ def dashboard():
         missing_skills_text=missing_txt
     )
 
-    # Retrieve all enrolled training records (Training History)
-    training_history = query_db(
-        """
-        SELECT 
-            tr.*,
-            c.course_code,
-            c.course_name,
-            c.sector,
-            c.duration_hours,
-            c.description AS course_description,
-            tp.name AS provider_name,
-            tp.provider_code
-        FROM training_records tr
-        JOIN courses c ON tr.course_id = c.id
-        JOIN training_providers tp ON tr.provider_id = tp.id
-        WHERE tr.trainee_id = %s
-        ORDER BY tr.id DESC
-        """,
-        (trainee_id,)
-    )
-
-    # Available Training Programs for enrollment
-    available_programs = query_db(
-        """
-        SELECT 
-            c.id AS course_id,
-            c.course_code,
-            c.course_name,
-            c.sector,
-            c.duration_hours,
-            c.description,
-            tp.id AS provider_id,
-            tp.name AS provider_name,
-            tp.provider_code,
-            tp.rating
-        FROM courses c
-        CROSS JOIN training_providers tp
-        LIMIT 12
-        """
-    )
-
-    # Build Outcome Timeline Events (Registration -> Training -> Completion -> 3M -> 6M -> 12M -> 24M)
+    # Build Outcome Timeline Events
     timeline_events = _build_timeline(trainee, followups, employment, verification)
 
     return render_template(
@@ -185,63 +144,58 @@ def dashboard():
         feedback=feedback,
         relevance=relevance_data,
         risk_assessment=risk_assessment,
-        timeline=timeline_events,
-        training_history=training_history,
-        available_programs=available_programs
+        timeline=timeline_events
     )
 
 
 def _build_timeline(trainee, followups, employment, verification):
-    """Constructs sequential milestone events for the complete Outcome Timeline."""
+    """Constructs sequential milestone events for the Outcome Timeline."""
     events = [
         {
-            'stage': 'Registration',
+            'stage': 'Training Started',
             'status': 'completed',
-            'date': str(trainee.get('created_at') or '2023-04-01')[:10],
-            'title': f"Registered Profile — Outcome ID: {trainee.get('outcome_id')}",
-            'badge': 'Profile Created',
-            'badge_class': 'primary'
+            'date': trainee.get('training_start') or '2023-05-01',
+            'title': f"Enrolled in {trainee.get('course_name') or 'Vocational Training'}",
+            'badge': 'Enrolled'
         },
         {
-            'stage': 'Training',
-            'status': 'completed' if trainee.get('training_start') else 'in_progress',
-            'date': trainee.get('training_start') or 'Training Enrolled',
-            'title': f"Enrolled in {trainee.get('course_name') or 'Vocational Training'} ({trainee.get('provider_name') or 'Accredited Center'})",
-            'badge': 'Enrolled',
-            'badge_class': 'info'
+            'stage': 'Training Completed',
+            'status': 'completed',
+            'date': trainee.get('training_end') or '2023-08-15',
+            'title': f"Course Completed ({trainee.get('duration_hours', 240)} Hours)",
+            'badge': 'Completed'
         },
         {
-            'stage': 'Training Completion',
-            'status': 'completed' if trainee.get('certification_status') in ('certified', 'completed') else 'in_progress',
-            'date': trainee.get('training_end') or 'Completion Pending',
-            'title': f"Course Completed ({trainee.get('duration_hours', 240)} Hours) — Grade {trainee.get('grade', 'A')}",
-            'badge': 'Completed' if trainee.get('certification_status') in ('certified', 'completed') else 'In Progress',
-            'badge_class': 'success' if trainee.get('certification_status') in ('certified', 'completed') else 'warning'
+            'stage': 'Certification',
+            'status': 'completed' if trainee.get('certification_status') == 'certified' else 'in_progress',
+            'date': trainee.get('training_end') or '2023-08-20',
+            'title': f"Certified (Grade {trainee.get('grade', 'A')}) — Certificate #{trainee.get('certificate_number', 'CERT-MH')}",
+            'badge': 'Certified'
         }
     ]
 
-    # Post-Training Outcome Milestones (3, 6, 12, 24 months)
+    # Milestones (3, 6, 12 months)
     milestones_map = {f['milestone_months']: f for f in followups}
-    for m in [3, 6, 12, 24]:
+    for m in [3, 6, 12]:
         f_rec = milestones_map.get(m)
-        if f_rec and f_rec.get('status') == 'completed':
+        if f_rec:
             sal_text = f"₹{int(f_rec['current_salary']):,}/mo" if f_rec.get('current_salary') else "N/A"
             growth_text = f" (+{f_rec['salary_growth_pct']}%)" if f_rec.get('salary_growth_pct') else ""
             events.append({
-                'stage': f"{m}-Month Follow-up",
+                'stage': f"{m} Month Follow-up",
                 'status': 'completed',
-                'date': f_rec.get('completed_date') or f_rec.get('due_date') or 'Completed',
-                'title': f"Status: {f_rec['employment_status'].replace('_', ' ').title()} — Monthly Salary: {sal_text}{growth_text}",
-                'badge': 'Verified Outcome' if f_rec['retention_status'] == 'retained' else 'At Risk',
+                'date': f_rec.get('completed_date') or f_rec.get('due_date'),
+                'title': f"Status: {f_rec['employment_status'].replace('_', ' ').title()} — Salary: {sal_text}{growth_text}",
+                'badge': 'Verified' if f_rec['retention_status'] == 'retained' else 'At Risk',
                 'badge_class': 'success' if f_rec['retention_status'] == 'retained' else 'warning'
             })
         else:
             events.append({
-                'stage': f"{m}-Month Follow-up",
+                'stage': f"{m} Month Follow-up",
                 'status': 'upcoming',
-                'date': 'Scheduled Milestone',
+                'date': 'Scheduled',
                 'title': f"{m}-Month Post-Training Livelihood Review",
-                'badge': 'Upcoming Check-in',
+                'badge': 'Upcoming',
                 'badge_class': 'secondary'
             })
 
@@ -251,55 +205,12 @@ def _build_timeline(trainee, followups, employment, verification):
             'stage': 'Employer Verified',
             'status': 'completed',
             'date': str(verification.get('verified_at', ''))[:10],
-            'title': f"Employment Verified by {verification.get('company_name', 'Hiring Enterprise')} ✓",
-            'badge': 'Enterprise Verified ✓',
+            'title': f"Verified by {verification.get('company_name', 'Employer')} ✓",
+            'badge': 'Employment Verified ✓',
             'badge_class': 'primary'
         })
 
     return events
-
-
-@trainee_bp.route('/enroll', methods=['POST'])
-@login_required
-@role_required('trainee')
-def enroll():
-    """Enroll in a training program. Connects trainee to course and provider roster."""
-    trainee_id = session.get('trainee_id')
-    course_id = request.form.get('course_id', type=int)
-    provider_id = request.form.get('provider_id', type=int)
-
-    if not course_id or not provider_id:
-        flash('Please select a course and training provider.', 'warning')
-        return redirect(url_for('trainee.dashboard'))
-
-    today_str = datetime.now().strftime('%Y-%m-%d')
-    outcome_id = session.get('outcome_id', 'ST-MH')
-
-    execute_db(
-        """
-        INSERT INTO training_records (
-            trainee_id, course_id, provider_id, start_date, completion_date,
-            certification_status, certificate_number, grade
-        ) VALUES (%s, %s, %s, %s, %s, 'completed', %s, 'A')
-        """,
-        (trainee_id, course_id, provider_id, today_str, today_str, f"CERT-MH-{outcome_id.split('-')[-1]}")
-    )
-
-    # Associate course skills with trainee
-    course_skills = query_db("SELECT skill_id FROM course_skills WHERE course_id = %s", (course_id,)) or []
-    for cs in course_skills:
-        try:
-            execute_db(
-                "INSERT INTO trainee_skills (trainee_id, skill_id, proficiency_level) VALUES (%s, %s, 'Intermediate')",
-                (trainee_id, cs['skill_id'])
-            )
-        except Exception:
-            pass
-
-    course = query_db("SELECT course_name FROM courses WHERE id = %s", (course_id,), one=True)
-    c_name = course['course_name'] if course else 'Training Program'
-    flash(f"Successfully enrolled in {c_name}! Your training provider can now view your outcome profile.", "success")
-    return redirect(url_for('trainee.dashboard'))
 
 
 @trainee_bp.route('/consent', methods=['GET', 'POST'])

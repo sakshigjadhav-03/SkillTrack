@@ -1,522 +1,87 @@
 {% extends 'base.html' %}
 
-{% block title %}New Trainee Registration — SkillTrack{% endblock %}
+{% block title %}Trainee Registration — SkillTrack{% endblock %}
 
 {% block content %}
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-9 col-xl-8">
-      
-      <!-- Registration Header -->
-      <div class="text-center mb-4">
-        <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-2">
-          <i class="bi bi-person-plus-fill fs-2"></i>
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="text-center mb-4">
+          <div class="d-inline-flex p-3 rounded-circle bg-primary bg-opacity-10 text-primary mb-2">
+            <i class="bi bi-person-plus fs-2"></i>
+          </div>
+          <h4 class="fw-bold mb-1" data-i18n="auto_108">{{ 'Create Trainee Profile' }}</h4>
+          <p class="text-muted small" data-i18n="auto_109">{{ 'Register to obtain your permanent SkillTrack Outcome ID' }}</p>
         </div>
-        <h3 class="fw-bold mb-1">Create Trainee Profile</h3>
-        <p class="text-muted small">Register to obtain your permanent SkillTrack Outcome ID and track your career journey</p>
-      </div>
 
-      <!-- Multi-Step Progress Tracker -->
-      <div class="card border-0 shadow-sm rounded-4 mb-4 bg-white p-3">
-        <div class="d-flex justify-content-between position-relative px-2">
-          <div class="step-indicator active text-center flex-fill" id="stepIndicator1">
-            <div class="step-num mx-auto mb-1">1</div>
-            <div class="step-label small fw-semibold">Personal</div>
-          </div>
-          <div class="step-indicator text-center flex-fill" id="stepIndicator2">
-            <div class="step-num mx-auto mb-1">2</div>
-            <div class="step-label small fw-semibold">Education</div>
-          </div>
-          <div class="step-indicator text-center flex-fill" id="stepIndicator3">
-            <div class="step-num mx-auto mb-1">3</div>
-            <div class="step-label small fw-semibold">Training</div>
-          </div>
-          <div class="step-indicator text-center flex-fill" id="stepIndicator4">
-            <div class="step-num mx-auto mb-1">4</div>
-            <div class="step-label small fw-semibold">Employment</div>
-          </div>
-          <div class="step-indicator text-center flex-fill" id="stepIndicator5">
-            <div class="step-num mx-auto mb-1">5</div>
-            <div class="step-label small fw-semibold">Account</div>
-          </div>
-        </div>
-        <div class="progress mt-2" style="height: 4px;">
-          <div class="progress-bar bg-primary" id="registrationProgressBar" style="width: 20%;" role="progressbar"></div>
-        </div>
-      </div>
-
-      <!-- Registration Form Card -->
-      <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
-        <form id="multiStepRegForm" action="{{ url_for('auth.register') }}" method="POST">
-          
-          <!-- ================= STEP 1: PERSONAL INFORMATION ================= -->
-          <div class="form-step active" id="step1">
-            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-              <span class="badge bg-primary rounded-pill px-3 py-1">Step 1 of 5</span>
-              <h5 class="fw-bold mb-0 text-dark">Personal Information</h5>
+        <form action="{{ url_for('auth.register') }}" method="POST">
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="auto_110">{{ 'First Name *' }}</label>
+              <input type="text" name="first_name" class="form-control" placeholder="e.g. Rahul" required>
             </div>
-
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">First Name <span class="text-danger">*</span></label>
-                <input type="text" name="first_name" id="regFirstName" class="form-control" placeholder="e.g. Rahul" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Last Name <span class="text-danger">*</span></label>
-                <input type="text" name="last_name" id="regLastName" class="form-control" placeholder="e.g. Sharma" required>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Email Address <span class="text-danger">*</span></label>
-                <input type="email" name="email" id="regEmail" class="form-control" placeholder="rahul.sharma@example.com" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Mobile Number <span class="text-danger">*</span></label>
-                <input type="tel" name="phone" id="regPhone" class="form-control" placeholder="+91 98765 43210" required>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Date of Birth</label>
-                <input type="date" name="dob" class="form-control" value="2001-05-14">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Gender (Optional)</label>
-                <select name="gender" class="form-select">
-                  <option value="Male" selected>Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other / Prefer not to say</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-4">
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">Country</label>
-                <input type="text" name="country" class="form-control" value="India" required>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">Region / State / Province</label>
-                <input type="text" name="state" class="form-control" value="Maharashtra" required>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">City / District <span class="text-danger">*</span></label>
-                <select name="district_id" class="form-select" required>
-                  {% for d in districts %}
-                    <option value="{{ d.id }}" {% if d.name == 'Pune' %}selected{% endif %}>{{ d.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-end">
-              <button type="button" class="btn btn-primary px-4 fw-semibold btn-next" data-next="2">
-                Continue to Education <i class="bi bi-arrow-right ms-1"></i>
-              </button>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="auto_111">{{ 'Last Name *' }}</label>
+              <input type="text" name="last_name" class="form-control" placeholder="e.g. Sharma" required>
             </div>
           </div>
 
-          <!-- ================= STEP 2: EDUCATION ================= -->
-          <div class="form-step d-none" id="step2">
-            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-              <span class="badge bg-primary rounded-pill px-3 py-1">Step 2 of 5</span>
-              <h5 class="fw-bold mb-0 text-dark">Educational Background</h5>
-            </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold" data-i18n="auto_112">{{ 'Username *' }}</label>
+            <input type="text" name="username" class="form-control" placeholder="rahul_sharma" required>
+          </div>
 
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Highest Education Level <span class="text-danger">*</span></label>
-                <select name="highest_education" class="form-select" required>
-                  <option value="12th Standard / HSC" selected>12th Standard / Higher Secondary (HSC)</option>
-                  <option value="10th Standard / SSC">10th Standard / Secondary (SSC)</option>
-                  <option value="Vocational Diploma / ITI">Vocational Diploma / ITI</option>
-                  <option value="Bachelor's Degree">Bachelor's Degree (B.Sc / B.Com / B.A / B.Tech)</option>
-                  <option value="Master's Degree">Master's Degree (M.Sc / MBA / M.Tech / M.Com)</option>
-                  <option value="Other">Other Certification</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Field of Study / Stream <span class="text-danger">*</span></label>
-                <input type="text" name="field_of_study" class="form-control" placeholder="e.g. Science / Commerce / Computer Science" value="Science &amp; Mathematics" required>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold" data-i18n="auto_113">{{ 'Email Address *' }}</label>
+            <input type="email" name="email" class="form-control" placeholder="rahul@example.com" required>
+          </div>
 
-            <div class="row g-3 mb-4">
-              <div class="col-md-8">
-                <label class="form-label small fw-semibold">Institution / College / School Name <span class="text-danger">*</span></label>
-                <input type="text" name="institution" class="form-control" placeholder="e.g. Pune Junior College of Science" value="Maharashtra Vocational College" required>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label small fw-semibold">Graduation Year <span class="text-danger">*</span></label>
-                <input type="number" name="graduation_year" class="form-control" min="1990" max="2030" value="2023" required>
-              </div>
-            </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold" data-i18n="auto_114">{{ 'Password *' }}</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+          </div>
 
-            <div class="d-flex justify-content-between">
-              <button type="button" class="btn btn-outline-secondary px-4 fw-semibold btn-prev" data-prev="1">
-                <i class="bi bi-arrow-left me-1"></i> Previous
-              </button>
-              <button type="button" class="btn btn-primary px-4 fw-semibold btn-next" data-next="3">
-                Continue to Training <i class="bi bi-arrow-right ms-1"></i>
-              </button>
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="auto_115">{{ 'Gender' }}</label>
+              <select name="gender" class="form-select">
+                <option value="Male" data-i18n="auto_116">{{ 'Male' }}</option>
+                <option value="Female" data-i18n="auto_117">{{ 'Female' }}</option>
+                <option value="Other" data-i18n="auto_118">{{ 'Other' }}</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="auto_119">{{ 'District (Maharashtra)' }}</label>
+              <select name="district_id" class="form-select">
+                {% for d in districts %}
+                  <option value="{{ d.id }}">{{ d.name }}</option>
+                {% endfor %}
+              </select>
             </div>
           </div>
 
-          <!-- ================= STEP 3: TRAINING INFORMATION ================= -->
-          <div class="form-step d-none" id="step3">
-            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-              <span class="badge bg-primary rounded-pill px-3 py-1">Step 3 of 5</span>
-              <h5 class="fw-bold mb-0 text-dark">Training Program &amp; Skills</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold" data-i18n="auto_120">{{ 'Mobile Number' }}</label>
+              <input type="tel" name="phone" class="form-control" placeholder="+91 98XXXXXXXX">
             </div>
-
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Training Provider / Center <span class="text-danger">*</span></label>
-                <select name="provider_id" id="providerSelect" class="form-select" required>
-                  {% for p in providers %}
-                    <option value="{{ p.id }}">{{ p.name }} ({{ p.provider_code }})</option>
-                  {% endfor %}
-                </select>
-                <div class="text-muted small mt-1" style="font-size: 0.75rem;">Your training records will be linked to this center.</div>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Course / Program <span class="text-danger">*</span></label>
-                <select name="course_id" id="courseSelect" class="form-select" required>
-                  {% for c in courses %}
-                    <option value="{{ c.id }}">{{ c.course_name }} &bull; {{ c.sector }} ({{ c.duration_hours }}h)</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-
-            <div class="row g-3 mb-3">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Training Start Date</label>
-                <input type="date" name="training_start_date" class="form-control" value="2023-04-10">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Training Completion Date</label>
-                <input type="date" name="training_completion_date" class="form-control" value="2023-08-15">
-              </div>
-            </div>
-
-            <!-- Skills Learned Selector -->
-            <div class="mb-4">
-              <label class="form-label small fw-semibold d-block mb-1">
-                Skills Learned in Training <span class="text-muted fw-normal">(Select all that apply)</span>
-              </label>
-              <div class="p-3 border rounded-3 bg-light" style="max-height: 200px; overflow-y: auto;">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">
-                  {% for sk in skills %}
-                    <div class="col">
-                      <div class="form-check small">
-                        <input class="form-check-input" type="checkbox" name="skills_learned" value="{{ sk.id }}" id="skill_{{ sk.id }}"
-                          {% if sk.skill_name in ['Basic Excel', 'Data Entry', 'Communication', 'English Typing'] %}checked{% endif %}>
-                        <label class="form-check-label text-truncate" for="skill_{{ sk.id }}" title="{{ sk.skill_name }}">
-                          {{ sk.skill_name }} <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.65rem;">{{ sk.category }}</span>
-                        </label>
-                      </div>
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <button type="button" class="btn btn-outline-secondary px-4 fw-semibold btn-prev" data-prev="2">
-                <i class="bi bi-arrow-left me-1"></i> Previous
-              </button>
-              <button type="button" class="btn btn-primary px-4 fw-semibold btn-next" data-next="4">
-                Continue to Employment <i class="bi bi-arrow-right ms-1"></i>
-              </button>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold"><i class="bi bi-linkedin text-primary me-1"></i>LinkedIn Profile (Optional)</label>
+              <input type="url" name="linkedin_url" class="form-control" placeholder="https://www.linkedin.com/in/username">
             </div>
           </div>
 
-          <!-- ================= STEP 4: EMPLOYMENT STATUS ================= -->
-          <div class="form-step d-none" id="step4">
-            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-              <span class="badge bg-primary rounded-pill px-3 py-1">Step 4 of 5</span>
-              <h5 class="fw-bold mb-0 text-dark">Current Employment Status</h5>
-            </div>
-
-            <!-- Employment Status Selector -->
-            <div class="mb-4">
-              <label class="form-label small fw-semibold d-block mb-2">What is your current post-training employment status?</label>
-              <div class="row g-2">
-                <div class="col-md-6">
-                  <div class="p-3 border rounded-3 bg-light h-100">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="employment_status" id="empStatusEmployed" value="employed" checked>
-                      <label class="form-check-label fw-bold" for="empStatusEmployed">
-                        <i class="bi bi-briefcase-fill text-success me-1"></i> Currently Employed
-                      </label>
-                      <div class="text-muted small mt-1">Working in a wage job, corporate, or contract role.</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <div class="p-3 border rounded-3 bg-light h-100">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="employment_status" id="empStatusSeeking" value="looking_for_employment">
-                      <label class="form-check-label fw-bold" for="empStatusSeeking">
-                        <i class="bi bi-search text-primary me-1"></i> Looking for Employment
-                      </label>
-                      <div class="text-muted small mt-1">Actively applying for jobs in your trained sector.</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="p-3 border rounded-3 bg-light h-100">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="employment_status" id="empStatusSelf" value="self_employed">
-                      <label class="form-check-label fw-bold" for="empStatusSelf">
-                        <i class="bi bi-shop text-warning me-1"></i> Self-Employed
-                      </label>
-                      <div class="text-muted small mt-1">Freelancing, micro-business, or consulting.</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="p-3 border rounded-3 bg-light h-100">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="employment_status" id="empStatusFurther" value="further_training">
-                      <label class="form-check-label fw-bold" for="empStatusFurther">
-                        <i class="bi bi-book-half text-info me-1"></i> Further Training
-                      </label>
-                      <div class="text-muted small mt-1">Enrolled in advanced degree or additional course.</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-4">
-                  <div class="p-3 border rounded-3 bg-light h-100">
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="employment_status" id="empStatusNotSeeking" value="not_seeking">
-                      <label class="form-check-label fw-bold" for="empStatusNotSeeking">
-                        <i class="bi bi-pause-circle text-secondary me-1"></i> Not Currently Seeking
-                      </label>
-                      <div class="text-muted small mt-1">Personal reasons, sabbatical, or caregiving.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Conditional Details for Employed Trainees -->
-            <div id="employedDetailsSection" class="p-3 rounded-3 border bg-light mb-4">
-              <h6 class="fw-bold text-dark mb-3"><i class="bi bi-building-check text-success me-1"></i> Employment &amp; Employer Details</h6>
-              
-              <div class="row g-3 mb-3">
-                <div class="col-md-6">
-                  <label class="form-label small fw-semibold">Hiring Enterprise / Employer Name</label>
-                  <input type="text" name="employer_name" class="form-control" placeholder="e.g. Tata Consultancy Services" value="TCS BPS Solutions">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label small fw-semibold">Job Role / Title</label>
-                  <input type="text" name="job_role" class="form-control" placeholder="e.g. Data Operations Associate" value="Operations Associate">
-                </div>
-              </div>
-
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label class="form-label small fw-semibold">Employment Location (City)</label>
-                  <input type="text" name="employment_location" class="form-control" placeholder="e.g. Pune" value="Pune">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label small fw-semibold">Joining Date</label>
-                  <input type="date" name="employment_start_date" class="form-control" value="2023-09-01">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label small fw-semibold">Monthly Wage / Salary (₹)</label>
-                  <input type="number" name="salary_monthly" class="form-control" placeholder="e.g. 18000" value="18000">
-                </div>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <button type="button" class="btn btn-outline-secondary px-4 fw-semibold btn-prev" data-prev="3">
-                <i class="bi bi-arrow-left me-1"></i> Previous
-              </button>
-              <button type="button" class="btn btn-primary px-4 fw-semibold btn-next" data-next="5">
-                Continue to Account <i class="bi bi-arrow-right ms-1"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- ================= STEP 5: ACCOUNT CREATION ================= -->
-          <div class="form-step d-none" id="step5">
-            <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
-              <span class="badge bg-primary rounded-pill px-3 py-1">Step 5 of 5</span>
-              <h5 class="fw-bold mb-0 text-dark">Account Security &amp; Confirmation</h5>
-            </div>
-
-            <div class="alert alert-info border-0 rounded-3 small mb-3">
-              <i class="bi bi-info-circle-fill me-1"></i>
-              Upon creating your account, your permanent <strong>SkillTrack Outcome ID</strong> will be generated. You will be automatically logged into your personal trainee profile.
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Desired Username</label>
-              <input type="text" name="username" id="regUsername" class="form-control" placeholder="rahul_sharma">
-              <div class="text-muted small mt-1" style="font-size: 0.75rem;">Leave blank to use your email prefix.</div>
-            </div>
-
-            <div class="row g-3 mb-4">
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Password <span class="text-danger">*</span></label>
-                <input type="password" name="password" id="regPassword" class="form-control" placeholder="••••••••" required minlength="6">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label small fw-semibold">Confirm Password <span class="text-danger">*</span></label>
-                <input type="password" name="confirm_password" id="regConfirmPassword" class="form-control" placeholder="••••••••" required minlength="6">
-              </div>
-            </div>
-
-            <div class="form-check mb-4 small">
-              <input class="form-check-input" type="checkbox" id="regConsentAgreed" checked required>
-              <label class="form-check-label text-muted" for="regConsentAgreed">
-                I agree to the <strong>SkillTrack Longitudinal Outcome Tracking Protocol</strong> and consent to periodic milestone follow-ups for employment verification and career progression.
-              </label>
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <button type="button" class="btn btn-outline-secondary px-4 fw-semibold btn-prev" data-prev="4">
-                <i class="bi bi-arrow-left me-1"></i> Previous
-              </button>
-              <button type="submit" class="btn btn-success btn-lg px-4 fw-bold shadow-sm">
-                <i class="bi bi-check2-circle me-1"></i> Create SkillTrack Account
-              </button>
-            </div>
-          </div>
-
+          <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mb-3">
+            <i class="bi bi-person-check me-1"></i> Register & Generate Outcome ID
+          </button>
         </form>
 
-        <div class="text-center mt-4 pt-3 border-top small text-muted">
-          Already have a SkillTrack profile? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-semibold">Sign In here</a>
+        <div class="text-center small text-muted">
+          Already registered? <a href="{{ url_for('auth.login') }}" class="text-decoration-none fw-semibold" data-i18n="auto_121">{{ 'Sign In' }}</a>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-
-<style>
-.step-indicator {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.step-num {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #e2e8f0;
-  color: #64748b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-.step-indicator.active .step-num {
-  background: #1d4ed8;
-  color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.2);
-}
-.step-indicator.completed .step-num {
-  background: #10b981;
-  color: #ffffff;
-}
-.step-indicator.active .step-label {
-  color: #1d4ed8;
-  font-weight: 700 !important;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const steps = [1, 2, 3, 4, 5];
-  let currentStep = 1;
-
-  function showStep(stepNumber) {
-    steps.forEach(s => {
-      const stepEl = document.getElementById('step' + s);
-      const indicatorEl = document.getElementById('stepIndicator' + s);
-      if (s === stepNumber) {
-        stepEl.classList.remove('d-none');
-        indicatorEl.classList.add('active');
-      } else {
-        stepEl.classList.add('d-none');
-        indicatorEl.classList.remove('active');
-        if (s < stepNumber) {
-          indicatorEl.classList.add('completed');
-        } else {
-          indicatorEl.classList.remove('completed');
-        }
-      }
-    });
-
-    const progressPct = (stepNumber / 5) * 100;
-    document.getElementById('registrationProgressBar').style.width = progressPct + '%';
-    currentStep = stepNumber;
-    window.scrollTo({ top: 100, behavior: 'smooth' });
-  }
-
-  // Next Step buttons
-  document.querySelectorAll('.btn-next').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const nextStep = parseInt(this.getAttribute('data-next'));
-      // Basic validation for Step 1
-      if (currentStep === 1) {
-        const fn = document.getElementById('regFirstName').value.trim();
-        const ln = document.getElementById('regLastName').value.trim();
-        const em = document.getElementById('regEmail').value.trim();
-        const ph = document.getElementById('regPhone').value.trim();
-        if (!fn || !ln || !em || !ph) {
-          alert('Please fill in your name, email, and mobile number before continuing.');
-          return;
-        }
-      }
-      showStep(nextStep);
-    });
-  });
-
-  // Previous Step buttons
-  document.querySelectorAll('.btn-prev').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const prevStep = parseInt(this.getAttribute('data-prev'));
-      showStep(prevStep);
-    });
-  });
-
-  // Step Indicators click
-  document.querySelectorAll('.step-indicator').forEach((ind, idx) => {
-    ind.addEventListener('click', function() {
-      const targetStep = idx + 1;
-      if (targetStep < currentStep) {
-        showStep(targetStep);
-      }
-    });
-  });
-
-  // Toggle employment details based on status selection
-  const empRadios = document.querySelectorAll('input[name="employment_status"]');
-  const empDetails = document.getElementById('employedDetailsSection');
-  empRadios.forEach(radio => {
-    radio.addEventListener('change', function() {
-      if (this.value === 'employed') {
-        empDetails.style.display = 'block';
-      } else {
-        empDetails.style.display = 'none';
-      }
-    });
-  });
-});
-</script>
 {% endblock %}

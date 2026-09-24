@@ -163,7 +163,35 @@
               <td><span class="outcome-id-pill small">{{ t.outcome_id }}</span></td>
               <td><strong>{{ t.first_name }} {{ t.last_name }}</strong></td>
               <td>{{ t.course_name }}</td>
-              <td><span class="badge bg-success-subtle text-success border border-success-subtle">{{ t.certification_status|title }}</span></td>
+              <td class="text-nowrap">
+                {% if t.certification_status == 'certified' %}
+                  <div class="d-flex flex-column align-items-start gap-1">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1">
+                      <i class="bi bi-patch-check-fill"></i> Certified ✓
+                    </span>
+                    <button type="button" 
+                            class="btn btn-sm btn-link p-0 text-decoration-none fw-semibold text-primary d-inline-flex align-items-center gap-1 btn-view-cert"
+                            style="font-size: 0.78rem;"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#certificateModal"
+                            data-trainee-name="{{ t.first_name }} {{ t.last_name }}"
+                            data-outcome-id="{{ t.outcome_id }}"
+                            data-course-name="{{ t.course_name }}"
+                            data-provider-name="{{ t.provider_name or provider.name }}"
+                            data-certificate-name="{{ t.certificate_name }}"
+                            data-certificate-id="{{ t.certificate_number }}"
+                            data-issue-date="{{ t.completion_date or '2023-08-20' }}"
+                            data-grade="{{ t.grade or 'A' }}"
+                            data-status="Verified / Certified"
+                            data-cert-url="{{ url_for('provider.view_certificate_page', outcome_id=t.outcome_id) }}"
+                            data-verify-url="{{ url_for('provider.verify_certificate_api', outcome_id=t.outcome_id) }}">
+                      <i class="bi bi-eye-fill"></i> View Certificate
+                    </button>
+                  </div>
+                {% else %}
+                  <span class="badge bg-secondary-subtle text-secondary border">{{ t.certification_status|title }}</span>
+                {% endif %}
+              </td>
               <td>
                 <span class="badge bg-primary text-capitalize">{{ t.current_employment_status|replace('_', ' ') }}</span>
               </td>
@@ -206,5 +234,245 @@
     </div>
   </div>
 
+  <!-- Certificate Details & Verification Modal -->
+  <div class="modal fade" id="certificateModal" tabindex="-1" aria-labelledby="certificateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        
+        <div class="modal-header bg-light border-bottom px-4 py-3">
+          <div class="d-flex align-items-center gap-2">
+            <div class="p-2 rounded-3 text-white shadow-sm" style="background: #0e385f;">
+              <i class="bi bi-award-fill fs-5"></i>
+            </div>
+            <div>
+              <h5 class="modal-title fw-bold text-dark mb-0" id="certificateModalLabel">Trainee Certificate Details</h5>
+              <div class="text-muted small">
+                Outcome ID: <span id="modalOutcomeIdPill" class="outcome-id-pill small"></span> &bull; 
+                <span class="badge bg-success-subtle text-success border border-success"><i class="bi bi-patch-check-fill me-1"></i>Verified / Certified</span>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <!-- Prototype Disclaimer Banner -->
+          <div class="alert alert-warning border-warning-subtle py-2 px-3 small rounded-3 mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-info-circle-fill text-warning fs-5"></i>
+            <div>
+              <strong>Prototype / Demo Credential Preview:</strong> Simulated accredited skill certificate using existing trainee records and Outcome ID tracking.
+            </div>
+          </div>
+
+          <!-- Structured Certificate Details Grid -->
+          <div class="card border bg-light-subtle rounded-3 p-3 mb-3">
+            <div class="row g-2 small">
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Trainee Name:</span>
+                <strong class="text-dark fs-6" id="modalTraineeName"></strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Outcome ID:</span>
+                <span class="outcome-id-pill small fw-bold font-monospace" id="modalOutcomeId"></span>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Course Name:</span>
+                <strong class="text-dark" id="modalCourseName"></strong>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Training Provider:</span>
+                <span class="text-dark fw-semibold" id="modalProviderName"></span>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Certificate Name:</span>
+                <span class="text-dark" id="modalCertName"></span>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Certificate ID:</span>
+                <code class="text-primary fw-bold" id="modalCertId"></code>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Issue Date:</span>
+                <span class="text-dark fw-semibold" id="modalIssueDate"></span>
+              </div>
+              <div class="col-sm-6">
+                <span class="text-muted d-block" style="font-size:0.75rem;">Certification Status:</span>
+                <span class="badge bg-success-subtle text-success border border-success" id="modalStatusBadge">
+                  <i class="bi bi-check-circle-fill me-1"></i>Verified / Certified
+                </span>
+                <span class="badge bg-primary-subtle text-primary border border-primary ms-1" id="modalGradeBadge">Grade A</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Digital Verification & QR Section -->
+          <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div class="d-flex align-items-center gap-3">
+                <div class="p-1 border rounded bg-white shadow-sm text-center">
+                  <img id="modalQrCodeImg" src="" alt="QR Code" style="width: 72px; height: 72px;"
+                       onerror="this.style.display='none'; document.getElementById('modalQrFallback').style.display='block';">
+                  <div id="modalQrFallback" style="display:none; width: 72px; height: 72px;" class="d-flex align-items-center justify-content-center bg-light text-muted">
+                    <i class="bi bi-qr-code fs-2"></i>
+                  </div>
+                  <div class="text-muted" style="font-size: 0.6rem;">Scan to Verify</div>
+                </div>
+                <div>
+                  <div class="fw-bold small text-dark d-flex align-items-center gap-1">
+                    <i class="bi bi-shield-check text-success"></i> DigiLocker &amp; State Repository Verification
+                  </div>
+                  <div class="text-muted small" style="font-size: 0.75rem;">
+                    Status: <strong class="text-success">Demo Verification Successful</strong> &bull; Pull URI Active
+                  </div>
+                  <div class="text-muted small mt-1 font-monospace" style="font-size: 0.7rem;">
+                    Signature: <span id="modalDigiSig" class="text-secondary">SHA256-RSA-VALIDATED-DEMO-DIGILOCKER-PULL</span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-outline-success btn-sm fw-semibold" id="btnVerifyOnline">
+                  <i class="bi bi-arrow-repeat me-1"></i>Re-verify Authenticity
+                </button>
+              </div>
+            </div>
+            <!-- Live Verification Alert Container -->
+            <div id="verificationLiveAlert" class="mt-2" style="display: none;"></div>
+          </div>
+
+          <!-- Visual Certificate Preview -->
+          <div class="p-3 border rounded-3" style="background: #ffffff; border: 4px solid #0e385f !important; outline: 2px solid #d4af37; outline-offset: -3px;">
+            <div class="text-center py-2">
+              <div class="text-uppercase fw-bold text-secondary" style="font-size: 0.68rem; letter-spacing: 1px;">Maharashtra Skill Development Mission</div>
+              <h6 class="fw-bold text-dark text-uppercase mb-1" style="color: #0e385f; letter-spacing: 1.5px; font-family: Georgia, serif;">Certificate of Competency</h6>
+              <div class="text-muted" style="font-size: 0.72rem;">This is to certify that</div>
+              <h4 class="fw-bold text-primary my-1" id="previewTraineeName" style="font-family: Georgia, serif;"></h4>
+              <div class="text-muted small mb-1" style="font-size: 0.75rem;">bearing Outcome ID <span class="fw-bold text-dark" id="previewOutcomeId"></span></div>
+              <div class="small text-secondary mx-auto" style="font-size: 0.8rem; max-width: 500px;">
+                has satisfactorily completed the curriculum and demonstrated required competency in
+                <div class="fw-bold text-dark my-1" id="previewCourseName"></div>
+                under accredited partner <strong class="text-dark" id="previewProviderName"></strong>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top px-3 text-muted" style="font-size: 0.7rem;">
+                <div>Certificate ID: <strong id="previewCertId"></strong></div>
+                <div>Grade: <span class="badge bg-success" id="previewGrade">A</span></div>
+                <div>Issue Date: <strong id="previewIssueDate"></strong></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-between">
+          <a href="#" id="modalFullScreenBtn" target="_blank" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Full Page View
+          </a>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm fw-semibold shadow-sm" id="modalDownloadBtn">
+              <i class="bi bi-printer me-1"></i> Download / Print Certificate
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const certModal = document.getElementById('certificateModal');
+  if (!certModal) return;
+
+  let currentCertUrl = '';
+  let currentVerifyUrl = '';
+
+  document.querySelectorAll('.btn-view-cert').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const data = this.dataset;
+      currentCertUrl = data.certUrl;
+      currentVerifyUrl = data.verifyUrl;
+
+      // Update Modal Header & Record Details
+      document.getElementById('modalOutcomeIdPill').textContent = data.outcomeId;
+      document.getElementById('modalTraineeName').textContent = data.traineeName;
+      document.getElementById('modalOutcomeId').textContent = data.outcomeId;
+      document.getElementById('modalCourseName').textContent = data.courseName;
+      document.getElementById('modalProviderName').textContent = data.providerName;
+      document.getElementById('modalCertName').textContent = data.certificateName;
+      document.getElementById('modalCertId').textContent = data.certificateId;
+      document.getElementById('modalIssueDate').textContent = data.issueDate;
+      document.getElementById('modalGradeBadge').textContent = 'Grade ' + (data.grade || 'A');
+
+      // Update Preview Card
+      document.getElementById('previewTraineeName').textContent = data.traineeName;
+      document.getElementById('previewOutcomeId').textContent = data.outcomeId;
+      document.getElementById('previewCourseName').textContent = data.courseName;
+      document.getElementById('previewProviderName').textContent = data.providerName;
+      document.getElementById('previewCertId').textContent = data.certificateId;
+      document.getElementById('previewGrade').textContent = data.grade || 'A';
+      document.getElementById('previewIssueDate').textContent = data.issueDate;
+
+      // Update QR Code image
+      const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=' + encodeURIComponent(window.location.origin + data.certUrl);
+      const qrImg = document.getElementById('modalQrCodeImg');
+      qrImg.src = qrUrl;
+      qrImg.style.display = 'block';
+      const qrFallback = document.getElementById('modalQrFallback');
+      if (qrFallback) qrFallback.style.display = 'none';
+
+      // Update Action Links
+      document.getElementById('modalFullScreenBtn').href = data.certUrl;
+
+      // Reset Live Verification Alert
+      const liveAlert = document.getElementById('verificationLiveAlert');
+      liveAlert.style.display = 'none';
+      liveAlert.innerHTML = '';
+    });
+  });
+
+  // Verify Online Interactive Call
+  const verifyBtn = document.getElementById('btnVerifyOnline');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', function() {
+      if (!currentVerifyUrl) return;
+      verifyBtn.disabled = true;
+      verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Verifying...';
+
+      fetch(currentVerifyUrl)
+        .then(res => res.json())
+        .then(result => {
+          verifyBtn.disabled = false;
+          verifyBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Re-verify Authenticity';
+          const liveAlert = document.getElementById('verificationLiveAlert');
+          liveAlert.style.display = 'block';
+          liveAlert.innerHTML = `
+            <div class="alert alert-success border-success-subtle py-2 px-3 small rounded-3 mb-0">
+              <div class="fw-bold"><i class="bi bi-patch-check-fill me-1"></i>${result.status}</div>
+              <div class="text-muted" style="font-size:0.75rem;">Verified at ${result.verification_time} via ${result.issuer}</div>
+              <div class="font-monospace text-secondary" style="font-size:0.7rem;">Digital Signature: ${result.digital_signature}</div>
+            </div>
+          `;
+        })
+        .catch(err => {
+          verifyBtn.disabled = false;
+          verifyBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Re-verify Authenticity';
+        });
+    });
+  }
+
+  // Download / Print Action
+  const downloadBtn = document.getElementById('modalDownloadBtn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', function() {
+      if (currentCertUrl) {
+        window.open(currentCertUrl, '_blank');
+      }
+    });
+  }
+});
+</script>
 {% endblock %}

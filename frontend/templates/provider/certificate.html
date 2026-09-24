@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+
+{% block title %}Certificate Preview — {{ t.outcome_id }} — SkillTrack{% endblock %}
+
+{% block extra_head %}
+<style>
+  .certificate-frame {
+    background: #ffffff;
+    border: 12px solid #0e385f;
+    outline: 3px solid #d4af37;
+    outline-offset: -8px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  }
+  
+  .certificate-watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 4.5rem;
+    font-weight: 900;
+    color: rgba(14, 56, 95, 0.04);
+    letter-spacing: 6px;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .seal-circle {
+    width: 90px;
+    height: 90px;
+    border: 3px double #d4af37;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fffbf0 0%, #faecc7 100%);
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.25);
+    margin: 0 auto;
+  }
+
+  .cert-signature-line {
+    border-top: 1.5px solid #64748b;
+    margin-top: 40px;
+    padding-top: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+    .app-sidebar,
+    .mobile-top-bar,
+    .synthetic-data-banner,
+    .no-print,
+    footer {
+      display: none !important;
+    }
+    .main-content,
+    .main-content-wrapper {
+      margin-left: 0 !important;
+      padding: 0 !important;
+    }
+    .certificate-frame {
+      box-shadow: none !important;
+      border-width: 8px !important;
+      padding: 30px !important;
+      page-break-inside: avoid;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-lg-5">
+
+  <!-- Breadcrumbs & Actions (Hidden when printing) -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 no-print">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+          <li class="breadcrumb-item"><a href="{{ url_for('provider.dashboard') }}" class="text-decoration-none text-primary"><i class="bi bi-mortarboard me-1"></i>Provider Dashboard</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Certificate Verification</li>
+        </ol>
+      </nav>
+      <h3 class="fw-bold mb-0 text-dark">Accredited Skill Certificate</h3>
+      <div class="text-muted small">Verified credential record for Outcome ID: <span class="outcome-id-pill small">{{ t.outcome_id }}</span></div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a href="{{ url_for('provider.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Cohort Directory
+      </a>
+      <button onclick="window.print()" class="btn btn-primary btn-sm shadow-sm fw-semibold">
+        <i class="bi bi-printer me-1"></i> Download / Print Certificate
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    <!-- Certificate Preview Frame -->
+    <div class="col-xl-9 col-lg-10">
+
+      <!-- Prototype Notice Banner -->
+      <div class="alert alert-warning border-warning-subtle shadow-sm py-2 px-3 mb-4 rounded-3 d-flex align-items-center gap-2 small no-print">
+        <i class="bi bi-info-circle-fill text-warning fs-5"></i>
+        <div>
+          <strong>Prototype / Demo Credential Preview:</strong> Simulated accredited skill certificate using existing trainee records and Outcome ID <code>{{ t.outcome_id }}</code>.
+        </div>
+      </div>
+
+      <!-- Formal Certificate Sheet -->
+      <div class="certificate-frame text-center mb-4">
+        <div class="certificate-watermark">SKILLTRACK VERIFIED</div>
+
+        <!-- Header -->
+        <div class="row align-items-center mb-3">
+          <div class="col-3 text-start">
+            <img src="{{ url_for('static', filename='img/skilltrack_logo.jpg') }}" alt="SkillTrack" style="height: 48px;" class="rounded border p-1 bg-white">
+          </div>
+          <div class="col-6 text-center">
+            <div class="text-uppercase fw-bold text-secondary" style="font-size: 0.78rem; letter-spacing: 1.5px;">State Vocational Training Council</div>
+            <h5 class="fw-bold text-dark text-uppercase mb-0" style="letter-spacing: 1px;">Maharashtra Skill Development Mission</h5>
+            <div class="text-muted small" style="font-size: 0.75rem;">Digital Outcome Registry &bull; National Skills Qualification Framework (NSQF)</div>
+          </div>
+          <div class="col-3 text-end">
+            <span class="badge bg-success-subtle text-success border border-success fw-bold px-2 py-1" style="font-size: 0.75rem;">
+              <i class="bi bi-patch-check-fill me-1"></i>{{ verification.status }}
+            </span>
+          </div>
+        </div>
+
+        <hr style="border-top: 2px solid #0e385f; opacity: 0.85;" class="my-3">
+
+        <!-- Title -->
+        <div class="my-4">
+          <h2 class="fw-bold text-uppercase" style="color: #0e385f; letter-spacing: 2px; font-family: Georgia, serif;">Certificate of Competency</h2>
+          <p class="text-muted fst-italic mb-0" style="font-size: 0.95rem;">This accredited credential is formally conferred upon</p>
+        </div>
+
+        <!-- Candidate Name -->
+        <div class="py-2">
+          <h1 class="display-6 fw-bold text-primary mb-1" style="font-family: Georgia, serif;">{{ t.first_name }} {{ t.last_name }}</h1>
+          <div class="text-muted small mb-2">Permanent Outcome ID: <span class="outcome-id-pill font-monospace fw-bold">{{ t.outcome_id }}</span></div>
+        </div>
+
+        <!-- Description -->
+        <div class="col-lg-10 mx-auto text-secondary mb-4" style="line-height: 1.7; font-size: 0.95rem;">
+          for successfully fulfilling all assessment requirements and achieving proficiency in the state-accredited vocation of
+          <div class="fs-4 fw-bold text-dark my-2">{{ t.course_name }}</div>
+          conducted through accredited training partner <strong class="text-dark">{{ t.provider_name or provider.name }}</strong>
+          under the SkillTrack Outcome-Intelligence &amp; Longitudinal Tracking Framework.
+        </div>
+
+        <!-- Grade & Metrics Box -->
+        <div class="d-inline-flex gap-4 p-3 px-4 bg-light rounded-3 border mb-4">
+          <div class="text-center">
+            <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 0.7rem;">Grade Awarded</span>
+            <span class="fs-5 fw-bold text-success">{{ t.grade or 'A' }} (Distinction)</span>
+          </div>
+          <div class="vr"></div>
+          <div class="text-center">
+            <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 0.7rem;">Issue Date</span>
+            <span class="fs-5 fw-bold text-dark">{{ t.completion_date or '2023-08-20' }}</span>
+          </div>
+          <div class="vr"></div>
+          <div class="text-center">
+            <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 0.7rem;">Status</span>
+            <span class="fs-5 fw-bold text-primary">Verified / Certified ✓</span>
+          </div>
+        </div>
+
+        <!-- Lower Section: Signatures, Seal & QR -->
+        <div class="row align-items-end mt-4 pt-2">
+          <!-- Authorized Signatory 1 -->
+          <div class="col-4 text-center">
+            <div class="font-monospace text-muted small" style="font-size: 0.7rem;">[Digitally Signed]</div>
+            <div class="fw-bold text-dark" style="font-family: 'Brush Script MT', cursive; font-size: 1.4rem;">P. K. Deshmukh</div>
+            <div class="cert-signature-line">
+              Director of Vocational Training<br>
+              <span class="text-muted fw-normal" style="font-size: 0.72rem;">State Skill Development Authority</span>
+            </div>
+          </div>
+
+          <!-- Center Seal & QR -->
+          <div class="col-4 text-center">
+            <div class="seal-circle mb-2">
+              <i class="bi bi-patch-check-fill text-warning fs-3 mb-0"></i>
+              <span class="fw-bold" style="font-size: 0.55rem; color: #644400; letter-spacing: 0.5px;">OFFICIAL SEAL</span>
+            </div>
+            <div class="d-inline-block bg-white p-1 border rounded shadow-sm">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=95x95&data=https%3A%2F%2Fskilltrack.gov.in%2Fverify%2F{{ t.outcome_id }}" 
+                   alt="Verification QR Code" 
+                   style="width: 85px; height: 85px;"
+                   onerror="this.style.display='none'; document.getElementById('qrFallback').style.display='block';">
+              <div id="qrFallback" style="display:none; width: 85px; height: 85px;" class="d-flex align-items-center justify-content-center bg-light text-muted small">
+                <i class="bi bi-qr-code fs-1"></i>
+              </div>
+            </div>
+            <div class="text-muted mt-1" style="font-size: 0.65rem;">Scan to Verify Online</div>
+          </div>
+
+          <!-- Authorized Signatory 2 -->
+          <div class="col-4 text-center">
+            <div class="font-monospace text-muted small" style="font-size: 0.7rem;">[Digitally Signed]</div>
+            <div class="fw-bold text-dark" style="font-family: 'Brush Script MT', cursive; font-size: 1.4rem;">S. R. Joshi</div>
+            <div class="cert-signature-line">
+              Controller of Examinations<br>
+              <span class="text-muted fw-normal" style="font-size: 0.72rem;">State Vocational Examination Board</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer Certificate Metadata Bar -->
+        <div class="border-top mt-4 pt-3 d-flex flex-wrap justify-content-between align-items-center text-muted" style="font-size: 0.72rem;">
+          <div><strong>Certificate ID:</strong> <code>{{ t.certificate_number }}</code></div>
+          <div><strong>Digital Trust Token:</strong> <code>{{ verification.digital_signature }}</code></div>
+          <div><strong>DigiLocker Integration:</strong> Prototype Mock Active</div>
+        </div>
+
+      </div>
+
+      <!-- Detailed Attributes Summary Card (For Evaluators) -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white no-print">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle me-2 text-primary"></i>Certificate Record Details</h5>
+        <div class="row g-3 small">
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Trainee Name:</span>
+            <strong class="text-dark">{{ t.first_name }} {{ t.last_name }}</strong>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Outcome ID:</span>
+            <span class="outcome-id-pill small">{{ t.outcome_id }}</span>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Course Name:</span>
+            <strong class="text-dark">{{ t.course_name }}</strong>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Training Provider:</span>
+            <strong class="text-dark">{{ t.provider_name or provider.name }}</strong>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Certificate Name:</span>
+            <span class="text-dark">{{ t.certificate_name }}</span>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Certificate ID:</span>
+            <code class="text-dark">{{ t.certificate_number }}</code>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Issue Date:</span>
+            <span class="text-dark">{{ t.completion_date or '2023-08-20' }}</span>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <span class="text-muted d-block">Certification Status:</span>
+            <span class="badge bg-success-subtle text-success border border-success">Verified / Certified ✓</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

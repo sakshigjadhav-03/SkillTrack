@@ -45,22 +45,11 @@
   <!-- Fixed Left Sidebar -->
   <aside class="app-sidebar sidebar" id="appSidebar">
     <!-- Logo Container -->
-    <div class="sidebar-logo-container">
+    <div class="sidebar-logo-container mb-3">
       <a href="{{ url_for('index') }}" class="text-decoration-none d-block">
         <img src="{{ url_for('static', filename='img/skilltrack_logo.jpg') }}" alt="SkillTrack" class="sidebar-logo-img rounded-3 shadow-sm bg-white p-1">
       </a>
       <div class="text-white-50 mt-2" style="font-size: 0.68rem; font-weight: 500; letter-spacing: 0.2px;" data-i18n="auto_11">{{ 'From Training to Sustainable Employment' }}</div>
-    </div>
-    <!-- Language Selector in Sidebar -->
-    <div class="dropdown ms-2 mb-3">
-      <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="langDropdownSidebar" data-bs-toggle="dropdown" aria-expanded="false">
-        <span id="currentLang" data-i18n="auto_12">{{ 'English' }}</span>
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="langDropdownSidebar">
-        <li><a class="dropdown-item lang-option" href="#" data-lang="en" data-i18n="auto_13">{{ 'English' }}</a></li>
-        <li><a class="dropdown-item lang-option" href="#" data-lang="hi" data-i18n="auto_14">{{ 'हिंदी' }}</a></li>
-        <li><a class="dropdown-item lang-option" href="#" data-lang="mr" data-i18n="auto_15">{{ 'मराठी' }}</a></li>
-      </ul>
     </div>
 
     <!-- Navigation Links -->
@@ -89,7 +78,7 @@
           <i class="bi bi-mortarboard text-purple" style="color: #a855f7;"></i> Provider Portal
         </a>
         <a class="sidebar-nav-item py-1 ps-4 small" href="{{ url_for('government.dashboard') }}">
-          <i class="bi bi-bank2 text-warning"></i> Gov Command Center
+          <i class="bi bi-shield-lock text-warning"></i> Administrator Portal
         </a>
       </div>
 
@@ -119,11 +108,11 @@
       </a>
 
       <div class="sidebar-divider"></div>
-      <div class="sidebar-section-title" data-i18n="auto_23">{{ 'Government &amp; Maps' }}</div>
+      <div class="sidebar-section-title">{{ 'Administrator &amp; Maps' }}</div>
 
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.dashboard' else '' }}" href="{{ url_for('government.dashboard') }}">
         <i class="bi bi-speedometer2 text-warning fs-5"></i>
-        <span data-i18n="auto_24">{{ 'Command Center' }}</span>
+        <span>{{ 'Administrator Dashboard' }}</span>
       </a>
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.map_view' else '' }}" href="{{ url_for('government.map_view') }}">
         <i class="bi bi-geo-alt-fill text-info fs-5"></i>
@@ -135,7 +124,7 @@
       </a>
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.recommendations_view' else '' }}" href="{{ url_for('government.recommendations_view') }}">
         <i class="bi bi-lightbulb-fill text-warning fs-5"></i>
-        <span data-i18n="auto_27">{{ 'Recommendations' }}</span>
+        <span>{{ 'Administrator Recommendations' }}</span>
       </a>
     </nav>
 

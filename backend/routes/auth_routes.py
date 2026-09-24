@@ -24,7 +24,9 @@ def login():
                 'trainee': 'trainee@skilltrack.in',
                 'employer': 'employer@tcs.in',
                 'provider': 'provider@maharashtra-skills.org',
-                'government': 'admin@skilltrack.gov.in'
+                'government': 'admin@skilltrack.gov.in',
+                'admin': 'admin@skilltrack.gov.in',
+                'administrator': 'admin@skilltrack.gov.in'
             }
             email = role_emails.get(quick_role)
             user = query_db("SELECT * FROM users WHERE email = %s AND is_active = 1", (email,), one=True)
@@ -80,7 +82,7 @@ def _setup_session_and_redirect(user):
             session['provider_name'] = provider['name']
         return redirect(url_for('provider.dashboard'))
 
-    elif user['role'] in ('government', 'admin'):
+    elif user['role'] in ('government', 'admin', 'administrator'):
         return redirect(url_for('government.dashboard'))
 
     return redirect(url_for('index'))

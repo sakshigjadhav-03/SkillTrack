@@ -26,7 +26,10 @@ def role_required(*roles):
                 return redirect(url_for('auth.login', next=request.url))
             
             user_role = session.get('role')
-            if user_role not in roles:
+            allowed_roles = set(roles)
+            if any(r in allowed_roles for r in ('government', 'admin', 'administrator')):
+                allowed_roles.update({'government', 'admin', 'administrator'})
+            if user_role not in allowed_roles:
                 if request.path.startswith('/api/'):
                     return jsonify({'success': False, 'error': 'Access forbidden: unauthorized role'}), 403
                 flash('You do not have permission to view this section.', 'danger')
@@ -39,10 +42,12 @@ def role_required(*roles):
 def get_current_user():
     """Returns the current user details from the session if logged in."""
     if 'user_id' in session:
+        raw_role = session.get('role')
+        display_role = 'Administrator' if raw_role in ('government', 'admin', 'administrator') else (raw_role.capitalize() if raw_role else '')
         return {
             'id': session.get('user_id'),
             'username': session.get('username'),
-            'role': session.get('role'),
+            'role': display_role,
             'email': session.get('email'),
             'trainee_id': session.get('trainee_id'),
             'outcome_id': session.get('outcome_id'),

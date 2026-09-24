@@ -1776,48 +1776,19 @@ const translations = {
 translations.hi = {...translations.en};
 translations.mr = {...translations.en};
 
+localStorage.removeItem('lang');
+
 function getCurrentLang() {
-  return localStorage.getItem('lang') || 'en';
+  return 'en';
 }
 
 function setLang(lang) {
-  if (!translations[lang]) return;
-  localStorage.setItem('lang', lang);
-  document.documentElement.lang = lang;
-  // Reload to apply translations across the page
-  location.reload();
+  // Single language: English only
 }
 
 function applyTranslations() {
-  const lang = getCurrentLang();
-  const dict = translations[lang] || translations['en'];
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (dict[key]) {
-      if (el.tagName.toLowerCase() === 'input' && el.placeholder) {
-        el.placeholder = dict[key];
-      } else if (el.tagName.toLowerCase() === 'option') {
-        el.textContent = dict[key];
-      } else {
-        el.textContent = dict[key];
-      }
-    }
-  });
-  const curSpan = document.getElementById('currentLang');
-  if (curSpan) {
-    const nameMap = { en: 'English', hi: 'हिंदी', mr: 'मराठी' }[lang];
-    curSpan.textContent = nameMap || lang;
-  }
+  document.documentElement.lang = 'en';
 }
-
-// Event delegation for language selector
-document.addEventListener('click', e => {
-  if (e.target && e.target.matches('.lang-option')) {
-    e.preventDefault();
-    const chosen = e.target.getAttribute('data-lang');
-    setLang(chosen);
-  }
-});
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', applyTranslations);

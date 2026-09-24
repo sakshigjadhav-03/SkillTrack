@@ -51,6 +51,12 @@ def create_app(config_class=Config):
     def index():
         return render_template('index.html')
 
+    # Direct Public Employer Verification Route
+    @app.route('/verify-employment/<token>', methods=['GET', 'POST'])
+    def verify_employment_alias(token):
+        from backend.routes.employer_routes import verify_request
+        return verify_request(token)
+
     # Health Check Endpoint for Cloud Monitoring
     @app.route('/health')
     def health_check():

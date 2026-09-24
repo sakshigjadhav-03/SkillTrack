@@ -149,6 +149,13 @@ def ensure_schema_compatibility():
             for col_name, col_type in needed:
                 if col_name not in existing:
                     cursor.execute(f"ALTER TABLE trainees ADD COLUMN {col_name} {col_type}")
+
+            # Ensure employer_verifications has token column
+            cursor.execute("PRAGMA table_info(employer_verifications)")
+            ev_existing = [row[1] for row in cursor.fetchall()]
+            if 'token' not in ev_existing:
+                cursor.execute("ALTER TABLE employer_verifications ADD COLUMN token VARCHAR(100)")
+
             conn.commit()
         else:
             for col_name, col_type in [
@@ -169,6 +176,10 @@ def ensure_schema_compatibility():
                     cursor.execute(f"ALTER TABLE trainees ADD COLUMN {col_name} {col_type}")
                 except Exception:
                     pass
+            try:
+                cursor.execute("ALTER TABLE employer_verifications ADD COLUMN token VARCHAR(100)")
+            except Exception:
+                pass
         cursor.close()
         conn.close()
     except Exception as e:

@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for, flash
-from backend.database import query_db
+from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
+from backend.database import query_db, execute_db
 from backend.utils.decorators import login_required, role_required
 from backend.services.outcome_score import OutcomeScoreCalculator
 from backend.services.skill_matcher import SkillMatcher
@@ -61,6 +61,7 @@ def dashboard():
     trainees = query_db(
         """
         SELECT 
+            t.id AS trainee_id,
             t.outcome_id,
             t.first_name,
             t.last_name,
@@ -69,6 +70,11 @@ def dashboard():
             tr.completion_date,
             tr.certification_status,
             ev.verification_status,
+            ev.token AS verification_token,
+            er.employer_name AS company_name,
+            er.job_role,
+            er.joining_date,
+            er.salary_monthly,
             f.current_salary,
             f.salary_growth_pct,
             f.retention_status,
@@ -76,7 +82,8 @@ def dashboard():
         FROM training_records tr
         JOIN trainees t ON tr.trainee_id = t.id
         JOIN courses c ON tr.course_id = c.id
-        LEFT JOIN employer_verifications ev ON t.id = ev.trainee_id AND ev.verification_status = 'verified'
+        LEFT JOIN employment_records er ON t.id = er.trainee_id
+        LEFT JOIN employer_verifications ev ON t.id = ev.trainee_id
         LEFT JOIN followups f ON t.id = f.trainee_id AND f.milestone_months = 12
         WHERE tr.provider_id = %s
         ORDER BY t.id DESC
@@ -153,3 +160,87 @@ def dashboard():
         total_trained=total_trained,
         outcome_score=outcome_score
     )
+
+
+@provider_bp.route('/request-verification/<int:trainee_id>', methods=['POST'])
+@login_required
+@role_required('provider')
+def request_verification(trainee_id):
+    """
+    Generates a secure verification link for a trainee's reported employment outcome.
+    Initiated by the Training Provider.
+    """
+    token, verify_url, trainee, er = _generate_verification_request(trainee_id)
+    if not token:
+        flash("Could not generate verification request for this trainee.", "danger")
+        return redirect(url_for('provider.dashboard'))
+    
+    flash(f"Verification request generated for {trainee['first_name']} {trainee['last_name']}! Secure link ready to share.", "success")
+    return redirect(url_for('provider.dashboard'))
+
+
+@provider_bp.route('/api/request-verification', methods=['POST'])
+@login_required
+@role_required('provider')
+def api_request_verification():
+    """
+    JSON API for Training Provider to asynchronously generate a secure employer verification link.
+    """
+    data = request.get_json(silent=True) or request.form
+    trainee_id = data.get('trainee_id')
+    if not trainee_id:
+        return jsonify({'success': False, 'message': 'trainee_id is required'}), 400
+    
+    token, verify_url, trainee, er = _generate_verification_request(int(trainee_id))
+    if not token:
+        return jsonify({'success': False, 'message': 'Trainee or employment record not found'}), 404
+    
+    return jsonify({
+        'success': True,
+        'token': token,
+        'verify_url': verify_url,
+        'trainee_name': f"{trainee['first_name']} {trainee['last_name']}",
+        'outcome_id': trainee['outcome_id'],
+        'company_name': er['employer_name'] if er else 'Hiring Employer',
+        'job_role': er['job_role'] if er else 'Designated Role',
+        'salary_monthly': er['salary_monthly'] if er else None,
+        'joining_date': str(er['joining_date']) if er and er.get('joining_date') else None
+    })
+
+
+def _generate_verification_request(trainee_id: int):
+    import uuid
+    from datetime import datetime
+    trainee = query_db("SELECT * FROM trainees WHERE id = %s", (trainee_id,), one=True)
+    if not trainee:
+        return None, None, None, None
+    
+    er = query_db("SELECT * FROM employment_records WHERE trainee_id = %s ORDER BY id DESC", (trainee_id,), one=True)
+    
+    # Check if verification record already exists
+    ev = query_db("SELECT * FROM employer_verifications WHERE trainee_id = %s", (trainee_id,), one=True)
+    
+    if ev and ev.get('token'):
+        token = ev['token']
+    else:
+        token = f"EV-{uuid.uuid4().hex[:12].upper()}"
+        if ev:
+            execute_db("UPDATE employer_verifications SET token = %s WHERE id = %s", (token, ev['id']))
+        else:
+            employer_id = er['employer_id'] if er and er.get('employer_id') else 1
+            verified_role = er['job_role'] if er else 'Trainee Graduate'
+            verified_date = er['joining_date'] if er else datetime.now().strftime('%Y-%m-%d')
+            sal_monthly = er['salary_monthly'] if er and er.get('salary_monthly') else 20000.0
+            sal_range = f"₹{int(sal_monthly):,} / month"
+            execute_db(
+                """
+                INSERT INTO employer_verifications (
+                    employer_id, trainee_id, outcome_id, token, verification_status,
+                    verified_role, verified_joining_date, verified_salary_range, remarks
+                ) VALUES (%s, %s, %s, %s, 'pending', %s, %s, %s, 'Verification requested by Training Provider')
+                """,
+                (employer_id, trainee_id, trainee['outcome_id'], token, verified_role, verified_date, sal_range)
+            )
+
+    verify_url = url_for('employer.verify_request', token=token, _external=True)
+    return token, verify_url, trainee, er

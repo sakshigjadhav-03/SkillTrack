@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+
+{% block title %}Employment Verification — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+
+      <!-- Verification Header Banner -->
+      <div class="text-center mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-circle mb-2" style="width: 48px; height: 48px;">
+          <i class="bi bi-shield-check fs-3"></i>
+        </div>
+        <h3 class="fw-bold mb-1 text-dark">Employment Verification</h3>
+        <p class="text-muted small mb-0">Authorized Institutional Employment &amp; Workplace Readiness Validation</p>
+      </div>
+
+      <!-- Trainee Reported Information Card -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" style="border-top: 4px solid #16a34a !important;">
+        <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+          <div>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning fw-semibold px-2 py-1">
+              <i class="bi bi-clock-history me-1"></i> Self-Reported — Awaiting Verification
+            </span>
+          </div>
+          <span class="text-muted small">Token: <code>{{ token }}</code></span>
+        </div>
+
+        <p class="text-secondary small mb-3">
+          A trainee has reported active or recent employment at your organization. Please verify the employment details below:
+        </p>
+
+        <div class="row g-3 p-3 rounded-3 bg-light border mb-2">
+          <div class="col-sm-6">
+            <span class="text-muted d-block small" style="font-size: 0.75rem;">Candidate / Trainee Name</span>
+            <strong class="text-dark fs-6">{{ trainee.first_name }} {{ trainee.last_name }}</strong>
+            <span class="text-muted d-block" style="font-size: 0.72rem;">Outcome ID: <code>{{ trainee.outcome_id }}</code></span>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block small" style="font-size: 0.75rem;">Reported Organization / Company</span>
+            <strong class="text-dark fs-6">{{ employment.employer_name if employment else (verification.remarks or 'Your Organization') }}</strong>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block small" style="font-size: 0.75rem;">Reported Job Role</span>
+            <strong class="text-primary">{{ verification.verified_role or (employment.job_role if employment else 'Associate') }}</strong>
+          </div>
+          <div class="col-sm-6">
+            <span class="text-muted d-block small" style="font-size: 0.75rem;">Reported Joining Date</span>
+            <strong class="text-dark">{{ verification.verified_joining_date or (employment.joining_date if employment else 'Recent') }}</strong>
+          </div>
+          <div class="col-sm-12">
+            <span class="text-muted d-block small" style="font-size: 0.75rem;">Reported Compensation / Monthly Salary</span>
+            <strong class="text-success fs-6">
+              {% if employment and employment.salary_monthly %}
+                ₹{{ "{:,.0f}".format(employment.salary_monthly) }} / month
+              {% else %}
+                {{ verification.verified_salary_range or '₹18,000 - ₹25,000 / month' }}
+              {% endif %}
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Verification Form -->
+      <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+        <h5 class="fw-bold mb-3 text-dark text-center">Is this employment information correct?</h5>
+
+        <form action="{{ url_for('employer.verify_request', token=token) }}" method="POST" id="verifyForm">
+          
+          <!-- Decision Choice -->
+          <div class="row g-2 mb-4">
+            <div class="col-4">
+              <input type="radio" class="btn-check" name="decision" id="decisionConfirm" value="confirm" checked onchange="toggleFeedbackSection()">
+              <label class="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center gap-1 rounded-3" for="decisionConfirm">
+                <i class="bi bi-check-circle-fill fs-4"></i>
+                <span class="fw-bold" style="font-size: 0.88rem;">Confirm</span>
+              </label>
+            </div>
+            <div class="col-4">
+              <input type="radio" class="btn-check" name="decision" id="decisionCorrection" value="correction" onchange="toggleFeedbackSection()">
+              <label class="btn btn-outline-warning w-100 py-3 d-flex flex-column align-items-center gap-1 rounded-3" for="decisionCorrection">
+                <i class="bi bi-pencil-square fs-4"></i>
+                <span class="fw-bold" style="font-size: 0.88rem;">Request Correction</span>
+              </label>
+            </div>
+            <div class="col-4">
+              <input type="radio" class="btn-check" name="decision" id="decisionUnable" value="unable" onchange="toggleFeedbackSection()">
+              <label class="btn btn-outline-danger w-100 py-3 d-flex flex-column align-items-center gap-1 rounded-3" for="decisionUnable">
+                <i class="bi bi-x-circle-fill fs-4"></i>
+                <span class="fw-bold" style="font-size: 0.88rem;">Unable to Verify</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section A: When Confirm is chosen -> Optional Workplace Skill Validation -->
+          <div id="confirmSkillsSection" class="border-top pt-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <h6 class="fw-bold text-dark mb-0"><i class="bi bi-award-fill text-warning me-2"></i>Workplace Skill Validation</h6>
+                <span class="text-muted small" style="font-size: 0.78rem;">Optional employer feedback feeding into curriculum skill-gap analysis</span>
+              </div>
+              <span class="badge bg-light text-secondary border">Optional</span>
+            </div>
+
+            <!-- Communication -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-dark">Communication</label>
+              <div class="d-flex gap-2">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_communication" id="comm1" value="Demonstrated" checked>
+                  <label class="form-check-label small" for="comm1">Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_communication" id="comm2" value="Partially Demonstrated">
+                  <label class="form-check-label small" for="comm2">Partially Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_communication" id="comm3" value="Not Demonstrated">
+                  <label class="form-check-label small" for="comm3">Not Demonstrated</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Technical Skills -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-dark">Technical Skills</label>
+              <div class="d-flex gap-2">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_technical" id="tech1" value="Demonstrated" checked>
+                  <label class="form-check-label small" for="tech1">Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_technical" id="tech2" value="Partially Demonstrated">
+                  <label class="form-check-label small" for="tech2">Partially Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_technical" id="tech3" value="Not Demonstrated">
+                  <label class="form-check-label small" for="tech3">Not Demonstrated</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Problem Solving -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-dark">Problem Solving</label>
+              <div class="d-flex gap-2">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_problem_solving" id="prob1" value="Demonstrated" checked>
+                  <label class="form-check-label small" for="prob1">Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_problem_solving" id="prob2" value="Partially Demonstrated">
+                  <label class="form-check-label small" for="prob2">Partially Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_problem_solving" id="prob3" value="Not Demonstrated">
+                  <label class="form-check-label small" for="prob3">Not Demonstrated</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Teamwork -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-dark">Teamwork</label>
+              <div class="d-flex gap-2">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_teamwork" id="team1" value="Demonstrated" checked>
+                  <label class="form-check-label small" for="team1">Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_teamwork" id="team2" value="Partially Demonstrated">
+                  <label class="form-check-label small" for="team2">Partially Demonstrated</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="skill_teamwork" id="team3" value="Not Demonstrated">
+                  <label class="form-check-label small" for="team3">Not Demonstrated</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Missing Skills & Additional Feedback -->
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-dark">Missing Workplace Skills / Gaps</label>
+              <input type="text" name="missing_skills_text" class="form-control" placeholder="e.g. Advanced Excel, Client Communication, Reporting Tools" value="{{ feedback.missing_skills_text if feedback else '' }}">
+              <div class="form-text" style="font-size: 0.72rem;">Specific skills the graduate was lacking or could improve upon.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-dark">Additional Qualitative Feedback</label>
+              <textarea name="general_feedback" class="form-control" rows="2" placeholder="Overall observations on candidate performance, punctuality, and job readiness...">{{ feedback.general_feedback if feedback else '' }}</textarea>
+            </div>
+          </div>
+
+          <!-- Section B: When Request Correction is chosen -->
+          <div id="correctionSection" class="border-top pt-4 d-none">
+            <h6 class="fw-bold text-dark mb-2"><i class="bi bi-pencil-fill text-warning me-2"></i>Provide Correction Details</h6>
+            <p class="text-muted small mb-2">Please indicate the discrepancies (e.g. correct role title, actual start date, or employment status):</p>
+            <textarea name="correction_notes" class="form-control" rows="3" placeholder="e.g. Candidate works as Junior Data Entry Intern, joined on 15 Oct 2023, salary is ₹15,000..."></textarea>
+          </div>
+
+          <!-- Section C: When Unable to Verify is chosen -->
+          <div id="unableSection" class="border-top pt-4 d-none">
+            <h6 class="fw-bold text-dark mb-2"><i class="bi bi-x-circle-fill text-danger me-2"></i>Reason for Inability to Verify</h6>
+            <p class="text-muted small mb-2">Please specify why this candidate cannot be verified at your organization:</p>
+            <textarea name="rejection_notes" class="form-control" rows="3" placeholder="e.g. Candidate not found in employee records / Did not complete onboarding / Offer revoked..."></textarea>
+          </div>
+
+          <div class="mt-4 pt-2">
+            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-6 shadow">
+              <i class="bi bi-check2-circle me-1"></i> Submit Verification
+            </button>
+            <div class="text-center text-muted small mt-2" style="font-size: 0.75rem;">
+              <i class="bi bi-lock me-1"></i> Verified securely under SkillTrack Outcome Verification Protocol
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleFeedbackSection() {
+  const isConfirm = document.getElementById('decisionConfirm').checked;
+  const isCorrection = document.getElementById('decisionCorrection').checked;
+  const isUnable = document.getElementById('decisionUnable').checked;
+
+  const skillsSec = document.getElementById('confirmSkillsSection');
+  const corrSec = document.getElementById('correctionSection');
+  const unableSec = document.getElementById('unableSection');
+
+  if (isConfirm) {
+    skillsSec.classList.remove('d-none');
+    corrSec.classList.add('d-none');
+    unableSec.classList.add('d-none');
+  } else if (isCorrection) {
+    skillsSec.classList.add('d-none');
+    corrSec.classList.remove('d-none');
+    unableSec.classList.add('d-none');
+  } else if (isUnable) {
+    skillsSec.classList.add('d-none');
+    corrSec.classList.add('d-none');
+    unableSec.classList.remove('d-none');
+  }
+}
+</script>
+{% endblock %}

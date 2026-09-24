@@ -219,11 +219,17 @@
       </div>
       <div class="col-md-3">
         <div class="p-3 rounded-3 border bg-light">
-          <span class="text-muted small d-block mb-1">Employer Verification</span>
+          <span class="text-muted small d-block mb-1">Verification Status</span>
           {% if verification and verification.verification_status == 'verified' %}
-            <span class="badge bg-success-subtle text-success border border-success fw-bold">✓ Verified by {{ verification.company_name }}</span>
+            <span class="badge bg-success-subtle text-success border border-success fw-bold py-1 px-2 d-inline-flex align-items-center gap-1">
+              <i class="bi bi-patch-check-fill"></i> Employer Verified
+            </span>
+            <div class="text-muted small mt-1" style="font-size: 0.72rem;">Confirmed by {{ verification.company_name or 'Employer' }}</div>
           {% else %}
-            <span class="badge bg-warning-subtle text-warning border border-warning">Pending Employer Confirmation</span>
+            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning fw-semibold py-1 px-2 d-inline-flex align-items-center gap-1">
+              <i class="bi bi-clock-history"></i> Self-Reported — Awaiting Verification
+            </span>
+            <div class="text-muted small mt-1" style="font-size: 0.72rem;">Verification initiated via Training Provider</div>
           {% endif %}
         </div>
       </div>

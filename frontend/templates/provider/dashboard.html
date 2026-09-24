@@ -192,9 +192,26 @@
               </td>
               <td>
                 {% if t.verification_status == 'verified' %}
-                  <span class="verified-badge"><i class="bi bi-patch-check-fill"></i> Verified ✓</span>
+                  <span class="badge bg-success-subtle text-success border border-success fw-bold py-1 px-2 d-inline-flex align-items-center gap-1">
+                    <i class="bi bi-patch-check-fill"></i> Employer Verified ✓
+                  </span>
+                  {% if t.company_name %}
+                    <div class="text-muted" style="font-size: 0.72rem;">{{ t.company_name }}</div>
+                  {% endif %}
+                {% elif t.current_employment_status in ['employed', 'self_employed', 'apprentice'] or t.company_name %}
+                  <div class="d-flex flex-column gap-1 align-items-start">
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning fw-semibold py-1 px-2">
+                      <i class="bi bi-clock-history me-1"></i> Self-Reported
+                    </span>
+                    {% if t.company_name %}
+                      <div class="text-dark fw-semibold" style="font-size: 0.75rem;">{{ t.company_name }} &bull; {{ t.job_role or 'Role' }}</div>
+                    {% endif %}
+                    <button type="button" class="btn btn-primary btn-sm py-1 px-2 mt-1 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.72rem;" onclick="openVerificationModal({{ t.trainee_id }}, '{{ t.first_name }} {{ t.last_name }}', '{{ t.outcome_id }}', '{{ t.company_name or 'Hiring Organization' }}', '{{ t.job_role or 'Associate' }}', '{{ t.salary_monthly or '' }}', '{{ t.joining_date or '' }}', '{{ t.verification_token or '' }}')">
+                      <i class="bi bi-send-check"></i> Request Employer Verification
+                    </button>
+                  </div>
                 {% else %}
-                  <span class="text-muted small" data-i18n="auto_469">{{ 'Pending' }}</span>
+                  <span class="text-muted small">Not in Placement</span>
                 {% endif %}
               </td>
               <td>
@@ -215,4 +232,119 @@
   </div>
 
 </div>
+
+<!-- Employer Verification Request Modal -->
+<div class="modal fade" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-bottom py-3">
+        <h5 class="modal-title fw-bold text-dark" id="verificationModalLabel">
+          <i class="bi bi-shield-check text-primary me-2"></i>Employment Outcome — Verification Request
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div class="alert alert-warning-subtle border border-warning small py-2 mb-3">
+          <strong>Status: 🟡 Self-Reported — Awaiting Verification</strong><br>
+          <span class="text-muted">Initiating official employer verification request. The employer does NOT need to create an account or log in.</span>
+        </div>
+
+        <div class="p-3 bg-light rounded-3 border mb-3 small">
+          <div class="row g-2">
+            <div class="col-6">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">Trainee</span>
+              <strong id="modalTraineeName" class="text-dark">Rahul Sharma</strong>
+              <div class="text-muted" style="font-size: 0.7rem;" id="modalOutcomeId">ST-MH-000123</div>
+            </div>
+            <div class="col-6">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">Company / Employer</span>
+              <strong id="modalCompany" class="text-dark">TCS BPS Services</strong>
+            </div>
+            <div class="col-6">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">Reported Role</span>
+              <span id="modalRole" class="text-dark fw-semibold">Junior Operations Executive</span>
+            </div>
+            <div class="col-6">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">Joining Date</span>
+              <span id="modalDate" class="text-dark">2023-09-01</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-bold text-dark">Secure Verification Link</label>
+          <div class="input-group">
+            <input type="text" id="modalVerifyUrl" class="form-control form-control-sm bg-white" readonly>
+            <button class="btn btn-outline-primary btn-sm" type="button" onclick="copyVerificationLink()">
+              <i class="bi bi-clipboard me-1"></i> Copy Link
+            </button>
+          </div>
+          <div class="form-text" style="font-size: 0.72rem;">
+            Share this link via email or messaging with the hiring employer's HR or reporting manager.
+          </div>
+        </div>
+
+        <div id="copySuccessAlert" class="alert alert-success py-1 px-2 small d-none">
+          <i class="bi bi-check-circle me-1"></i> Link copied to clipboard!
+        </div>
+      </div>
+      <div class="modal-footer border-top py-2">
+        <a id="modalOpenBtn" href="#" target="_blank" class="btn btn-success btn-sm fw-semibold">
+          <i class="bi bi-box-arrow-up-right me-1"></i> Open Verification Form ↗
+        </a>
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openVerificationModal(traineeId, traineeName, outcomeId, company, role, salary, date, token) {
+  document.getElementById('modalTraineeName').innerText = traineeName;
+  document.getElementById('modalOutcomeId').innerText = outcomeId;
+  document.getElementById('modalCompany').innerText = company || 'Hiring Organization';
+  document.getElementById('modalRole').innerText = role || 'Graduate Associate';
+  document.getElementById('modalDate').innerText = date || 'Recent Placement';
+  document.getElementById('copySuccessAlert').classList.add('d-none');
+
+  const modalEl = document.getElementById('verificationModal');
+  const bsModal = new bootstrap.Modal(modalEl);
+
+  if (token && token.trim() !== '') {
+    const url = window.location.origin + '/verify-employment/' + token;
+    document.getElementById('modalVerifyUrl').value = url;
+    document.getElementById('modalOpenBtn').href = url;
+    bsModal.show();
+  } else {
+    // Generate token asynchronously
+    fetch('{{ url_for("provider.api_request_verification") }}', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trainee_id: traineeId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById('modalVerifyUrl').value = data.verify_url;
+        document.getElementById('modalOpenBtn').href = data.verify_url;
+        bsModal.show();
+      } else {
+        alert('Could not generate verification link: ' + (data.message || 'Unknown error'));
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error contacting verification engine.');
+    });
+  }
+}
+
+function copyVerificationLink() {
+  const input = document.getElementById('modalVerifyUrl');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => {
+    document.getElementById('copySuccessAlert').classList.remove('d-none');
+  });
+}
+</script>
 {% endblock %}

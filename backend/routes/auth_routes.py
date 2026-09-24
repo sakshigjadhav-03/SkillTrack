@@ -24,7 +24,7 @@ def login():
                 'trainee': 'trainee@skilltrack.in',
                 'employer': 'employer@tcs.in',
                 'provider': 'provider@maharashtra-skills.org',
-                'government': 'admin@skilltrack.gov.in'
+                'government': 'provider@maharashtra-skills.org'  # Graceful fallback to provider intelligence
             }
             email = role_emails.get(quick_role)
             user = query_db("SELECT * FROM users WHERE email = %s AND is_active = 1", (email,), one=True)

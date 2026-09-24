@@ -9,13 +9,19 @@
     <div class="row align-items-center g-4">
       <!-- Left Column: Headlines, Subtitle, Stat Pills & Action Buttons -->
       <div class="col-xl-7 col-lg-7">
-        <h1 class="fw-bold mb-3" style="font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1.15; letter-spacing: -0.5px;">
-          <span class="text-white d-block" data-i18n="auto_36">{{ 'Track Outcomes.' }}</span>
-          <span class="d-block" style="color: #10b981;" data-i18n="auto_37">{{ 'Identify Gaps.' }}</span>
-          <span class="d-block" style="color: #f59e0b;" data-i18n="auto_38">{{ 'Improve Lives.' }}</span>
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3 text-warning border border-warning border-opacity-25" style="background: rgba(245, 158, 11, 0.12); font-size: 0.8rem; font-weight: 600;">
+          <i class="bi bi-bullseye"></i>
+          <span>Outcome Intelligence Platform</span>
+        </div>
+
+        <h1 class="fw-bold mb-3" style="font-size: clamp(2.3rem, 4vw, 3.3rem); line-height: 1.15; letter-spacing: -0.5px;">
+          <span class="text-white d-block">From Training Completion</span>
+          <span class="d-block" style="color: #10b981;">to Sustainable Employment</span>
         </h1>
 
-        <p class="text-white-50 mb-4 lead" style="font-size: 1.05rem; max-width: 540px; line-height: 1.6;" data-i18n="auto_39">{{ 'SkillTrack is the outcome-intelligence platform that connects training to real-world employment and helps improve the impact of skilling initiatives.' }}</p>
+        <p class="text-white-50 mb-4 lead" style="font-size: 1.05rem; max-width: 560px; line-height: 1.6;">
+          SkillTrack connects training, employment outcomes, employer feedback, and skill intelligence to understand what happened, why it happened, what action is needed, and whether it worked.
+        </p>
 
         <!-- 4 Metrics Pills -->
         <div class="d-flex flex-wrap gap-2 mb-4">
@@ -54,78 +60,80 @@
 
         <!-- Call to Action Buttons -->
         <div class="d-flex flex-wrap gap-3">
-          <a href="{{ url_for('government.dashboard') }}" class="btn btn-warning btn-lg fw-bold px-4 text-dark shadow" style="background: #f59e0b; border: none; border-radius: 8px;" data-i18n="auto_48">{{ 'Explore Dashboard →' }}</a>
+          <a href="{{ url_for('government.dashboard') }}" class="btn btn-warning btn-lg fw-bold px-4 text-dark shadow" style="background: #f59e0b; border: none; border-radius: 8px;">
+            <i class="bi bi-speedometer2 me-1"></i> Explore Outcome Intelligence →
+          </a>
           <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4" style="border-radius: 8px; border-color: rgba(255,255,255,0.35);">
-            <i class="bi bi-play-circle me-1"></i> See How It Works
+            <i class="bi bi-diagram-3 me-1"></i> 6-Step Outcome Loop
           </a>
         </div>
       </div>
 
-      <!-- Right Column: Quick 1-Click Role Login Card -->
+      <!-- Right Column: Quick 1-Click Role Login Card (3 Roles) -->
       <div class="col-xl-5 col-lg-5" id="role-portals">
-        <div class="card border-0 shadow-lg rounded-4 p-4 text-dark bg-white" style="max-width: 480px; margin: 0 auto;">
+        <div class="card border-0 shadow-lg rounded-4 p-4 text-dark bg-white" style="max-width: 490px; margin: 0 auto;">
           <div class="text-center mb-3">
             <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-2" style="width: 38px; height: 38px;">
               <i class="bi bi-lightning-charge-fill fs-5 text-primary"></i>
             </div>
-            <h5 class="fw-bold mb-0 text-dark" data-i18n="auto_49">{{ 'Quick 1-Click Role Login' }}</h5>
-            <div class="text-muted small" style="font-size: 0.8rem;" data-i18n="auto_50">{{ 'Continue as' }}</div>
+            <h5 class="fw-bold mb-0 text-dark">Quick 1-Click Demo Access</h5>
+            <div class="text-muted small" style="font-size: 0.8rem;">Select a role persona to explore the platform live</div>
           </div>
 
           <form action="{{ url_for('auth.login') }}" method="POST">
-            <div class="row g-2">
-              <!-- Trainee Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #f0f7ff; border-color: #dbeafe !important;">
-                  <div class="role-icon-circle" style="background: #dbeafe; color: #2563eb;">
-                    <i class="bi bi-person-fill"></i>
+            <div class="d-flex flex-column gap-2">
+              <!-- 1. Trainee Card -->
+              <div class="role-card-box border p-3" style="background: #f0f7ff; border-color: #dbeafe !important;">
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                  <div class="d-flex align-items-center gap-3 text-start">
+                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dbeafe; color: #2563eb; width: 40px; height: 40px;">
+                      <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Trainee Portal</div>
+                      <div class="text-muted" style="font-size: 0.74rem;">Track verified employment journey, wage progression & skill pathways</div>
+                    </div>
                   </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_51">{{ 'Trainee' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_52">{{ 'View your training journey &amp; outcomes' }}</div>
-                  <button type="submit" name="quick_role" value="trainee" class="btn btn-primary btn-sm w-100 fw-semibold mt-2 rounded-2" style="background: #1d4ed8; font-size: 0.75rem;" data-i18n="auto_53">{{ 'Login as Trainee ›' }}</button>
+                  <button type="submit" name="quick_role" value="trainee" class="btn btn-primary btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2" style="background: #1d4ed8; font-size: 0.75rem;">Login ›</button>
                 </div>
               </div>
 
-              <!-- Employer Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #f0fdf4; border-color: #dcfce7 !important;">
-                  <div class="role-icon-circle" style="background: #dcfce7; color: #16a34a;">
-                    <i class="bi bi-briefcase-fill"></i>
+              <!-- 2. Employer Card -->
+              <div class="role-card-box border p-3" style="background: #f0fdf4; border-color: #dcfce7 !important;">
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                  <div class="d-flex align-items-center gap-3 text-start">
+                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dcfce7; color: #16a34a; width: 40px; height: 40px;">
+                      <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Employer Portal</div>
+                      <div class="text-muted" style="font-size: 0.74rem;">Verify graduate hires, rate workplace readiness & report skill gaps</div>
+                    </div>
                   </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_54">{{ 'Employer' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_55">{{ 'Verify employment &amp; provide feedback' }}</div>
-                  <button type="submit" name="quick_role" value="employer" class="btn btn-success btn-sm w-100 fw-semibold mt-2 rounded-2" style="background: #15803d; font-size: 0.75rem;" data-i18n="auto_56">{{ 'Login as Employer ›' }}</button>
+                  <button type="submit" name="quick_role" value="employer" class="btn btn-success btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2" style="background: #15803d; font-size: 0.75rem;">Login ›</button>
                 </div>
               </div>
 
-              <!-- Provider Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #faf5ff; border-color: #f3e8ff !important;">
-                  <div class="role-icon-circle" style="background: #f3e8ff; color: #7c3aed;">
-                    <i class="bi bi-mortarboard-fill"></i>
+              <!-- 3. Provider Card -->
+              <div class="role-card-box border p-3" style="background: #faf5ff; border-color: #f3e8ff !important;">
+                <div class="d-flex align-items-center justify-content-between gap-2">
+                  <div class="d-flex align-items-center gap-3 text-start">
+                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #f3e8ff; color: #7c3aed; width: 40px; height: 40px;">
+                      <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Training Provider</div>
+                      <div class="text-muted" style="font-size: 0.74rem;">Outcome intelligence, cohort risk radar, curriculum gaps & interventions</div>
+                    </div>
                   </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_57">{{ 'Training Provider' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_58">{{ 'Track outcomes &amp; improve training' }}</div>
-                  <button type="submit" name="quick_role" value="provider" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;" data-i18n="auto_59">{{ 'Login as Provider ›' }}</button>
-                </div>
-              </div>
-
-              <!-- Government Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #fffbeb; border-color: #fef3c7 !important;">
-                  <div class="role-icon-circle" style="background: #fef3c7; color: #d97706;">
-                    <i class="bi bi-bank2"></i>
-                  </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_60">{{ 'Government' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_61">{{ 'Analytics, insights &amp; actionable decisions' }}</div>
-                  <button type="submit" name="quick_role" value="government" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #ea580c; font-size: 0.75rem;" data-i18n="auto_62">{{ 'Login as Admin ›' }}</button>
+                  <button type="submit" name="quick_role" value="provider" class="btn btn-sm flex-shrink-0 fw-semibold px-3 py-1 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;">Login ›</button>
                 </div>
               </div>
             </div>
           </form>
 
           <div class="text-center mt-3 pt-2 border-top text-muted" style="font-size: 0.75rem;">
-            <i class="bi bi-shield-check text-primary me-1"></i> Demo Accounts
+            <i class="bi bi-shield-check text-primary me-1"></i> Pre-configured Demo Accounts &bull; No registration required
           </div>
         </div>
       </div>
@@ -133,11 +141,259 @@
   </div>
 </section>
 
-<!-- Section: Why SkillTrack? -->
-<section class="py-5 bg-white" id="features">
+<!-- Section: Problem Comparison (Traditional vs SkillTrack) -->
+<section class="py-5 bg-white border-bottom" id="comparison">
+  <div class="container-fluid px-lg-4 px-3">
+    <div class="text-center mb-4">
+      <span class="badge bg-secondary-subtle text-secondary px-3 py-1 rounded-pill fw-semibold mb-2">Systemic Paradigm Shift</span>
+      <h3 class="fw-bold text-dark mb-1" style="font-size: 1.65rem;">Traditional Skilling vs SkillTrack Intelligence</h3>
+      <p class="text-muted small mb-0">Why tracking outcomes beyond certificate issuance changes the entire skilling ecosystem</p>
+      <div style="width: 50px; height: 3px; background: #f59e0b; margin: 8px auto 0; border-radius: 2px;"></div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      <!-- Traditional Skilling Card -->
+      <div class="col-lg-6">
+        <div class="comparison-card comparison-card-bad">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill fw-bold">
+              <i class="bi bi-x-circle me-1"></i> Traditional Skilling (Broken Linear Chain)
+            </span>
+            <span class="text-muted small">Input/Activity Oriented</span>
+          </div>
+
+          <div class="comparison-pipeline text-danger bg-white border border-danger-subtle">
+            Training Imparted &rarr; Course Completion &rarr; Certificate Issued &rarr; <span class="fw-bold text-dark">❌ Blind to Employment</span>
+          </div>
+
+          <ul class="list-unstyled mb-0 d-flex flex-column gap-2 text-secondary" style="font-size: 0.88rem;">
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-x-circle-fill text-danger flex-shrink-0 mt-1"></i>
+              <div><strong>Success ends at the certificate:</strong> Centers are funded and judged purely by candidate headcounts enrolled and certified.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-x-circle-fill text-danger flex-shrink-0 mt-1"></i>
+              <div><strong>Zero post-placement visibility:</strong> No systematic tracking of whether graduates secured sustainable wage employment, self-employment, or stayed unemployed.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-x-circle-fill text-danger flex-shrink-0 mt-1"></i>
+              <div><strong>Disconnected from workplace tools:</strong> Curricula remain static because real employers have no structured mechanism to report missing on-the-job skills.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-x-circle-fill text-danger flex-shrink-0 mt-1"></i>
+              <div><strong>Unexplained 90-day attrition:</strong> High graduate drop-out occurs within 3 months, but reasons (low wages, skill mismatch, transport) remain unknown.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SkillTrack Outcome Intelligence Card -->
+      <div class="col-lg-6">
+        <div class="comparison-card comparison-card-good">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+              <i class="bi bi-check-circle me-1"></i> SkillTrack (Closed-Loop Outcome Intelligence)
+            </span>
+            <span class="text-success small fw-semibold">Outcome &amp; Impact Oriented</span>
+          </div>
+
+          <div class="comparison-pipeline text-success bg-white border border-success-subtle">
+            Training &rarr; Outcome Tracking &rarr; Employer Validation &rarr; Skill Gap &rarr; Intervention &rarr; <span class="fw-bold text-dark">✅ Measured Impact</span>
+          </div>
+
+          <ul class="list-unstyled mb-0 d-flex flex-column gap-2 text-dark" style="font-size: 0.88rem;">
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle-fill text-success flex-shrink-0 mt-1"></i>
+              <div><strong>Longitudinal 3, 6, 12 &amp; 24-Month Tracking:</strong> Validates real-world career longevity, income growth, and sustained livelihoods over time.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle-fill text-success flex-shrink-0 mt-1"></i>
+              <div><strong>Direct Employer Verification:</strong> Hiring enterprises confirm employment, report real salary benchmarks, and rate on-the-job readiness.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle-fill text-success flex-shrink-0 mt-1"></i>
+              <div><strong>Semantic Skill Gap NLP:</strong> TF-IDF cosine similarity compares curriculum content against workplace needs to reveal specific curriculum gaps.</div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="bi bi-check-circle-fill text-success flex-shrink-0 mt-1"></i>
+              <div><strong>Predictive Risk Radar &amp; Action Engine:</strong> Proactively identifies vulnerable graduates before they drop out and prescribes targeted upskilling.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: The 5 Core Intelligence Questions -->
+<section class="py-5" style="background-color: #f1f5f9;" id="core-questions">
+  <div class="container-fluid px-lg-4 px-3">
+    <div class="text-center mb-4">
+      <span class="badge bg-primary-subtle text-primary px-3 py-1 rounded-pill fw-semibold mb-2">Core Analytical Framework</span>
+      <h3 class="fw-bold text-dark mb-1" style="font-size: 1.65rem;">5 Questions Every Skilling Program Must Answer</h3>
+      <p class="text-muted small mb-0">Transforming employment data into clear evidence, actionable decisions, and measured impact</p>
+      <div style="width: 50px; height: 3px; background: #f59e0b; margin: 8px auto 0; border-radius: 2px;"></div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 row-cols-xl-5 g-3">
+      <!-- Question 1 -->
+      <div class="col">
+        <div class="question-card">
+          <span class="question-badge bg-primary text-white">01 &bull; WHAT HAPPENED?</span>
+          <h6 class="fw-bold text-dark mb-2">Macro Outcome KPIs</h6>
+          <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+            What percentage of trainees secured employment? What is their wage distribution across formal jobs, self-employment, and apprenticeships?
+          </p>
+          <div class="border-top pt-2 mt-auto">
+            <span class="badge bg-primary-subtle text-primary small">78% Placement Rate</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="col">
+        <div class="question-card">
+          <span class="question-badge bg-danger text-white">02 &bull; WHY DID IT HAPPEN?</span>
+          <h6 class="fw-bold text-dark mb-2">Root-Cause Analysis</h6>
+          <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+            Why did unplaced trainees fail to get jobs? Why did placed trainees quit? Isolates skill gaps (51%), wage dissatisfaction (33%), and relocation (16%).
+          </p>
+          <div class="border-top pt-2 mt-auto">
+            <span class="badge bg-danger-subtle text-danger small">Why Analysis Module</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="col">
+        <div class="question-card">
+          <span class="question-badge bg-warning text-dark">03 &bull; WHO IS AT RISK?</span>
+          <h6 class="fw-bold text-dark mb-2">Predictive Risk Radar</h6>
+          <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+            Which cohorts or individual trainees face high probability of early workplace attrition based on low salary growth or low job relevance?
+          </p>
+          <div class="border-top pt-2 mt-auto">
+            <span class="badge bg-warning-subtle text-dark small">Multi-Factor Radar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="col">
+        <div class="question-card">
+          <span class="question-badge bg-info text-dark">04 &bull; WHAT SHOULD WE DO?</span>
+          <h6 class="fw-bold text-dark mb-2">Intervention Engine</h6>
+          <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+            What concrete interventions will fix the gaps? Automatically generates recommendations for curriculum updates, bridge modules, and wage negotiations.
+          </p>
+          <div class="border-top pt-2 mt-auto">
+            <span class="badge bg-info-subtle text-dark small">Automated Actions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="col">
+        <div class="question-card">
+          <span class="question-badge bg-success text-white">05 &bull; DID IT WORK?</span>
+          <h6 class="fw-bold text-dark mb-2">Impact Measurement</h6>
+          <p class="text-muted small mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+            Did the intervention produce better employment, higher retention, and greater salary growth for the subsequent cohort?
+          </p>
+          <div class="border-top pt-2 mt-auto">
+            <span class="badge bg-success-subtle text-success small">Cohort A vs B &bull; +14.6%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: The 6-Step Outcome Loop -->
+<section class="py-5 bg-white" id="how-it-works">
+  <div class="container-fluid px-lg-4 px-3">
+    <div class="text-center mb-5">
+      <span class="badge bg-success-subtle text-success px-3 py-1 rounded-pill fw-semibold mb-2">The Closed Loop</span>
+      <h3 class="fw-bold text-dark mb-1" style="font-size: 1.65rem;">The 6-Step Outcome Loop</h3>
+      <p class="text-muted small mb-0">From vocational training to measurable, sustained economic improvement</p>
+      <div style="width: 50px; height: 3px; background: #f59e0b; margin: 8px auto 0; border-radius: 2px;"></div>
+    </div>
+
+    <!-- 6 Interconnected Steps Flow -->
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-lg-3 gap-2">
+      <!-- Step 1 -->
+      <div class="text-center p-2" style="max-width: 165px;">
+        <div class="step-circle" style="background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd;">
+          <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div class="badge bg-primary text-white mb-1" style="font-size: 0.72rem;">01. Training Imparted</div>
+        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Trainee completes certified vocational coursework</p>
+      </div>
+
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
+
+      <!-- Step 2 -->
+      <div class="text-center p-2" style="max-width: 165px;">
+        <div class="step-circle" style="background: #d1fae5; color: #059669; border: 2px solid #a7f3d0;">
+          <i class="bi bi-arrow-repeat"></i>
+        </div>
+        <div class="badge bg-success text-white mb-1" style="font-size: 0.72rem;">02. Outcome Tracking</div>
+        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">3, 6, 12 &amp; 24-month follow-ups on employment &amp; salary</p>
+      </div>
+
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
+
+      <!-- Step 3 -->
+      <div class="text-center p-2" style="max-width: 165px;">
+        <div class="step-circle" style="background: #ede9fe; color: #7c3aed; border: 2px solid #ddd6fe;">
+          <i class="bi bi-briefcase-fill"></i>
+        </div>
+        <div class="badge text-white mb-1" style="background: #7c3aed; font-size: 0.72rem;">03. Employer Validation</div>
+        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Hiring companies verify roles, wages, and job readiness</p>
+      </div>
+
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
+
+      <!-- Step 4 -->
+      <div class="text-center p-2" style="max-width: 165px;">
+        <div class="step-circle" style="background: #ffedd5; color: #ea580c; border: 2px solid #fed7aa;">
+          <i class="bi bi-puzzle-fill"></i>
+        </div>
+        <div class="badge text-white mb-1" style="background: #ea580c; font-size: 0.72rem;">04. Skill Gap Analysis</div>
+        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">NLP semantic matching isolates exact missing workplace skills</p>
+      </div>
+
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
+
+      <!-- Step 5 -->
+      <div class="text-center p-2" style="max-width: 165px;">
+        <div class="step-circle" style="background: #cffafe; color: #0891b2; border: 2px solid #a5f3fc;">
+          <i class="bi bi-lightbulb-fill"></i>
+        </div>
+        <div class="badge text-white mb-1" style="background: #0891b2; font-size: 0.72rem;">05. Intervention</div>
+        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Targeted bridge modules &amp; curriculum enhancements</p>
+      </div>
+
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
+
+      <!-- Step 6 -->
+      <div class="text-center p-2" style="max-width: 165px;">
+        <div class="step-circle" style="background: #fce7f3; color: #db2777; border: 2px solid #fbcfe8;">
+          <i class="bi bi-bullseye"></i>
+        </div>
+        <div class="badge text-white mb-1" style="background: #db2777; font-size: 0.72rem;">06. Impact</div>
+        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Evaluates retention uplift and career mobility</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Why SkillTrack? (Preserved Capabilities) -->
+<section class="py-5" style="background-color: #f8fafc;" id="features">
   <div class="container-fluid px-lg-4 px-3">
     <div class="text-center mb-4">
       <h3 class="fw-bold text-dark mb-1" style="font-size: 1.6rem;" data-i18n="auto_63">{{ 'Why SkillTrack?' }}</h3>
+      <p class="text-muted small mb-0">Core capabilities powering sustainable employment intelligence</p>
       <div style="width: 45px; height: 3px; background: #f59e0b; margin: 6px auto 0; border-radius: 2px;"></div>
     </div>
 
@@ -206,83 +462,6 @@
           <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_74">{{ 'Actionable Recommendations' }}</h6>
           <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_75">{{ 'Convert data into evidence-based interventions.' }}</p>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Section: How It Works -->
-<section class="py-5" style="background-color: #f8fafc;" id="how-it-works">
-  <div class="container-fluid px-lg-4 px-3">
-    <div class="text-center mb-5">
-      <h3 class="fw-bold text-dark mb-1" style="font-size: 1.6rem;" data-i18n="auto_76">{{ 'How It Works' }}</h3>
-      <div style="width: 45px; height: 3px; background: #f59e0b; margin: 6px auto 0; border-radius: 2px;"></div>
-    </div>
-
-    <!-- 6 Interconnected Steps Flow -->
-    <div class="d-flex flex-wrap justify-content-center align-items-center gap-lg-3 gap-2">
-      <!-- Step 1 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd;">
-          <i class="bi bi-mortarboard-fill"></i>
-        </div>
-        <div class="badge bg-primary text-white mb-1" style="font-size: 0.72rem;" data-i18n="auto_77">{{ '1. Training' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_78">{{ 'Trainee completes training program' }}</p>
-      </div>
-
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
-
-      <!-- Step 2 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #d1fae5; color: #059669; border: 2px solid #a7f3d0;">
-          <i class="bi bi-arrow-repeat"></i>
-        </div>
-        <div class="badge bg-success text-white mb-1" style="font-size: 0.72rem;" data-i18n="auto_79">{{ '2. Outcome Tracking' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_80">{{ 'Track employment &amp; career outcomes' }}</p>
-      </div>
-
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
-
-      <!-- Step 3 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #ede9fe; color: #7c3aed; border: 2px solid #ddd6fe;">
-          <i class="bi bi-briefcase-fill"></i>
-        </div>
-        <div class="badge text-white mb-1" style="background: #7c3aed; font-size: 0.72rem;" data-i18n="auto_81">{{ '3. Employer Validation' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_82">{{ 'Employment verified by employers' }}</p>
-      </div>
-
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
-
-      <!-- Step 4 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #ffedd5; color: #ea580c; border: 2px solid #fed7aa;">
-          <i class="bi bi-puzzle-fill"></i>
-        </div>
-        <div class="badge text-white mb-1" style="background: #ea580c; font-size: 0.72rem;" data-i18n="auto_83">{{ '4. Skill Gap Analysis' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_84">{{ 'Identify skill gaps and mismatch' }}</p>
-      </div>
-
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
-
-      <!-- Step 5 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #cffafe; color: #0891b2; border: 2px solid #a5f3fc;">
-          <i class="bi bi-lightbulb-fill"></i>
-        </div>
-        <div class="badge text-white mb-1" style="background: #0891b2; font-size: 0.72rem;" data-i18n="auto_85">{{ '5. Intervention' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_86">{{ 'Recommend targeted interventions' }}</p>
-      </div>
-
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
-
-      <!-- Step 6 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #fce7f3; color: #db2777; border: 2px solid #fbcfe8;">
-          <i class="bi bi-bullseye"></i>
-        </div>
-        <div class="badge text-white mb-1" style="background: #db2777; font-size: 0.72rem;" data-i18n="auto_87">{{ '6. Impact' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_88">{{ 'Measure improvement in future outcomes' }}</p>
       </div>
     </div>
   </div>

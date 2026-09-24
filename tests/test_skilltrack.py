@@ -214,6 +214,30 @@ class SkillTrackTestCase(unittest.TestCase):
         self.assertTrue(id_res['is_verified'])
         self.assertIn('DEMO-ID', id_res['verification_token'])
 
+    def test_provider_outcome_intelligence_access(self):
+        """Verify Training Provider has full access to the Outcome Intelligence suite."""
+        # 1. Quick login as provider
+        login_res = self.client.post('/login', data={'quick_role': 'provider'}, follow_redirects=False)
+        self.assertEqual(login_res.status_code, 302)
+
+        # 2. Access Outcome Dashboard
+        dash_res = self.client.get('/government/dashboard')
+        self.assertEqual(dash_res.status_code, 200)
+        self.assertIn(b'Outcome Intelligence Dashboard', dash_res.data)
+
+        # 3. Access Skill Gap Analysis
+        skill_res = self.client.get('/government/skill-gaps')
+        self.assertEqual(skill_res.status_code, 200)
+
+        # 4. Access Recommendations & Action Engine
+        rec_res = self.client.get('/government/recommendations')
+        self.assertEqual(rec_res.status_code, 200)
+
+        # 5. Access Interactive District Map
+        map_res = self.client.get('/government/map')
+        self.assertEqual(map_res.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
+

@@ -67,75 +67,71 @@
     <nav class="sidebar-nav">
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'index' else '' }}" href="{{ url_for('index') }}">
         <i class="bi bi-house-door-fill text-primary fs-5"></i>
-        <span data-i18n="nav.home">Home</span>
+        <span>Home</span>
       </a>
 
       <div class="sidebar-divider"></div>
-      <div class="sidebar-section-title" data-i18n="auto_16">{{ 'Navigation' }}</div>
-
-      <a class="sidebar-nav-item" href="#role-portals" data-bs-toggle="collapse" data-bs-target="#portalsSubmenu" aria-expanded="false">
-        <i class="bi bi-grid-fill text-info fs-5"></i>
-        <span data-i18n="auto_17">{{ 'Role Portals' }}</span>
-        <i class="bi bi-chevron-down ms-auto small text-white-50"></i>
-      </a>
-      <div class="collapse px-2" id="portalsSubmenu">
-        <a class="sidebar-nav-item py-1 ps-4 small" href="{{ url_for('trainee.dashboard') }}">
-          <i class="bi bi-person text-primary"></i> Trainee Portal
-        </a>
-        <a class="sidebar-nav-item py-1 ps-4 small" href="{{ url_for('employer.dashboard') }}">
-          <i class="bi bi-briefcase text-success"></i> Employer Portal
-        </a>
-        <a class="sidebar-nav-item py-1 ps-4 small" href="{{ url_for('provider.dashboard') }}">
-          <i class="bi bi-mortarboard text-purple" style="color: #a855f7;"></i> Provider Portal
-        </a>
-        <a class="sidebar-nav-item py-1 ps-4 small" href="{{ url_for('government.dashboard') }}">
-          <i class="bi bi-bank2 text-warning"></i> Gov Command Center
-        </a>
-      </div>
-
-      <a class="sidebar-nav-item" href="{{ url_for('index') }}#about">
-        <i class="bi bi-info-circle-fill text-info fs-5"></i>
-        <span data-i18n="auto_18">{{ 'About SkillTrack' }}</span>
-      </a>
-
-      <a class="sidebar-nav-item" href="{{ url_for('index') }}#features">
-        <i class="bi bi-star-fill text-warning fs-5"></i>
-        <span data-i18n="auto_19">{{ 'Key Features' }}</span>
-      </a>
-
-      <a class="sidebar-nav-item" href="{{ url_for('index') }}#how-it-works">
-        <i class="bi bi-diagram-3-fill text-success fs-5"></i>
-        <span data-i18n="auto_20">{{ 'How It Works' }}</span>
-      </a>
-
-      <a class="sidebar-nav-item" href="{{ url_for('government.dashboard') }}#cohort-comparison">
-        <i class="bi bi-bar-chart-line-fill text-danger fs-5"></i>
-        <span data-i18n="auto_21">{{ 'Impact' }}</span>
-      </a>
-
-      <a class="sidebar-nav-item" href="{{ url_for('index') }}#contact">
-        <i class="bi bi-envelope-fill text-secondary fs-5"></i>
-        <span data-i18n="auto_22">{{ 'Contact' }}</span>
-      </a>
-
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-section-title" data-i18n="auto_23">{{ 'Government &amp; Maps' }}</div>
+      <div class="sidebar-section-title">Outcome Intelligence</div>
 
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.dashboard' else '' }}" href="{{ url_for('government.dashboard') }}">
         <i class="bi bi-speedometer2 text-warning fs-5"></i>
-        <span data-i18n="auto_24">{{ 'Command Center' }}</span>
+        <span>Outcome Dashboard</span>
       </a>
-      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.map_view' else '' }}" href="{{ url_for('government.map_view') }}">
-        <i class="bi bi-geo-alt-fill text-info fs-5"></i>
-        <span data-i18n="auto_25">{{ 'District Map' }}</span>
-      </a>
-      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.world_map_view' else '' }}" href="{{ url_for('government.world_map_view') }}">
-        <i class="bi bi-globe2 text-success fs-5"></i>
-        <span data-i18n="auto_26">{{ 'World Map' }}</span>
+      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.skill_gaps_view' else '' }}" href="{{ url_for('government.skill_gaps_view') }}">
+        <i class="bi bi-puzzle-fill text-info fs-5"></i>
+        <span>Skill Gap Analysis</span>
       </a>
       <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.recommendations_view' else '' }}" href="{{ url_for('government.recommendations_view') }}">
         <i class="bi bi-lightbulb-fill text-warning fs-5"></i>
-        <span data-i18n="auto_27">{{ 'Recommendations' }}</span>
+        <span>Interventions & Actions</span>
+      </a>
+      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.map_view' else '' }}" href="{{ url_for('government.map_view') }}">
+        <i class="bi bi-geo-alt-fill text-success fs-5"></i>
+        <span>Regional Intelligence</span>
+      </a>
+      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'government.world_map_view' else '' }}" href="{{ url_for('government.world_map_view') }}">
+        <i class="bi bi-globe2 text-primary fs-5"></i>
+        <span>Workforce Mobility</span>
+      </a>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">Role Portals</div>
+
+      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'provider.dashboard' else '' }}" href="{{ url_for('provider.dashboard') }}">
+        <i class="bi bi-mortarboard text-purple fs-5" style="color: #a855f7;"></i>
+        <span>Training Provider</span>
+      </a>
+      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'employer.dashboard' else '' }}" href="{{ url_for('employer.dashboard') }}">
+        <i class="bi bi-briefcase text-success fs-5"></i>
+        <span>Employer Portal</span>
+      </a>
+      <a class="sidebar-nav-item {{ 'active' if request.endpoint == 'trainee.dashboard' else '' }}" href="{{ url_for('trainee.dashboard') }}">
+        <i class="bi bi-person text-primary fs-5"></i>
+        <span>Trainee Portal</span>
+      </a>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-title">Platform</div>
+
+      <a class="sidebar-nav-item" href="{{ url_for('index') }}#about">
+        <i class="bi bi-info-circle-fill text-info fs-5"></i>
+        <span>About SkillTrack</span>
+      </a>
+      <a class="sidebar-nav-item" href="{{ url_for('index') }}#comparison">
+        <i class="bi bi-arrow-left-right text-warning fs-5"></i>
+        <span>Traditional vs SkillTrack</span>
+      </a>
+      <a class="sidebar-nav-item" href="{{ url_for('index') }}#core-questions">
+        <i class="bi bi-question-circle-fill text-success fs-5"></i>
+        <span>5 Core Questions</span>
+      </a>
+      <a class="sidebar-nav-item" href="{{ url_for('index') }}#how-it-works">
+        <i class="bi bi-diagram-3-fill text-primary fs-5"></i>
+        <span>6-Step Outcome Loop</span>
+      </a>
+      <a class="sidebar-nav-item" href="{{ url_for('index') }}#contact">
+        <i class="bi bi-envelope-fill text-secondary fs-5"></i>
+        <span>Contact</span>
       </a>
     </nav>
 

@@ -415,4 +415,63 @@ footer a:hover {
   font-weight: 700;
   position: relative;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Problem Comparison Cards */
+.comparison-card {
+  border-radius: 16px;
+  padding: 28px;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comparison-card-bad {
+  background: #fffafa;
+  border: 1px solid #fee2e2;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.05);
+}
+
+.comparison-card-good {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.06);
+}
+
+.comparison-card:hover {
+  transform: translateY(-2px);
+}
+
+.comparison-pipeline {
+  font-family: monospace;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+
+/* 5 Core Questions Cards */
+.question-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 22px 18px;
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.question-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(14, 56, 95, 0.09);
+}
+
+.question-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 10px;
 }

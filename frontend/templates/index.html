@@ -66,66 +66,58 @@
         <div class="card border-0 shadow-lg rounded-4 p-4 text-dark bg-white" style="max-width: 480px; margin: 0 auto;">
           <div class="text-center mb-3">
             <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-2" style="width: 38px; height: 38px;">
-              <i class="bi bi-lightning-charge-fill fs-5 text-primary"></i>
+              <i class="bi bi-shield-lock-fill fs-5 text-primary"></i>
             </div>
-            <h5 class="fw-bold mb-0 text-dark" data-i18n="auto_49">{{ 'Quick 1-Click Role Login' }}</h5>
-            <div class="text-muted small" style="font-size: 0.8rem;" data-i18n="auto_50">{{ 'Continue as' }}</div>
+            <h5 class="fw-bold mb-0 text-dark">Portal Sign In</h5>
+            <div class="text-muted small" style="font-size: 0.8rem;">Select your role to access your portal</div>
           </div>
 
-          <form action="{{ url_for('auth.login') }}" method="POST">
-            <div class="row g-2">
-              <!-- Trainee Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #f0f7ff; border-color: #dbeafe !important;">
-                  <div class="role-icon-circle" style="background: #dbeafe; color: #2563eb;">
-                    <i class="bi bi-person-fill"></i>
+          <div class="row g-2">
+            <!-- Trainee Card -->
+            <div class="col-12">
+              <div class="role-card-box border p-3" style="background: #f0f7ff; border-color: #dbeafe !important;">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 text-start">
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="role-icon-circle m-0 flex-shrink-0" style="background: #dbeafe; color: #2563eb; width: 38px; height: 38px;">
+                      <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold text-dark" style="font-size: 0.92rem;">Trainee</div>
+                      <div class="text-muted" style="font-size: 0.72rem; line-height: 1.3;">Personal training and employment journey</div>
+                    </div>
                   </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_51">{{ 'Trainee' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_52">{{ 'View your training journey &amp; outcomes' }}</div>
-                  <button type="submit" name="quick_role" value="trainee" class="btn btn-primary btn-sm w-100 fw-semibold mt-2 rounded-2" style="background: #1d4ed8; font-size: 0.75rem;" data-i18n="auto_53">{{ 'Login as Trainee ›' }}</button>
-                </div>
-              </div>
-
-              <!-- Employer Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #f0fdf4; border-color: #dcfce7 !important;">
-                  <div class="role-icon-circle" style="background: #dcfce7; color: #16a34a;">
-                    <i class="bi bi-briefcase-fill"></i>
-                  </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_54">{{ 'Employer' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_55">{{ 'Verify employment &amp; provide feedback' }}</div>
-                  <button type="submit" name="quick_role" value="employer" class="btn btn-success btn-sm w-100 fw-semibold mt-2 rounded-2" style="background: #15803d; font-size: 0.75rem;" data-i18n="auto_56">{{ 'Login as Employer ›' }}</button>
-                </div>
-              </div>
-
-              <!-- Provider Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #faf5ff; border-color: #f3e8ff !important;">
-                  <div class="role-icon-circle" style="background: #f3e8ff; color: #7c3aed;">
-                    <i class="bi bi-mortarboard-fill"></i>
-                  </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;" data-i18n="auto_57">{{ 'Training Provider' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;" data-i18n="auto_58">{{ 'Track outcomes &amp; improve training' }}</div>
-                  <button type="submit" name="quick_role" value="provider" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;" data-i18n="auto_59">{{ 'Login as Provider ›' }}</button>
-                </div>
-              </div>
-
-              <!-- Administrator Card -->
-              <div class="col-6">
-                <div class="role-card-box border" style="background: #fffbeb; border-color: #fef3c7 !important;">
-                  <div class="role-icon-circle" style="background: #fef3c7; color: #d97706;">
-                    <i class="bi bi-shield-lock-fill"></i>
-                  </div>
-                  <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ 'Administrator' }}</div>
-                  <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">{{ 'High-level outcome intelligence and administration' }}</div>
-                  <button type="submit" name="quick_role" value="administrator" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #ea580c; font-size: 0.75rem;">{{ 'Login as Administrator ›' }}</button>
+                  <a href="{{ url_for('auth.login', role='trainee') }}" class="btn btn-primary btn-sm fw-semibold px-3 rounded-2 text-nowrap" style="background: #1d4ed8; font-size: 0.75rem;">Login as Trainee ›</a>
                 </div>
               </div>
             </div>
-          </form>
 
-          <div class="text-center mt-3 pt-2 border-top text-muted" style="font-size: 0.75rem;">
-            <i class="bi bi-shield-check text-primary me-1"></i> Demo Accounts
+            <!-- Provider Card -->
+            <div class="col-6">
+              <div class="role-card-box border p-3" style="background: #faf5ff; border-color: #f3e8ff !important;">
+                <div class="role-icon-circle" style="background: #f3e8ff; color: #7c3aed;">
+                  <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="fw-bold text-dark" style="font-size: 0.9rem;">Training Provider</div>
+                <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">Outcomes, skill gaps &amp; interventions</div>
+                <a href="{{ url_for('auth.login', role='provider') }}" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #7c3aed; font-size: 0.75rem;">Login as Provider ›</a>
+              </div>
+            </div>
+
+            <!-- Administrator Card -->
+            <div class="col-6">
+              <div class="role-card-box border p-3" style="background: #fffbeb; border-color: #fef3c7 !important;">
+                <div class="role-icon-circle" style="background: #fef3c7; color: #d97706;">
+                  <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div class="fw-bold text-dark" style="font-size: 0.9rem;">Administrator</div>
+                <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">High-level intelligence &amp; policy engine</div>
+                <a href="{{ url_for('auth.login', role='administrator') }}" class="btn btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #ea580c; font-size: 0.75rem;">Login as Admin ›</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-3 pt-2 border-top text-muted" style="font-size: 0.78rem;">
+            New Trainee? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-semibold text-primary">Create Trainee Account ›</a>
           </div>
         </div>
       </div>

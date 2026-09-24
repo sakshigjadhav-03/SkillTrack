@@ -7,48 +7,32 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    """User login supporting email & password or quick 1-click demo login."""
+    """User login requiring valid username/email and password."""
+    selected_role = request.args.get('role', request.form.get('role', 'trainee')).lower()
+    if selected_role not in ('trainee', 'provider', 'administrator', 'admin'):
+        selected_role = 'trainee'
+
     if request.method == 'POST':
-        # Check if 1-click demo login or quick company email was clicked
-        quick_role = request.form.get('quick_role')
-        quick_email = request.form.get('quick_email')
-        if quick_email:
-            user = query_db("SELECT * FROM users WHERE email = %s AND is_active = 1", (quick_email,), one=True)
-            if user:
-                return _setup_session_and_redirect(user)
-            flash('Demo company account not found.', 'danger')
-            return redirect(url_for('auth.login'))
-
-        if quick_role:
-            role_emails = {
-                'trainee': 'trainee@skilltrack.in',
-                'employer': 'employer@tcs.in',
-                'provider': 'provider@maharashtra-skills.org',
-                'government': 'admin@skilltrack.gov.in',
-                'admin': 'admin@skilltrack.gov.in',
-                'administrator': 'admin@skilltrack.gov.in'
-            }
-            email = role_emails.get(quick_role)
-            user = query_db("SELECT * FROM users WHERE email = %s AND is_active = 1", (email,), one=True)
-            if user:
-                return _setup_session_and_redirect(user)
-            flash('Demo user not found. Please initialize the database first.', 'danger')
-            return redirect(url_for('auth.login'))
-
-        email = request.form.get('email', '').strip()
+        identifier = request.form.get('email', '').strip()
         password = request.form.get('password', '')
 
-        if not email or not password:
-            flash('Please provide both email and password.', 'warning')
-            return render_template('login.html')
+        if not identifier or not password:
+            flash('Please provide both username/email and password.', 'warning')
+            return render_template('login.html', selected_role=selected_role)
 
-        user = query_db("SELECT * FROM users WHERE email = %s AND is_active = 1", (email,), one=True)
+        user = query_db(
+            "SELECT * FROM users WHERE (email = %s OR username = %s) AND is_active = 1",
+            (identifier, identifier),
+            one=True
+        )
+
         if user and check_password_hash(user['password_hash'], password):
             return _setup_session_and_redirect(user)
         else:
-            flash('Invalid email or password. Please try again.', 'danger')
+            flash('Invalid username/email or password. Please try again.', 'danger')
+            return render_template('login.html', selected_role=selected_role)
 
-    return render_template('login.html')
+    return render_template('login.html', selected_role=selected_role)
 
 
 def _setup_session_and_redirect(user):
@@ -139,13 +123,14 @@ def register():
             INSERT INTO trainees (
                 user_id, outcome_id, first_name, last_name, gender, phone, email, district_id,
                 linkedin_url, consent_status, current_employment_status, identity_token, identity_verified
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', 'unemployed', %s, 1)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'agreed', 'unemployed', %s, 1)
             """,
             (user_id, outcome_id, first_name, last_name, gender, phone, email, district_id, linkedin_url, f"DEMO-ID-{outcome_id.split('-')[-1]}")
         )
 
-        flash(f'Registration successful! Your Unique Outcome ID is {outcome_id}. Please log in to provide tracking consent.', 'success')
-        return redirect(url_for('auth.login'))
+        user = query_db("SELECT * FROM users WHERE id = %s", (user_id,), one=True)
+        flash(f'Registration successful! Welcome, {first_name}. Your Outcome ID is {outcome_id}.', 'success')
+        return _setup_session_and_redirect(user)
 
     districts = query_db("SELECT id, name FROM districts ORDER BY name")
     return render_template('register.html', districts=districts)

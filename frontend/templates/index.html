@@ -142,68 +142,80 @@
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3">
       <!-- 1. Outcome Tracking -->
       <div class="col">
-        <div class="why-card">
-          <div class="role-icon-circle" style="background: #e0f2fe; color: #0284c7;">
-            <i class="bi bi-bullseye"></i>
+        <a href="{{ url_for('government.dashboard') }}" class="text-decoration-none d-block h-100">
+          <div class="why-card">
+            <div class="role-icon-circle" style="background: #e0f2fe; color: #0284c7;">
+              <i class="bi bi-bullseye"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">Outcome Tracking</h6>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;">Longitudinal tracking of employment, retention and career progression.</p>
           </div>
-          <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_64">{{ 'Outcome Tracking' }}</h6>
-          <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_65">{{ 'Longitudinal tracking of employment, retention and career progression.' }}</p>
-        </div>
+        </a>
       </div>
 
       <!-- 2. Skill Gap Analysis -->
       <div class="col">
-        <div class="why-card">
-          <div class="role-icon-circle" style="background: #d1fae5; color: #059669;">
-            <i class="bi bi-puzzle-fill"></i>
+        <a href="{{ url_for('government.skill_gaps_view') }}" class="text-decoration-none d-block h-100">
+          <div class="why-card">
+            <div class="role-icon-circle" style="background: #d1fae5; color: #059669;">
+              <i class="bi bi-puzzle-fill"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">Skill Gap Analysis</h6>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;">Identify gaps between training imparted and workplace requirements.</p>
           </div>
-          <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_66">{{ 'Skill Gap Analysis' }}</h6>
-          <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_67">{{ 'Identify gaps between training imparted and workplace requirements.' }}</p>
-        </div>
+        </a>
       </div>
 
       <!-- 3. Employer Validation -->
       <div class="col">
-        <div class="why-card">
-          <div class="role-icon-circle" style="background: #ede9fe; color: #7c3aed;">
-            <i class="bi bi-shield-check"></i>
+        <a href="{{ url_for('employer.dashboard') }}" class="text-decoration-none d-block h-100">
+          <div class="why-card">
+            <div class="role-icon-circle" style="background: #ede9fe; color: #7c3aed;">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">Employer Validation</h6>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;">Verify employment and collect real workplace feedback.</p>
           </div>
-          <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_68">{{ 'Employer Validation' }}</h6>
-          <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_69">{{ 'Verify employment and collect real workplace feedback.' }}</p>
-        </div>
+        </a>
       </div>
 
       <!-- 4. Automated Follow-ups -->
       <div class="col">
-        <div class="why-card">
-          <div class="role-icon-circle" style="background: #ffedd5; color: #ea580c;">
-            <i class="bi bi-bell-fill"></i>
+        <a href="{{ url_for('government.dashboard') }}#followup-center" class="text-decoration-none d-block h-100">
+          <div class="why-card">
+            <div class="role-icon-circle" style="background: #ffedd5; color: #ea580c;">
+              <i class="bi bi-bell-fill"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">Automated Follow-ups</h6>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;">3, 6, 12 &amp; 24-month follow-ups via preferred communication.</p>
           </div>
-          <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_70">{{ 'Automated Follow-ups' }}</h6>
-          <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_71">{{ '3, 6, 12 &amp; 24-month follow-ups via preferred communication.' }}</p>
-        </div>
+        </a>
       </div>
 
       <!-- 5. Analytics & Insights -->
       <div class="col">
-        <div class="why-card">
-          <div class="role-icon-circle" style="background: #cffafe; color: #0891b2;">
-            <i class="bi bi-bar-chart-fill"></i>
+        <a href="{{ url_for('government.dashboard') }}#course-performance" class="text-decoration-none d-block h-100">
+          <div class="why-card">
+            <div class="role-icon-circle" style="background: #cffafe; color: #0891b2;">
+              <i class="bi bi-bar-chart-fill"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">Analytics &amp; Insights</h6>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;">District, provider and course level actionable insights.</p>
           </div>
-          <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_72">{{ 'Analytics &amp; Insights' }}</h6>
-          <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_73">{{ 'District, provider and course level actionable insights.' }}</p>
-        </div>
+        </a>
       </div>
 
       <!-- 6. Actionable Recommendations -->
       <div class="col">
-        <div class="why-card">
-          <div class="role-icon-circle" style="background: #dcfce7; color: #16a34a;">
-            <i class="bi bi-lightbulb-fill"></i>
+        <a href="{{ url_for('government.recommendations_view') }}" class="text-decoration-none d-block h-100">
+          <div class="why-card">
+            <div class="role-icon-circle" style="background: #dcfce7; color: #16a34a;">
+              <i class="bi bi-lightbulb-fill"></i>
+            </div>
+            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;">Actionable Recommendations</h6>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;">Convert data into evidence-based interventions.</p>
           </div>
-          <h6 class="fw-bold text-dark mb-2" style="font-size: 0.95rem;" data-i18n="auto_74">{{ 'Actionable Recommendations' }}</h6>
-          <p class="text-muted small mb-0" style="font-size: 0.8rem; line-height: 1.4;" data-i18n="auto_75">{{ 'Convert data into evidence-based interventions.' }}</p>
-        </div>
+        </a>
       </div>
     </div>
   </div>
@@ -213,75 +225,87 @@
 <section class="py-5" style="background-color: #f8fafc;" id="how-it-works">
   <div class="container-fluid px-lg-4 px-3">
     <div class="text-center mb-5">
-      <h3 class="fw-bold text-dark mb-1" style="font-size: 1.6rem;" data-i18n="auto_76">{{ 'How It Works' }}</h3>
+      <h3 class="fw-bold text-dark mb-1" style="font-size: 1.6rem;">How It Works</h3>
       <div style="width: 45px; height: 3px; background: #f59e0b; margin: 6px auto 0; border-radius: 2px;"></div>
     </div>
 
     <!-- 6 Interconnected Steps Flow -->
     <div class="d-flex flex-wrap justify-content-center align-items-center gap-lg-3 gap-2">
       <!-- Step 1 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd;">
-          <i class="bi bi-mortarboard-fill"></i>
+      <a href="{{ url_for('provider.dashboard') }}" class="text-decoration-none">
+        <div class="text-center p-2" style="max-width: 155px;">
+          <div class="step-circle" style="background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd;">
+            <i class="bi bi-mortarboard-fill"></i>
+          </div>
+          <div class="badge bg-primary text-white mb-1" style="font-size: 0.72rem;">1. Training</div>
+          <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Trainee completes training program</p>
         </div>
-        <div class="badge bg-primary text-white mb-1" style="font-size: 0.72rem;" data-i18n="auto_77">{{ '1. Training' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_78">{{ 'Trainee completes training program' }}</p>
-      </div>
+      </a>
 
       <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 2 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #d1fae5; color: #059669; border: 2px solid #a7f3d0;">
-          <i class="bi bi-arrow-repeat"></i>
+      <a href="{{ url_for('government.dashboard') }}" class="text-decoration-none">
+        <div class="text-center p-2" style="max-width: 155px;">
+          <div class="step-circle" style="background: #d1fae5; color: #059669; border: 2px solid #a7f3d0;">
+            <i class="bi bi-arrow-repeat"></i>
+          </div>
+          <div class="badge bg-success text-white mb-1" style="font-size: 0.72rem;">2. Outcome Tracking</div>
+          <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Track employment &amp; career outcomes</p>
         </div>
-        <div class="badge bg-success text-white mb-1" style="font-size: 0.72rem;" data-i18n="auto_79">{{ '2. Outcome Tracking' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_80">{{ 'Track employment &amp; career outcomes' }}</p>
-      </div>
+      </a>
 
       <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 3 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #ede9fe; color: #7c3aed; border: 2px solid #ddd6fe;">
-          <i class="bi bi-briefcase-fill"></i>
+      <a href="{{ url_for('employer.dashboard') }}" class="text-decoration-none">
+        <div class="text-center p-2" style="max-width: 155px;">
+          <div class="step-circle" style="background: #ede9fe; color: #7c3aed; border: 2px solid #ddd6fe;">
+            <i class="bi bi-briefcase-fill"></i>
+          </div>
+          <div class="badge text-white mb-1" style="background: #7c3aed; font-size: 0.72rem;">3. Employer Validation</div>
+          <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Employment verified by employers</p>
         </div>
-        <div class="badge text-white mb-1" style="background: #7c3aed; font-size: 0.72rem;" data-i18n="auto_81">{{ '3. Employer Validation' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_82">{{ 'Employment verified by employers' }}</p>
-      </div>
+      </a>
 
       <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 4 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #ffedd5; color: #ea580c; border: 2px solid #fed7aa;">
-          <i class="bi bi-puzzle-fill"></i>
+      <a href="{{ url_for('government.skill_gaps_view') }}" class="text-decoration-none">
+        <div class="text-center p-2" style="max-width: 155px;">
+          <div class="step-circle" style="background: #ffedd5; color: #ea580c; border: 2px solid #fed7aa;">
+            <i class="bi bi-puzzle-fill"></i>
+          </div>
+          <div class="badge text-white mb-1" style="background: #ea580c; font-size: 0.72rem;">4. Skill Gap Analysis</div>
+          <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Identify skill gaps and mismatch</p>
         </div>
-        <div class="badge text-white mb-1" style="background: #ea580c; font-size: 0.72rem;" data-i18n="auto_83">{{ '4. Skill Gap Analysis' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_84">{{ 'Identify skill gaps and mismatch' }}</p>
-      </div>
+      </a>
 
       <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 5 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #cffafe; color: #0891b2; border: 2px solid #a5f3fc;">
-          <i class="bi bi-lightbulb-fill"></i>
+      <a href="{{ url_for('government.dashboard') }}#what-if-simulator" class="text-decoration-none">
+        <div class="text-center p-2" style="max-width: 155px;">
+          <div class="step-circle" style="background: #cffafe; color: #0891b2; border: 2px solid #a5f3fc;">
+            <i class="bi bi-lightbulb-fill"></i>
+          </div>
+          <div class="badge text-white mb-1" style="background: #0891b2; font-size: 0.72rem;">5. Intervention</div>
+          <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Recommend targeted interventions</p>
         </div>
-        <div class="badge text-white mb-1" style="background: #0891b2; font-size: 0.72rem;" data-i18n="auto_85">{{ '5. Intervention' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_86">{{ 'Recommend targeted interventions' }}</p>
-      </div>
+      </a>
 
       <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 6 -->
-      <div class="text-center p-2" style="max-width: 155px;">
-        <div class="step-circle" style="background: #fce7f3; color: #db2777; border: 2px solid #fbcfe8;">
-          <i class="bi bi-bullseye"></i>
+      <a href="{{ url_for('government.dashboard') }}#before-after-section" class="text-decoration-none">
+        <div class="text-center p-2" style="max-width: 155px;">
+          <div class="step-circle" style="background: #fce7f3; color: #db2777; border: 2px solid #fbcfe8;">
+            <i class="bi bi-bullseye"></i>
+          </div>
+          <div class="badge text-white mb-1" style="background: #db2777; font-size: 0.72rem;">6. Impact</div>
+          <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;">Measure improvement in future outcomes</p>
         </div>
-        <div class="badge text-white mb-1" style="background: #db2777; font-size: 0.72rem;" data-i18n="auto_87">{{ '6. Impact' }}</div>
-        <p class="text-muted mb-0" style="font-size: 0.75rem; line-height: 1.3;" data-i18n="auto_88">{{ 'Measure improvement in future outcomes' }}</p>
-      </div>
+      </a>
     </div>
   </div>
 </section>

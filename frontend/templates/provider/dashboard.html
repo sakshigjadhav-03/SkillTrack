@@ -19,9 +19,28 @@
           </p>
         </div>
       </div>
-      <div class="text-end">
-        <span class="badge bg-primary-subtle text-primary border px-3 py-2" data-i18n="auto_436">{{ 'Affiliated Training Center' }}</span>
+      <div class="d-flex align-items-center gap-2">
+        <a href="{{ url_for('government.skill_gaps_view') }}" class="btn btn-outline-success btn-sm fw-semibold">
+          <i class="bi bi-puzzle-fill me-1"></i> Statewide Skill Gaps
+        </a>
+        <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-primary btn-sm fw-semibold">
+          <i class="bi bi-speedometer2 me-1"></i> Outcome Intelligence Node
+        </a>
       </div>
+    </div>
+
+    <!-- Quick Jump Toolbar for Provider & Outcome Intelligence Modules -->
+    <hr class="my-3 text-muted">
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <span class="text-muted small fw-bold me-1"><i class="bi bi-compass me-1"></i>Quick Modules:</span>
+      <a href="#cohort-directory" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-people-fill me-1"></i>Cohort Directory</a>
+      <a href="#course-outcomes" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-mortarboard-fill me-1"></i>Course Outcomes</a>
+      <a href="#curriculum-skill-gaps" class="btn btn-sm btn-outline-warning text-dark fw-semibold"><i class="bi bi-exclamation-triangle me-1"></i>Curriculum Gaps</a>
+      <a href="{{ url_for('government.skill_gaps_view') }}" class="btn btn-sm btn-outline-success fw-semibold"><i class="bi bi-puzzle-fill me-1"></i>Statewide Skill Gap Engine</a>
+      <a href="{{ url_for('government.dashboard') }}#risk-radar" class="btn btn-sm btn-outline-danger fw-semibold"><i class="bi bi-radar me-1"></i>Outcome Risk Radar</a>
+      <a href="{{ url_for('government.dashboard') }}#what-if-simulator" class="btn btn-sm btn-outline-dark fw-semibold"><i class="bi bi-sliders me-1"></i>What-If Simulator</a>
+      <a href="{{ url_for('government.map_view') }}" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-geo-alt me-1"></i>District Outcome Map</a>
+      <a href="{{ url_for('government.world_map_view') }}" class="btn btn-sm btn-outline-secondary fw-semibold"><i class="bi bi-globe2 me-1"></i>World Mobility Map</a>
     </div>
   </div>
 
@@ -60,7 +79,7 @@
   <div class="row g-4 mb-4">
     <!-- Courses Outcome Breakdown -->
     <div class="col-lg-8">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white" id="course-outcomes">
         <div class="section-header">
           <h4 data-i18n="auto_446">{{ 'Course Outcome Intelligence' }}</h4>
           <p data-i18n="auto_447">{{ 'Enrolment, certification and active employment conversion rates by course' }}</p>
@@ -107,7 +126,7 @@
 
     <!-- Curriculum Skill Gap Alerts -->
     <div class="col-lg-4">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white" id="curriculum-skill-gaps">
         <div class="section-header">
           <h4 data-i18n="auto_455">{{ 'Curriculum Skill Gaps' }}</h4>
           <p data-i18n="auto_456">{{ 'Top missing workplace skills reported by employers hiring your graduates' }}</p>
@@ -137,7 +156,7 @@
   </div>
 
   <!-- Trainees Cohort Table -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white" id="cohort-directory">
     <div class="section-header">
       <h4 data-i18n="auto_459">{{ 'Enrolled Trainee Cohort Directory' }}</h4>
       <p data-i18n="auto_460">{{ 'Tracking longitudinal outcomes for graduates under this training provider' }}</p>

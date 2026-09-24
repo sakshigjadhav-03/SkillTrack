@@ -25,6 +25,23 @@
         </a>
       </div>
     </div>
+
+    <!-- Quick Navigation Toolbar for Outcome Intelligence Modules -->
+    <hr class="my-3 text-muted">
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <span class="text-muted small fw-bold me-1"><i class="bi bi-compass me-1"></i>Quick Modules:</span>
+      <a href="#risk-radar" class="btn btn-sm btn-outline-danger fw-semibold"><i class="bi bi-radar me-1"></i>Risk Radar</a>
+      <a href="#why-analysis" class="btn btn-sm btn-outline-dark fw-semibold"><i class="bi bi-question-circle-fill text-danger me-1"></i>Why Analysis</a>
+      <a href="#what-if-simulator" class="btn btn-sm btn-outline-warning text-dark fw-semibold"><i class="bi bi-sliders me-1"></i>What-If Simulator</a>
+      <a href="{{ url_for('government.skill_gaps_view') }}" class="btn btn-sm btn-outline-success fw-semibold"><i class="bi bi-puzzle-fill me-1"></i>Skill Gap Analysis</a>
+      <a href="#course-performance" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-mortarboard-fill me-1"></i>Course Performance</a>
+      <a href="#workforce-mobility" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-globe me-1"></i>Workforce Mobility</a>
+      <a href="#followup-center" class="btn btn-sm btn-outline-secondary fw-semibold"><i class="bi bi-bell-fill me-1"></i>Follow-ups</a>
+      <a href="#before-after-section" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-arrow-left-right me-1"></i>Impact Measurement</a>
+      <a href="{{ url_for('government.recommendations_view') }}" class="btn btn-sm btn-outline-warning text-dark fw-semibold"><i class="bi bi-lightbulb-fill me-1"></i>Recommendations</a>
+      <a href="{{ url_for('government.map_view') }}" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-geo-alt-fill me-1"></i>District Map</a>
+      <a href="{{ url_for('government.world_map_view') }}" class="btn btn-sm btn-outline-success fw-semibold"><i class="bi bi-globe2 me-1"></i>World Map</a>
+    </div>
   </div>
 
   <!-- Top 8 KPI Cards -->
@@ -127,19 +144,19 @@
       <span class="badge bg-light text-dark px-3 py-2 border" data-i18n="auto_243">{{ 'Closed-Loop Policy Intelligence' }}</span>
     </div>
     <div class="d-flex flex-wrap justify-content-between align-items-center text-center gap-2 p-3 rounded-3" style="background: rgba(255,255,255,0.08);">
-      <div class="p-2"><span class="badge bg-light text-dark p-2 px-3 fw-semibold" data-i18n="auto_244">{{ '1. Training' }}</span></div>
+      <a href="{{ url_for('provider.dashboard') }}" class="p-2 text-decoration-none" title="Go to Training Provider Portal"><span class="badge bg-light text-dark p-2 px-3 fw-semibold shadow-sm"><i class="bi bi-mortarboard me-1"></i>1. Training</span></a>
       <i class="bi bi-arrow-right text-warning"></i>
-      <div class="p-2"><span class="badge bg-info text-dark p-2 px-3 fw-semibold" data-i18n="auto_245">{{ '2. Outcome Follow-up' }}</span></div>
+      <a href="#followup-center" class="p-2 text-decoration-none" title="Jump to Follow-up Reminder Center"><span class="badge bg-info text-dark p-2 px-3 fw-semibold shadow-sm"><i class="bi bi-bell me-1"></i>2. Outcome Follow-up</span></a>
       <i class="bi bi-arrow-right text-warning"></i>
-      <div class="p-2"><span class="badge bg-danger p-2 px-3 fw-semibold" data-i18n="auto_246">{{ '3. WHY Analysis' }}</span></div>
+      <a href="#why-analysis" class="p-2 text-decoration-none" title="Jump to Dedicated Why Analysis"><span class="badge bg-danger p-2 px-3 fw-semibold shadow-sm"><i class="bi bi-question-circle me-1"></i>3. WHY Analysis</span></a>
       <i class="bi bi-arrow-right text-warning"></i>
-      <div class="p-2"><span class="badge bg-warning text-dark p-2 px-3 fw-semibold" data-i18n="auto_247">{{ '4. Risk Detection' }}</span></div>
+      <a href="#risk-radar" class="p-2 text-decoration-none" title="Jump to Outcome Risk Radar"><span class="badge bg-warning text-dark p-2 px-3 fw-semibold shadow-sm"><i class="bi bi-radar me-1"></i>4. Risk Detection</span></a>
       <i class="bi bi-arrow-right text-warning"></i>
-      <div class="p-2"><span class="badge bg-primary p-2 px-3 fw-semibold" data-i18n="auto_248">{{ '5. Recommended Action' }}</span></div>
+      <a href="#actionable-recommendations" class="p-2 text-decoration-none" title="Jump to Actionable Policy Recommendations"><span class="badge bg-primary p-2 px-3 fw-semibold shadow-sm"><i class="bi bi-lightbulb me-1"></i>5. Recommended Action</span></a>
       <i class="bi bi-arrow-right text-warning"></i>
-      <div class="p-2"><span class="badge bg-success p-2 px-3 fw-semibold" data-i18n="auto_249">{{ '6. Next Cohort (Before/After)' }}</span></div>
+      <a href="#before-after-section" class="p-2 text-decoration-none" title="Jump to Before vs After Cohort Comparison"><span class="badge bg-success p-2 px-3 fw-semibold shadow-sm"><i class="bi bi-arrow-left-right me-1"></i>6. Next Cohort (Before/After)</span></a>
       <i class="bi bi-arrow-right text-warning"></i>
-      <div class="p-2"><span class="badge bg-white text-primary p-2 px-3 fw-bold" data-i18n="auto_250">{{ '7. Impact Measured' }}</span></div>
+      <a href="#before-after-section" class="p-2 text-decoration-none" title="Jump to Impact Measurement"><span class="badge bg-white text-primary p-2 px-3 fw-bold shadow-sm"><i class="bi bi-patch-check-fill me-1"></i>7. Impact Measured</span></a>
     </div>
   </div>
 
@@ -431,7 +448,7 @@
   <!-- Institutional Comparisons: Courses & Providers -->
   <div class="row g-4 mb-4">
     <div class="col-lg-7">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white" id="course-performance">
         <div class="section-header">
           <h4 data-i18n="auto_320">{{ 'Course Outcome Performance' }}</h4>
           <p data-i18n="auto_321">{{ 'Comparative placement conversion and average monthly salaries across vocational trades' }}</p>
@@ -467,10 +484,13 @@
     </div>
 
     <div class="col-lg-5">
-      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
-        <div class="section-header">
-          <h4 data-i18n="auto_327">{{ 'Top Statewide Skill Gaps' }}</h4>
-          <p data-i18n="auto_328">{{ 'Highest frequency workplace skill deficiencies identified by recruiting employers' }}</p>
+      <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white" id="statewide-skill-gaps">
+        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+          <div class="section-header mb-0">
+            <h4 data-i18n="auto_327">{{ 'Top Statewide Skill Gaps' }}</h4>
+            <p data-i18n="auto_328">{{ 'Highest frequency workplace skill deficiencies identified by recruiting employers' }}</p>
+          </div>
+          <a href="{{ url_for('government.skill_gaps_view') }}" class="btn btn-sm btn-outline-success fw-semibold"><i class="bi bi-puzzle-fill me-1"></i>Skill Gap Engine ›</a>
         </div>
 
         <div class="list-group list-group-flush">
@@ -690,7 +710,7 @@
   </div>
 
   <!-- Top Actionable Recommendations -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="actionable-recommendations">
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
       <div class="section-header mb-0">
         <h4 data-i18n="auto_363">{{ 'Actionable Policy Recommendations' }}</h4>

@@ -194,3 +194,62 @@ def get_mobility_world():
     data = MobilityService.get_global_employment_geo()
     return jsonify({'success': True, 'data': data})
 
+
+# ==============================================================
+# HIERARCHICAL GEOGRAPHIC INTELLIGENCE APIS
+# World -> Country -> India -> State -> District
+# ==============================================================
+
+@api_bp.route('/geographic/world')
+def get_geo_world():
+    """Returns world-level metrics, international employment destinations, and global corridors."""
+    from backend.services.geographic_service import GeographicService
+    data = GeographicService.get_world_data()
+    return jsonify({'success': True, 'data': data})
+
+
+@api_bp.route('/geographic/india')
+def get_geo_india():
+    """Returns India-level metrics, states with outcome data, and interstate corridors."""
+    from backend.services.geographic_service import GeographicService
+    data = GeographicService.get_india_data()
+    return jsonify({'success': True, 'data': data})
+
+
+@api_bp.route('/geographic/state/<state_name>')
+def get_geo_state(state_name):
+    """Returns district-level outcomes and intrastate corridors for a selected Indian state."""
+    from backend.services.geographic_service import GeographicService
+    data = GeographicService.get_state_districts(state_name)
+    return jsonify({'success': True, 'data': data})
+
+
+@api_bp.route('/geographic/search')
+def search_geographic():
+    """Search country, state, UT, or district across the geographic hierarchy."""
+    from backend.services.geographic_service import GeographicService
+    q = request.args.get('q', '')
+    results = GeographicService.search_locations(q)
+    return jsonify({'success': True, 'results': results})
+
+
+@api_bp.route('/geographic/geojson/world')
+def get_geojson_world():
+    """Serves the local world countries GeoJSON."""
+    file_path = BASE_DIR / 'frontend' / 'static' / 'data' / 'world.geojson'
+    if file_path.exists():
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return jsonify(json.load(f))
+    return jsonify({'type': 'FeatureCollection', 'features': []}), 404
+
+
+@api_bp.route('/geographic/geojson/india')
+def get_geojson_india():
+    """Serves the local India states & UTs GeoJSON."""
+    file_path = BASE_DIR / 'frontend' / 'static' / 'data' / 'india_states.geojson'
+    if file_path.exists():
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return jsonify(json.load(f))
+    return jsonify({'type': 'FeatureCollection', 'features': []}), 404
+
+

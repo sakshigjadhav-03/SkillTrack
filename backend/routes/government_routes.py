@@ -319,16 +319,28 @@ def dashboard():
 @login_required
 @role_required('government', 'admin', 'provider')
 def map_view():
-    """Maharashtra interactive district outcome map using Leaflet.js and OpenStreetMap."""
+    """Hierarchical Geographic Intelligence: World -> Country -> India -> State -> District."""
     districts = query_db("SELECT * FROM districts ORDER BY name ASC")
-    return render_template('government/map_view.html', districts=districts)
+    return render_template(
+        'government/map_view.html',
+        districts=districts,
+        initial_mode='outcomes',
+        initial_level='world'
+    )
 
 @gov_bp.route('/world-map')
 @login_required
 @role_required('government', 'admin', 'provider')
 def world_map_view():
-    """Global employment map page showing markers for worldwide employment records."""
-    return render_template('government/world_map.html')
+    """Global Trainee Employment & Cross-Border Workforce Mobility Map."""
+    districts = query_db("SELECT * FROM districts ORDER BY name ASC")
+    return render_template(
+        'government/map_view.html',
+        districts=districts,
+        initial_mode='mobility',
+        initial_level='world'
+    )
+
 
 
 @gov_bp.route('/skill-gaps')

@@ -3,13 +3,17 @@
     "id": 1,
     "name": "Mumbai",
     "division": "Konkan",
-    "lat": 19.0760,
+    "lat": 19.076,
     "lng": 72.8777,
     "total_trained": 420,
     "employment_rate": 83.5,
     "retention_rate": 79.0,
     "avg_salary": 21500,
-    "top_skill_gaps": ["Advanced Excel", "Client Communication", "Python"]
+    "top_skill_gaps": [
+      "Advanced Excel",
+      "Client Communication",
+      "Python"
+    ]
   },
   {
     "id": 2,
@@ -21,7 +25,11 @@
     "employment_rate": 81.2,
     "retention_rate": 76.5,
     "avg_salary": 20400,
-    "top_skill_gaps": ["Data Analysis", "Industrial Automation", "CRM Software"]
+    "top_skill_gaps": [
+      "Data Analysis",
+      "Industrial Automation",
+      "CRM Software"
+    ]
   },
   {
     "id": 3,
@@ -33,7 +41,11 @@
     "employment_rate": 74.5,
     "retention_rate": 69.2,
     "avg_salary": 16800,
-    "top_skill_gaps": ["Logistics Tracking", "Basic Accounting", "Digital Tools"]
+    "top_skill_gaps": [
+      "Logistics Tracking",
+      "Basic Accounting",
+      "Digital Tools"
+    ]
   },
   {
     "id": 4,
@@ -45,7 +57,11 @@
     "employment_rate": 76.0,
     "retention_rate": 71.8,
     "avg_salary": 17200,
-    "top_skill_gaps": ["Solar Inverter Maintenance", "Supply Chain", "English Communication"]
+    "top_skill_gaps": [
+      "Solar Inverter Maintenance",
+      "Supply Chain",
+      "English Communication"
+    ]
   },
   {
     "id": 5,
@@ -57,7 +73,11 @@
     "employment_rate": 71.4,
     "retention_rate": 65.0,
     "avg_salary": 15900,
-    "top_skill_gaps": ["Auto-CAD Basics", "Industrial Electrical Safety", "Customer Service"]
+    "top_skill_gaps": [
+      "Auto-CAD Basics",
+      "Industrial Electrical Safety",
+      "Customer Service"
+    ]
   },
   {
     "id": 6,
@@ -69,19 +89,27 @@
     "employment_rate": 80.0,
     "retention_rate": 75.0,
     "avg_salary": 19800,
-    "top_skill_gaps": ["Warehouse Management", "Data Entry Speed", "Email Etiquette"]
+    "top_skill_gaps": [
+      "Warehouse Management",
+      "Data Entry Speed",
+      "Email Etiquette"
+    ]
   },
   {
     "id": 7,
     "name": "Kolhapur",
     "division": "Pune",
-    "lat": 16.7050,
+    "lat": 16.705,
     "lng": 74.2433,
     "total_trained": 260,
     "employment_rate": 75.8,
     "retention_rate": 72.4,
     "avg_salary": 16500,
-    "top_skill_gaps": ["Machining Diagnostics", "Retail POS Software", "Team Collaboration"]
+    "top_skill_gaps": [
+      "Machining Diagnostics",
+      "Retail POS Software",
+      "Team Collaboration"
+    ]
   },
   {
     "id": 8,
@@ -93,7 +121,11 @@
     "employment_rate": 68.2,
     "retention_rate": 62.1,
     "avg_salary": 14800,
-    "top_skill_gaps": ["Textile Machine Operations", "Computer Literacy", "Workplace Discipline"]
+    "top_skill_gaps": [
+      "Textile Machine Operations",
+      "Computer Literacy",
+      "Workplace Discipline"
+    ]
   },
   {
     "id": 9,
@@ -105,18 +137,417 @@
     "employment_rate": 66.5,
     "retention_rate": 60.0,
     "avg_salary": 14200,
-    "top_skill_gaps": ["Medical Record Keeping", "Basic IT Operations", "Patient Handling"]
+    "top_skill_gaps": [
+      "Medical Record Keeping",
+      "Basic IT Operations",
+      "Patient Handling"
+    ]
   },
   {
     "id": 10,
     "name": "Nanded",
     "division": "Marathwada",
     "lat": 19.1383,
-    "lng": 77.3210,
+    "lng": 77.321,
     "total_trained": 190,
     "employment_rate": 64.8,
     "retention_rate": 58.5,
     "avg_salary": 13900,
-    "top_skill_gaps": ["Solar Panel Installation", "Local Sales Outreach", "Spoken English"]
+    "top_skill_gaps": [
+      "Solar Panel Installation",
+      "Local Sales Outreach",
+      "Spoken English"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "Satara",
+    "division": "Pune",
+    "lat": 17.6805,
+    "lng": 74.0183,
+    "total_trained": 180,
+    "employment_rate": 73.0,
+    "retention_rate": 69.5,
+    "avg_salary": 15800,
+    "top_skill_gaps": [
+      "Agri-machinery Diagnostics",
+      "Customer Service"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Sangli",
+    "division": "Pune",
+    "lat": 16.8524,
+    "lng": 74.5815,
+    "total_trained": 175,
+    "employment_rate": 72.5,
+    "retention_rate": 68.0,
+    "avg_salary": 15400,
+    "top_skill_gaps": [
+      "Food Processing QA",
+      "Basic Accounting"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Raigad",
+    "division": "Konkan",
+    "lat": 18.5158,
+    "lng": 73.1812,
+    "total_trained": 220,
+    "employment_rate": 78.0,
+    "retention_rate": 74.0,
+    "avg_salary": 18200,
+    "top_skill_gaps": [
+      "Port Logistics",
+      "Chemical Plant Safety"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Ratnagiri",
+    "division": "Konkan",
+    "lat": 16.9902,
+    "lng": 73.312,
+    "total_trained": 160,
+    "employment_rate": 75.0,
+    "retention_rate": 71.0,
+    "avg_salary": 17000,
+    "top_skill_gaps": [
+      "Fisheries Processing",
+      "Hospitality Operations"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Sindhudurg",
+    "division": "Konkan",
+    "lat": 16.1158,
+    "lng": 73.7022,
+    "total_trained": 130,
+    "employment_rate": 74.2,
+    "retention_rate": 70.0,
+    "avg_salary": 16500,
+    "top_skill_gaps": [
+      "Ecotourism Guidance",
+      "Digital Booking Systems"
+    ]
+  },
+  {
+    "id": 16,
+    "name": "Palghar",
+    "division": "Konkan",
+    "lat": 19.6936,
+    "lng": 72.7655,
+    "total_trained": 240,
+    "employment_rate": 77.5,
+    "retention_rate": 72.5,
+    "avg_salary": 17800,
+    "top_skill_gaps": [
+      "Assembly Line Automation",
+      "Safety Protocols"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Jalgaon",
+    "division": "Nashik",
+    "lat": 21.0077,
+    "lng": 75.5626,
+    "total_trained": 210,
+    "employment_rate": 70.5,
+    "retention_rate": 66.0,
+    "avg_salary": 15200,
+    "top_skill_gaps": [
+      "Irrigation Hardware",
+      "Solar Inverter Setup"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Dhule",
+    "division": "Nashik",
+    "lat": 20.9042,
+    "lng": 74.7749,
+    "total_trained": 150,
+    "employment_rate": 68.0,
+    "retention_rate": 63.5,
+    "avg_salary": 14500,
+    "top_skill_gaps": [
+      "Automotive Fitting",
+      "Storekeeping"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Nandurbar",
+    "division": "Nashik",
+    "lat": 21.3732,
+    "lng": 74.2403,
+    "total_trained": 120,
+    "employment_rate": 62.5,
+    "retention_rate": 57.0,
+    "avg_salary": 13500,
+    "top_skill_gaps": [
+      "Community Health Support",
+      "Basic Computer Skills"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Ahmednagar",
+    "division": "Nashik",
+    "lat": 19.0952,
+    "lng": 74.7496,
+    "total_trained": 250,
+    "employment_rate": 74.0,
+    "retention_rate": 70.0,
+    "avg_salary": 16200,
+    "top_skill_gaps": [
+      "Dairy Equipment Operation",
+      "Inventory Tracking"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Jalna",
+    "division": "Marathwada",
+    "lat": 19.841,
+    "lng": 75.8864,
+    "total_trained": 170,
+    "employment_rate": 69.0,
+    "retention_rate": 64.0,
+    "avg_salary": 14900,
+    "top_skill_gaps": [
+      "Steel Plant Welding",
+      "Electrical Wiring"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Beed",
+    "division": "Marathwada",
+    "lat": 18.9891,
+    "lng": 75.7601,
+    "total_trained": 165,
+    "employment_rate": 65.5,
+    "retention_rate": 59.5,
+    "avg_salary": 14000,
+    "top_skill_gaps": [
+      "Renewable Power Basics",
+      "Field Data Collection"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "Latur",
+    "division": "Marathwada",
+    "lat": 18.4088,
+    "lng": 76.5604,
+    "total_trained": 190,
+    "employment_rate": 71.0,
+    "retention_rate": 67.0,
+    "avg_salary": 15500,
+    "top_skill_gaps": [
+      "BPO Calling",
+      "Financial Accounting"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "Dharashiv",
+    "division": "Marathwada",
+    "lat": 18.1755,
+    "lng": 76.0408,
+    "total_trained": 140,
+    "employment_rate": 64.0,
+    "retention_rate": 58.0,
+    "avg_salary": 13800,
+    "top_skill_gaps": [
+      "Solar Pumping Diagnostics",
+      "Retail Sales"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Parbhani",
+    "division": "Marathwada",
+    "lat": 19.2686,
+    "lng": 76.7708,
+    "total_trained": 150,
+    "employment_rate": 66.0,
+    "retention_rate": 61.0,
+    "avg_salary": 14200,
+    "top_skill_gaps": [
+      "Agri-extension Software",
+      "Digital Payments"
+    ]
+  },
+  {
+    "id": 26,
+    "name": "Hingoli",
+    "division": "Marathwada",
+    "lat": 19.7196,
+    "lng": 77.1485,
+    "total_trained": 110,
+    "employment_rate": 63.0,
+    "retention_rate": 57.5,
+    "avg_salary": 13600,
+    "top_skill_gaps": [
+      "First Responder Aid",
+      "Rural Retailing"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Akola",
+    "division": "Vidarbha",
+    "lat": 20.7002,
+    "lng": 77.0082,
+    "total_trained": 180,
+    "employment_rate": 69.5,
+    "retention_rate": 65.0,
+    "avg_salary": 15000,
+    "top_skill_gaps": [
+      "Cotton Ginning Operations",
+      "Billing Software"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Washim",
+    "division": "Vidarbha",
+    "lat": 20.111,
+    "lng": 77.1345,
+    "total_trained": 115,
+    "employment_rate": 62.0,
+    "retention_rate": 56.5,
+    "avg_salary": 13400,
+    "top_skill_gaps": [
+      "Solar Rooftop Installation",
+      "Customer Relations"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Buldhana",
+    "division": "Vidarbha",
+    "lat": 20.5312,
+    "lng": 76.1847,
+    "total_trained": 160,
+    "employment_rate": 67.0,
+    "retention_rate": 62.5,
+    "avg_salary": 14400,
+    "top_skill_gaps": [
+      "Mechanical Fitting",
+      "Basic MS Office"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Yavatmal",
+    "division": "Vidarbha",
+    "lat": 20.3888,
+    "lng": 78.1204,
+    "total_trained": 170,
+    "employment_rate": 65.0,
+    "retention_rate": 60.0,
+    "avg_salary": 14100,
+    "top_skill_gaps": [
+      "Textile Spinning Operations",
+      "Safety Equipment"
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Wardha",
+    "division": "Vidarbha",
+    "lat": 20.7453,
+    "lng": 78.6022,
+    "total_trained": 160,
+    "employment_rate": 72.0,
+    "retention_rate": 68.0,
+    "avg_salary": 15600,
+    "top_skill_gaps": [
+      "Healthcare Assistance",
+      "Data Entry"
+    ]
+  },
+  {
+    "id": 32,
+    "name": "Chandrapur",
+    "division": "Vidarbha",
+    "lat": 19.9615,
+    "lng": 79.2961,
+    "total_trained": 210,
+    "employment_rate": 73.5,
+    "retention_rate": 69.0,
+    "avg_salary": 16400,
+    "top_skill_gaps": [
+      "Thermal Power Plant Safety",
+      "Heavy Equipment Ops"
+    ]
+  },
+  {
+    "id": 33,
+    "name": "Gadchiroli",
+    "division": "Vidarbha",
+    "lat": 20.1809,
+    "lng": 80.0039,
+    "total_trained": 105,
+    "employment_rate": 61.5,
+    "retention_rate": 55.0,
+    "avg_salary": 13200,
+    "top_skill_gaps": [
+      "Forestry Product Processing",
+      "Solar Lantern Repair"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Bhandara",
+    "division": "Vidarbha",
+    "lat": 21.1667,
+    "lng": 79.65,
+    "total_trained": 140,
+    "employment_rate": 68.5,
+    "retention_rate": 63.5,
+    "avg_salary": 14700,
+    "top_skill_gaps": [
+      "Brassware Machining",
+      "Inventory Software"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Gondia",
+    "division": "Vidarbha",
+    "lat": 21.4624,
+    "lng": 80.1961,
+    "total_trained": 135,
+    "employment_rate": 67.5,
+    "retention_rate": 62.0,
+    "avg_salary": 14600,
+    "top_skill_gaps": [
+      "Rice Mill Automation",
+      "Quality Testing"
+    ]
+  },
+  {
+    "id": 36,
+    "name": "Mumbai Suburban",
+    "division": "Konkan",
+    "lat": 19.125,
+    "lng": 72.875,
+    "total_trained": 480,
+    "employment_rate": 84.0,
+    "retention_rate": 80.0,
+    "avg_salary": 22000,
+    "top_skill_gaps": [
+      "Data Processing",
+      "CRM Management",
+      "Business English"
+    ]
   }
 ]

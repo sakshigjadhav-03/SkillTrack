@@ -1,32 +1,64 @@
 {% extends 'base.html' %}
 
-{% block title %}Maharashtra District Outcome Map — SkillTrack{% endblock %}
+{% block title %}Geographic Intelligence — Global, National & District Outcomes — SkillTrack{% endblock %}
 
 {% block extra_head %}
 <style>
-  #maharashtraMap {
-    height: 600px;
+  .geo-map-container {
+    height: 580px;
     width: 100%;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 14px;
+    position: relative;
+    overflow: hidden;
+    background: #f8fafc;
   }
-  .map-watermark {
-    position: absolute;
-    bottom: 25px;
-    right: 25px;
-    background: rgba(255, 255, 255, 0.95);
+  #geoMap {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+  }
+  .breadcrumb-nav-bar {
+    background: #f1f5f9;
+    border-radius: 10px;
     padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+  }
+  .breadcrumb-item a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .breadcrumb-item a:hover {
+    text-decoration: underline;
+  }
+  .breadcrumb-item.active {
+    color: #1e293b;
     font-weight: 700;
-    color: #664d03;
-    border: 1px solid #ffe69c;
-    z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .map-legend-box {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.96);
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    z-index: 999;
+    border: 1px solid #e2e8f0;
+    max-width: 240px;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
   }
   .leaflet-popup-content-wrapper {
     border-radius: 10px;
     padding: 4px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   }
   .custom-popup h6 {
     color: #0e385f;
@@ -38,58 +70,215 @@
     justify-content: space-between;
     padding: 3px 0;
     border-bottom: 1px solid #f1f5f9;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+  }
+  .search-results-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 1050;
+    max-height: 280px;
+    overflow-y: auto;
+    display: none;
+  }
+  .search-item {
+    padding: 8px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s ease;
+  }
+  .search-item:hover {
+    background: #f8fafc;
+  }
+  .corridor-badge {
+    background: #f3e8ff;
+    color: #7e22ce;
+    border: 1px solid #d8b4fe;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
+<div class="container-fluid py-4 px-lg-4">
 
-  <!-- Map Header -->
+  <!-- Header Card -->
   <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div>
         <div class="d-flex align-items-center gap-2 mb-1">
           <span class="badge bg-primary text-uppercase">{{ 'Administrator Geographic Intelligence' }}</span>
+          <span class="badge bg-dark text-white text-uppercase" id="currentLevelBadge"><i class="bi bi-globe me-1"></i>World Level</span>
+          <span class="badge bg-success-subtle text-success border border-success-subtle" id="viewModeBadge">Outcome View</span>
         </div>
-        <h3 class="fw-bold mb-0" data-i18n="auto_370">{{ 'Maharashtra District-Level Outcome Map' }}</h3>
-        <p class="text-muted small mb-0" data-i18n="auto_371">{{ 'Interactive Leaflet.js map with OpenStreetMap basemap tracking regional employment and retention' }}</p>
+        <h3 class="fw-bold mb-1 text-dark">
+          <i class="bi bi-geo-alt-fill text-primary me-2"></i>Global, National & District Geographic Intelligence
+        </h3>
+        <p class="text-muted small mb-0">
+          Hierarchical outcome tracking & cross-border workforce mobility from global jurisdictions down to district cohorts.
+        </p>
       </div>
-      <div>
-        <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left me-1"></i> Back to Admin Dashboard
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- View Mode Switcher -->
+        <div class="btn-group shadow-sm" role="group">
+          <button type="button" class="btn btn-sm btn-primary fw-semibold" id="btnModeOutcomes">
+            <i class="bi bi-pie-chart-fill me-1"></i> Outcome Intelligence
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" id="btnModeMobility">
+            <i class="bi bi-signpost-split-fill me-1"></i> Workforce Mobility
+          </button>
+        </div>
+
+        <a href="{{ url_for('government.dashboard') }}" class="btn btn-outline-secondary btn-sm fw-semibold">
+          <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Map Card Container -->
-  <div class="card border-0 shadow-sm rounded-4 p-3 bg-white position-relative">
-    <div id="maharashtraMap"></div>
+  <!-- Navigation Toolbar: Breadcrumb + Search + Quick Controls -->
+  <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+    <div class="row g-3 align-items-center">
+      
+      <!-- Breadcrumb & Back Controls -->
+      <div class="col-lg-7 d-flex align-items-center gap-2 flex-wrap">
+        <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold d-inline-flex align-items-center gap-1 shadow-sm" id="btnBackLevel" disabled>
+          <i class="bi bi-arrow-left"></i> Back
+        </button>
+
+        <button type="button" class="btn btn-outline-dark btn-sm fw-semibold d-inline-flex align-items-center gap-1 shadow-sm" id="btnResetWorld">
+          <i class="bi bi-globe2"></i> World Home
+        </button>
+
+        <!-- Dynamic Breadcrumb -->
+        <nav aria-label="breadcrumb" class="breadcrumb-nav-bar flex-grow-1 shadow-none mb-0">
+          <ol class="breadcrumb mb-0" id="geoBreadcrumb">
+            <li class="breadcrumb-item active" id="crumbWorld"><i class="bi bi-globe me-1"></i>World</li>
+          </ol>
+        </nav>
+      </div>
+
+      <!-- Search Input -->
+      <div class="col-lg-5 position-relative">
+        <div class="input-group shadow-sm">
+          <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+          <input type="text" class="form-control border-start-0 ps-0" id="geoSearchInput" placeholder="Search country, state, UT, or district (e.g. Pune, Karnataka, UAE)..." autocomplete="off">
+          <button class="btn btn-outline-secondary" type="button" id="geoSearchClear" style="display:none;"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="search-results-dropdown shadow" id="searchResultsDropdown"></div>
+      </div>
+
+    </div>
   </div>
 
-  <!-- District Summary Table -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 mt-4 bg-white">
-    <div class="section-header">
-      <h4 data-i18n="auto_372">{{ 'Maharashtra Regional Cohort Distribution' }}</h4>
-      <p data-i18n="auto_373">{{ 'Regional metrics aggregated across Maharashtra administrative divisions' }}</p>
+  <!-- Main Map and Details Row -->
+  <div class="row g-4 mb-4">
+    
+    <!-- Map Container Column -->
+    <div class="col-lg-8 col-xl-8">
+      <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+        
+        <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+          <div class="small fw-semibold text-secondary" id="mapStatusHeading">
+            <i class="bi bi-layers-half text-primary me-1"></i> Interactive Outcome Map
+          </div>
+          <div class="small text-muted" id="mapHintText">
+            Click any country or state to drill down
+          </div>
+        </div>
+
+        <div class="geo-map-container shadow-sm border">
+          <div id="geoMap"></div>
+
+          <!-- Color Legend Overlay -->
+          <div class="map-legend-box" id="mapLegend">
+            <div class="fw-bold mb-1 text-dark" style="font-size: 0.78rem;">Outcome Legend</div>
+            <div class="d-flex align-items-center mb-1">
+              <span class="legend-dot" style="background: #198754;"></span>
+              <span>High Placement (&ge; 75%)</span>
+            </div>
+            <div class="d-flex align-items-center mb-1">
+              <span class="legend-dot" style="background: #0d6efd;"></span>
+              <span>Moderate (65% &ndash; 74%)</span>
+            </div>
+            <div class="d-flex align-items-center mb-1">
+              <span class="legend-dot" style="background: #f59e0b;"></span>
+              <span>Emerging / At-Risk (&lt; 65%)</span>
+            </div>
+            <div class="d-flex align-items-center mb-1">
+              <span class="legend-dot" style="background: #94a3b8;"></span>
+              <span>No Outcome Data</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <span style="width: 14px; height: 3px; background: #8b5cf6; display: inline-block; margin-right: 6px;"></span>
+              <span>Mobility Corridor</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Region Outcome Details Panel Column -->
+    <div class="col-lg-4 col-xl-4">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100" id="regionDetailsCard">
+        
+        <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-3">
+          <div>
+            <span class="badge bg-light text-dark border mb-1" id="detailRegionType">Global View</span>
+            <h4 class="fw-bold text-dark mb-0" id="detailRegionName">World Overview</h4>
+            <div class="text-muted small" id="detailSubtext">Global Longitudinal Tracking</div>
+          </div>
+          <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" id="detailDataStatus">Active Coverage</span>
+        </div>
+
+        <!-- Dynamic Content Body -->
+        <div id="detailCardBody">
+          <!-- Populated by JavaScript -->
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Data Section: Contextual Cohort Directory -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <h5 class="fw-bold text-dark mb-0" id="directorySectionTitle">Regional Cohort Outcome Directory</h5>
+        <p class="text-muted small mb-0" id="directorySectionSubtitle">Detailed longitudinal conversion metrics across administrative entities</p>
+      </div>
+      <div>
+        <button class="btn btn-sm btn-outline-primary" id="btnFilterTableAll">Show All Records</button>
+      </div>
     </div>
 
     <div class="table-responsive">
-      <table class="table custom-table table-bordered mb-0">
-        <thead>
-          <tr>
-            <th data-i18n="auto_374">{{ 'District' }}</th>
-            <th data-i18n="auto_375">{{ 'Division' }}</th>
-            <th data-i18n="auto_376">{{ 'Total Trained' }}</th>
-            <th data-i18n="auto_377">{{ 'Employment %' }}</th>
-            <th data-i18n="auto_378">{{ 'Retention %' }}</th>
-            <th data-i18n="auto_379">{{ 'Avg. Salary' }}</th>
-            <th data-i18n="auto_380">{{ 'Top Detected Skill Gaps' }}</th>
+      <table class="table custom-table table-bordered table-hover mb-0" id="regionalDirectoryTable">
+        <thead class="table-light">
+          <tr id="tableHeaderRow">
+            <th>Region</th>
+            <th>Type / Hub</th>
+            <th>Trainees Tracked</th>
+            <th>Employment %</th>
+            <th>12M Retention %</th>
+            <th>Avg. Salary</th>
+            <th>Top Workplace Skill Gaps / Sectors</th>
+            <th>Action</th>
           </tr>
         </thead>
-        <tbody id="districtsTableBody">
+        <tbody id="directoryTableBody">
           <!-- Populated via JS -->
         </tbody>
       </table>
@@ -102,80 +291,1032 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize Leaflet Map centered on Maharashtra
-  const map = L.map('maharashtraMap').setView([19.7515, 75.7139], 7);
+
+  // Current Geographic Navigation State
+  const state = {
+    level: '{{ initial_level|default("world") }}', // 'world', 'country', 'india', 'state', 'district'
+    mode: '{{ initial_mode|default("outcomes") }}', // 'outcomes', 'mobility'
+    currentCountry: 'World',
+    currentState: null,
+    currentDistrict: null,
+    worldData: null,
+    indiaData: null,
+    stateDistrictsData: {},
+    worldGeoJson: null,
+    indiaGeoJson: null
+  };
+
+  // Initialize Map
+  const map = L.map('geoMap', {
+    minZoom: 2,
+    maxZoom: 18,
+    zoomControl: true
+  }).setView([22, 25], 2);
 
   // OpenStreetMap Tile Layer
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 18,
-    attribution: '© <a href="https://www.openstreetmap.org/copyright" data-i18n="auto_381">{{ 'OpenStreetMap' }}</a> contributors | SkillTrack Prototype'
+    attribution: '&copy; OpenStreetMap contributors | SkillTrack Geographic Intelligence'
   }).addTo(map);
 
-  // Fetch district data from API
-  fetch('/api/districts')
-    .then(res => res.json())
-    .then(data => {
-      if (data.success && data.districts) {
-        const tableBody = document.getElementById('districtsTableBody');
-        
-        data.districts.forEach(d => {
-          // Color based on employment rate
-          const markerColor = d.employment_rate >= 75 ? '#198754' : (d.employment_rate >= 70 ? '#0d6efd' : '#ffc107');
+  // Layer Groups
+  const geoJsonLayerGroup = L.layerGroup().addTo(map);
+  const markersLayerGroup = L.layerGroup().addTo(map);
+  const corridorsLayerGroup = L.layerGroup().addTo(map);
 
-          // Add Circle Marker
-          const marker = L.circleMarker([d.lat, d.lng], {
-            radius: 12,
-            fillColor: markerColor,
-            color: '#ffffff',
-            weight: 2,
+  // DOM Elements
+  const geoBreadcrumb = document.getElementById('geoBreadcrumb');
+  const btnBackLevel = document.getElementById('btnBackLevel');
+  const btnResetWorld = document.getElementById('btnResetWorld');
+  const currentLevelBadge = document.getElementById('currentLevelBadge');
+  const viewModeBadge = document.getElementById('viewModeBadge');
+  const btnModeOutcomes = document.getElementById('btnModeOutcomes');
+  const btnModeMobility = document.getElementById('btnModeMobility');
+  const geoSearchInput = document.getElementById('geoSearchInput');
+  const geoSearchClear = document.getElementById('geoSearchClear');
+  const searchResultsDropdown = document.getElementById('searchResultsDropdown');
+  const detailRegionType = document.getElementById('detailRegionType');
+  const detailRegionName = document.getElementById('detailRegionName');
+  const detailSubtext = document.getElementById('detailSubtext');
+  const detailDataStatus = document.getElementById('detailDataStatus');
+  const detailCardBody = document.getElementById('detailCardBody');
+  const directoryTableBody = document.getElementById('directoryTableBody');
+  const directorySectionTitle = document.getElementById('directorySectionTitle');
+  const directorySectionSubtitle = document.getElementById('directorySectionSubtitle');
+
+  // Helper: Get color by employment rate
+  function getChoroplethColor(empRate, hasData) {
+    if (!hasData || empRate == null) return '#94a3b8'; // Neutral Gray
+    if (empRate >= 75) return '#198754'; // High Placement - Green
+    if (empRate >= 65) return '#0d6efd'; // Moderate - Blue
+    return '#f59e0b'; // Emerging - Amber
+  }
+
+  // Load All Primary Geo & Outcome Datasets
+  Promise.all([
+    fetch('/api/geographic/world').then(r => r.json()),
+    fetch('/api/geographic/india').then(r => r.json()),
+    fetch('/api/geographic/geojson/world').then(r => r.json()),
+    fetch('/api/geographic/geojson/india').then(r => r.json()),
+    fetch('/api/geographic/state/Maharashtra').then(r => r.json())
+  ]).then(([worldRes, indiaRes, worldGeo, indiaGeo, mhRes]) => {
+    state.worldData = worldRes.data;
+    state.indiaData = indiaRes.data;
+    state.worldGeoJson = worldGeo;
+    state.indiaGeoJson = indiaGeo;
+    if (mhRes.success) {
+      state.stateDistrictsData['Maharashtra'] = mhRes.data;
+    }
+
+    // Initial Render
+    if (state.mode === 'mobility') {
+      setMode('mobility');
+    } else {
+      renderCurrentLevel();
+    }
+  }).catch(err => {
+    console.error('Failed to initialize geographic intelligence datasets', err);
+  });
+
+  // Navigation: Set Mode
+  function setMode(newMode) {
+    state.mode = newMode;
+    if (newMode === 'mobility') {
+      btnModeMobility.className = 'btn btn-sm btn-primary fw-semibold';
+      btnModeOutcomes.className = 'btn btn-sm btn-outline-primary fw-semibold';
+      viewModeBadge.textContent = 'Mobility View';
+      viewModeBadge.className = 'badge bg-purple-subtle text-purple border border-purple-subtle';
+    } else {
+      btnModeOutcomes.className = 'btn btn-sm btn-primary fw-semibold';
+      btnModeMobility.className = 'btn btn-sm btn-outline-primary fw-semibold';
+      viewModeBadge.textContent = 'Outcome View';
+      viewModeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle';
+    }
+    renderCurrentLevel();
+  }
+
+  btnModeOutcomes.addEventListener('click', () => setMode('outcomes'));
+  btnModeMobility.addEventListener('click', () => setMode('mobility'));
+
+  // Main Render Controller
+  function renderCurrentLevel() {
+    clearMapLayers();
+    updateBreadcrumb();
+    updateNavigationControls();
+
+    if (state.level === 'world') {
+      renderWorldLevel();
+    } else if (state.level === 'india') {
+      renderIndiaLevel();
+    } else if (state.level === 'state') {
+      renderStateLevel(state.currentState);
+    } else if (state.level === 'district') {
+      renderDistrictLevel(state.currentState, state.currentDistrict);
+    }
+  }
+
+  function clearMapLayers() {
+    geoJsonLayerGroup.clearLayers();
+    markersLayerGroup.clearLayers();
+    corridorsLayerGroup.clearLayers();
+  }
+
+  // ==============================================================
+  // 1. WORLD LEVEL
+  // ==============================================================
+  function renderWorldLevel() {
+    map.setView([22, 25], 2);
+    currentLevelBadge.innerHTML = '<i class="bi bi-globe me-1"></i>World Level';
+
+    const countriesData = state.worldData ? state.worldData.countries_with_data : {};
+
+    // Render World Country Boundaries
+    if (state.worldGeoJson && state.worldGeoJson.features) {
+      const geoLayer = L.geoJSON(state.worldGeoJson, {
+        style: (feature) => {
+          const name = feature.properties.name;
+          const cdata = countriesData[name];
+          const hasData = cdata && cdata.has_data;
+          const isIndia = (name === 'India');
+
+          return {
+            fillColor: isIndia ? '#0d6efd' : getChoroplethColor(cdata ? cdata.employment_rate : null, hasData),
+            weight: isIndia ? 2.5 : 1,
             opacity: 1,
-            fillOpacity: 0.85
-          }).addTo(map);
+            color: isIndia ? '#0a58ca' : '#cbd5e1',
+            fillOpacity: hasData ? 0.65 : 0.25
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties.name;
+          const cdata = countriesData[name];
 
-          // Construct Popup HTML
-          const popupContent = `
-            <div class="custom-popup" style="min-width: 220px;">
-              <h6>${d.name} (${d.division})</h6>
-              <div class="metric-row">
-                <span class="text-muted" data-i18n="auto_382">{{ 'Total Trained:' }}</span>
-                <strong>${d.total_trained}</strong>
-              </div>
-              <div class="metric-row">
-                <span class="text-muted" data-i18n="auto_383">{{ 'Employment Rate:' }}</span>
-                <strong class="text-success">${d.employment_rate}%</strong>
-              </div>
-              <div class="metric-row">
-                <span class="text-muted" data-i18n="auto_384">{{ '12M Retention:' }}</span>
-                <strong class="text-primary">${d.retention_rate}%</strong>
-              </div>
-              <div class="metric-row">
-                <span class="text-muted" data-i18n="auto_385">{{ 'Average Wage:' }}</span>
-                <strong>₹${d.avg_salary.toLocaleString()}</strong>
-              </div>
-              <div class="mt-2">
-                <span class="text-muted small d-block" data-i18n="auto_386">{{ 'Top Skill Gaps:' }}</span>
-                <span class="badge bg-warning-subtle text-dark border small mt-1">${d.top_skill_gaps.join(', ')}</span>
-              </div>
-            </div>
-          `;
-          marker.bindPopup(popupContent);
+          // Hover Tooltip
+          let tooltipHtml = `<strong>${name}</strong>`;
+          if (name === 'India') {
+            tooltipHtml += `<br><span class="text-primary fw-bold">Domestic Skilling Base</span><br>Trainees: 4,350 &bull; Emp: 78.4%<br><em>Click to explore Indian States</em>`;
+          } else if (cdata && cdata.has_data) {
+            tooltipHtml += `<br><span class="text-success fw-bold">International Destination</span><br>Trainees: ${cdata.trainees_tracked}<br>Emp: ${cdata.employment_rate}% &bull; Wage: ₹${cdata.avg_salary.toLocaleString()}`;
+          } else {
+            tooltipHtml += `<br><span class="text-muted">No outcome data available</span>`;
+          }
+          layer.bindTooltip(tooltipHtml, { sticky: true });
 
-          // Populate Table Row
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><strong>${d.name}</strong></td>
-            <td><span class="badge bg-light text-dark border">${d.division}</span></td>
-            <td>${d.total_trained}</td>
-            <td><span class="text-success fw-bold">${d.employment_rate}%</span></td>
-            <td><span class="text-primary fw-bold">${d.retention_rate}%</span></td>
-            <td>₹${d.avg_salary.toLocaleString()}</td>
-            <td><span class="small text-danger">${d.top_skill_gaps.join(' &bull; ')}</span></td>
-          `;
-          tableBody.appendChild(row);
+          // Click Handler
+          layer.on('click', () => {
+            if (name === 'India') {
+              navigateToLevel('india');
+            } else {
+              selectCountry(name, cdata);
+            }
+          });
+        }
+      });
+      geoJsonLayerGroup.addLayer(geoLayer);
+    }
+
+    // Render Markers for Countries with Data
+    Object.keys(countriesData).forEach(cname => {
+      const c = countriesData[cname];
+      if (!c.center) return;
+
+      const marker = L.circleMarker(c.center, {
+        radius: cname === 'India' ? 14 : 9,
+        fillColor: cname === 'India' ? '#0d6efd' : '#198754',
+        color: '#ffffff',
+        weight: 2,
+        fillOpacity: 0.9
+      });
+
+      marker.bindTooltip(`<strong>${cname}</strong><br>${c.trainees_tracked} Trainees Tracked`);
+      marker.on('click', () => {
+        if (cname === 'India') {
+          navigateToLevel('india');
+        } else {
+          selectCountry(cname, c);
+        }
+      });
+      markersLayerGroup.addLayer(marker);
+    });
+
+    // Render International Mobility Corridors
+    if (state.worldData && state.worldData.international_corridors) {
+      state.worldData.international_corridors.forEach(corr => {
+        const polyline = L.polyline([corr.origin_coords, corr.destination_coords], {
+          color: '#8b5cf6',
+          weight: state.mode === 'mobility' ? 4 : 2,
+          opacity: 0.85,
+          dashArray: '6, 8'
         });
+
+        polyline.bindTooltip(`
+          <strong>${corr.origin} &rarr; ${corr.destination}</strong><br>
+          <span class="corridor-badge">${corr.type}</span> &bull; <strong>${corr.trainees_count} Trainees</strong><br>
+          Avg Wage: <strong>₹${corr.avg_salary.toLocaleString()}/mo</strong><br>
+          Sector: ${corr.primary_sector}
+        `);
+        corridorsLayerGroup.addLayer(polyline);
+      });
+    }
+
+    // Update Details Card for World
+    renderWorldDetailsPanel();
+    renderWorldTable();
+  }
+
+  function selectCountry(countryName, countryData) {
+    if (countryData && countryData.center) {
+      map.setView(countryData.center, countryData.zoom || 5);
+    }
+
+    detailRegionType.textContent = 'Country';
+    detailRegionName.textContent = countryName;
+    detailSubtext.textContent = 'International Outcome Intelligence';
+
+    if (countryData && countryData.has_data) {
+      detailDataStatus.textContent = 'Active Destination';
+      detailDataStatus.className = 'badge bg-success-subtle text-success border border-success-subtle px-2 py-1';
+
+      detailCardBody.innerHTML = `
+        <div class="alert alert-success-subtle border border-success py-2 px-3 small rounded-3 mb-3">
+          <i class="bi bi-airplane-engines me-1"></i>
+          <strong>International Placement Hub:</strong> ${countryData.primary_city || 'Global Center'}
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            <div class="p-2 border rounded bg-light">
+              <span class="text-muted d-block" style="font-size:0.72rem;">Trainees Employed</span>
+              <strong class="fs-5 text-dark">${countryData.trainees_tracked}</strong>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-2 border rounded bg-light">
+              <span class="text-muted d-block" style="font-size:0.72rem;">Employment Rate</span>
+              <strong class="fs-5 text-success">${countryData.employment_rate}%</strong>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-2 border rounded bg-light">
+              <span class="text-muted d-block" style="font-size:0.72rem;">12M Retention</span>
+              <strong class="fs-6 text-primary">${countryData.retention_rate}%</strong>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-2 border rounded bg-light">
+              <span class="text-muted d-block" style="font-size:0.72rem;">Average Monthly Wage</span>
+              <strong class="fs-6 text-dark">₹${countryData.avg_salary.toLocaleString()}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <span class="text-muted small d-block mb-1 fw-bold">Primary Employment Sectors:</span>
+          ${(countryData.top_sectors || []).map(s => `<span class="badge bg-light text-dark border me-1 mb-1">${s}</span>`).join('')}
+        </div>
+
+        <div class="mb-3">
+          <span class="text-muted small d-block mb-1 fw-bold">Demonstrated Workplace Skills:</span>
+          ${(countryData.top_skills || []).map(sk => `<span class="badge bg-primary-subtle text-primary border border-primary-subtle me-1 mb-1">${sk}</span>`).join('')}
+        </div>
+
+        <div class="p-3 border rounded-3 bg-light-subtle">
+          <div class="small fw-bold text-secondary mb-1">Mobility Inflow Corridor</div>
+          <div class="small text-muted">Direct skilled mobility path from accredited training centers in India (Maharashtra).</div>
+        </div>
+      `;
+    } else {
+      detailDataStatus.textContent = 'No Data';
+      detailDataStatus.className = 'badge bg-secondary-subtle text-secondary border px-2 py-1';
+
+      detailCardBody.innerHTML = `
+        <div class="text-center py-4 text-muted">
+          <i class="bi bi-geo-alt fs-1 text-secondary opacity-50 mb-2 d-block"></i>
+          <h6 class="fw-bold text-dark">No outcome data available</h6>
+          <p class="small mb-3">No candidate placements or longitudinal outcome tracking records have been registered for ${countryName} yet.</p>
+          <span class="badge bg-light text-secondary border">Unregistered Destination Node</span>
+        </div>
+      `;
+    }
+  }
+
+  function renderWorldDetailsPanel() {
+    detailRegionType.textContent = 'Global Overview';
+    detailRegionName.textContent = 'World Workforce Mobility';
+    detailSubtext.textContent = 'Cross-border longitudinal tracking across domestic & overseas destinations';
+    detailDataStatus.textContent = 'Active Scope';
+    detailDataStatus.className = 'badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1';
+
+    detailCardBody.innerHTML = `
+      <div class="p-3 border rounded-3 mb-3 bg-light">
+        <div class="small text-muted mb-1">Total Verified Trainees Across Nodes</div>
+        <h3 class="fw-bold text-dark mb-0">4,420</h3>
+        <div class="small text-success mt-1"><i class="bi bi-patch-check-fill me-1"></i>70 International Placements Verified</div>
+      </div>
+
+      <div class="list-group list-group-flush mb-3">
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-flag-fill text-primary me-2"></i><strong>India (Domestic Skilling Base)</strong></span>
+          <span class="badge bg-primary rounded-pill">4,350 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-globe-asia-australia text-success me-2"></i>United Arab Emirates</span>
+          <span class="badge bg-success rounded-pill">34 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-globe-europe-africa text-info me-2"></i>Germany</span>
+          <span class="badge bg-info text-dark rounded-pill">16 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-globe-americas text-warning me-2"></i>Canada</span>
+          <span class="badge bg-warning text-dark rounded-pill">12 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-globe2 text-dark me-2"></i>United Kingdom & USA</span>
+          <span class="badge bg-dark rounded-pill">14 Trainees</span>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="button" class="btn btn-primary btn-sm fw-semibold shadow-sm" id="btnDrillIndia">
+          <i class="bi bi-arrow-right-circle me-1"></i> Explore India National Map &rarr;
+        </button>
+      </div>
+    `;
+
+    const btnDrill = document.getElementById('btnDrillIndia');
+    if (btnDrill) {
+      btnDrill.addEventListener('click', () => navigateToLevel('india'));
+    }
+  }
+
+  function renderWorldTable() {
+    directorySectionTitle.textContent = 'International Employment Destinations & Overseas Corridors';
+    directorySectionSubtitle.textContent = 'Cross-border longitudinal tracking verified by overseas employer partnerships';
+
+    const countries = state.worldData ? state.worldData.countries_with_data : {};
+    let rowsHtml = '';
+
+    Object.keys(countries).forEach(cname => {
+      const c = countries[cname];
+      rowsHtml += `
+        <tr>
+          <td><strong>${cname}</strong></td>
+          <td><span class="badge bg-light text-dark border">${c.is_domestic_hub ? 'Domestic Base' : 'International Destination'}</span></td>
+          <td>${c.trainees_tracked.toLocaleString()}</td>
+          <td><span class="text-success fw-bold">${c.employment_rate}%</span></td>
+          <td><span class="text-primary fw-bold">${c.retention_rate}%</span></td>
+          <td>₹${c.avg_salary.toLocaleString()}</td>
+          <td><span class="small text-secondary">${(c.top_sectors || []).join(' &bull; ')}</span></td>
+          <td>
+            ${cname === 'India' 
+              ? `<button class="btn btn-outline-primary btn-sm py-0" onclick="window.geoJumpTo('india')">Explore States &rsaquo;</button>`
+              : `<button class="btn btn-outline-success btn-sm py-0" onclick="window.geoSelectCountry('${cname}')">View Node &rsaquo;</button>`
+            }
+          </td>
+        </tr>
+      `;
+    });
+
+    directoryTableBody.innerHTML = rowsHtml;
+  }
+
+  // ==============================================================
+  // 2. INDIA LEVEL
+  // ==============================================================
+  function renderIndiaLevel() {
+    map.setView([22.5, 82.0], 5);
+    currentLevelBadge.innerHTML = '<i class="bi bi-flag me-1"></i>India National Level';
+
+    const statesData = state.indiaData ? state.indiaData.states_with_data : {};
+
+    // Render All 36 States & UTs GeoJSON
+    if (state.indiaGeoJson && state.indiaGeoJson.features) {
+      const geoLayer = L.geoJSON(state.indiaGeoJson, {
+        style: (feature) => {
+          const name = feature.properties.name;
+          const sdata = statesData[name];
+          const hasData = sdata && sdata.has_data;
+          const isPrimary = (name === 'Maharashtra');
+
+          return {
+            fillColor: isPrimary ? '#198754' : getChoroplethColor(sdata ? sdata.employment_rate : null, hasData),
+            weight: isPrimary ? 2.5 : 1.2,
+            opacity: 1,
+            color: isPrimary ? '#0f5132' : '#94a3b8',
+            fillOpacity: hasData ? 0.65 : 0.15
+          };
+        },
+        onEachFeature: (feature, layer) => {
+          const name = feature.properties.name;
+          const sdata = statesData[name];
+
+          // Tooltip
+          let tooltipHtml = `<strong>${name}</strong> (${feature.properties.type || 'State'})`;
+          if (sdata && sdata.has_data) {
+            tooltipHtml += `<br><span class="text-success fw-bold">Active Longitudinal Node</span><br>Trainees: ${sdata.trainees_tracked}<br>Emp: ${sdata.employment_rate}% &bull; Wage: ₹${sdata.avg_salary.toLocaleString()}<br><em>Click to explore districts</em>`;
+          } else {
+            tooltipHtml += `<br><span class="text-muted">No outcome data available</span>`;
+          }
+          layer.bindTooltip(tooltipHtml, { sticky: true });
+
+          // Click to drill down into State
+          layer.on('click', () => {
+            selectState(name, sdata, feature.properties.center);
+          });
+        }
+      });
+      geoJsonLayerGroup.addLayer(geoLayer);
+    }
+
+    // Render Markers for States with Active Data
+    Object.keys(statesData).forEach(sname => {
+      const s = statesData[sname];
+      if (!s.center) return;
+
+      const marker = L.circleMarker(s.center, {
+        radius: sname === 'Maharashtra' ? 14 : 9,
+        fillColor: sname === 'Maharashtra' ? '#198754' : '#0d6efd',
+        color: '#ffffff',
+        weight: 2,
+        fillOpacity: 0.9
+      });
+
+      marker.bindTooltip(`<strong>${sname}</strong><br>${s.trainees_tracked} Trainees Tracked`);
+      marker.on('click', () => {
+        selectState(sname, s, s.center);
+      });
+      markersLayerGroup.addLayer(marker);
+    });
+
+    // Render Interstate Mobility Corridors
+    if (state.indiaData && state.indiaData.interstate_corridors) {
+      state.indiaData.interstate_corridors.forEach(corr => {
+        const polyline = L.polyline([corr.origin_coords, corr.destination_coords], {
+          color: '#8b5cf6',
+          weight: state.mode === 'mobility' ? 4 : 2,
+          opacity: 0.85,
+          dashArray: '6, 8'
+        });
+
+        polyline.bindTooltip(`
+          <strong>${corr.origin} &rarr; ${corr.destination}</strong><br>
+          <span class="corridor-badge">${corr.type}</span> &bull; <strong>${corr.trainees_count} Trainees</strong><br>
+          Avg Wage: <strong>₹${corr.avg_salary.toLocaleString()}/mo</strong><br>
+          Sector: ${corr.primary_sector}
+        `);
+        corridorsLayerGroup.addLayer(polyline);
+      });
+    }
+
+    // Update Details Card for India
+    renderIndiaDetailsPanel();
+    renderIndiaTable();
+  }
+
+  function selectState(stateName, stateData, center) {
+    if (center) {
+      map.setView(center, stateData ? (stateData.zoom || 7) : 6);
+    }
+
+    if (stateData && stateData.has_data) {
+      // Navigate to State level
+      state.level = 'state';
+      state.currentState = stateName;
+      renderCurrentLevel();
+    } else {
+      // Show No Data for this State
+      detailRegionType.textContent = 'Indian State';
+      detailRegionName.textContent = stateName;
+      detailSubtext.textContent = 'National Outcome Intelligence Layer';
+      detailDataStatus.textContent = 'No Data';
+      detailDataStatus.className = 'badge bg-secondary-subtle text-secondary border px-2 py-1';
+
+      detailCardBody.innerHTML = `
+        <div class="text-center py-4 text-muted">
+          <i class="bi bi-geo-alt fs-1 text-secondary opacity-50 mb-2 d-block"></i>
+          <h6 class="fw-bold text-dark">No outcome data available</h6>
+          <p class="small mb-3">No candidate placements or longitudinal outcome tracking records have been registered for ${stateName} yet.</p>
+          <span class="badge bg-light text-secondary border">Unregistered State Node</span>
+        </div>
+      `;
+    }
+  }
+
+  function renderIndiaDetailsPanel() {
+    detailRegionType.textContent = 'National Overview';
+    detailRegionName.textContent = 'India (National Skilling Base)';
+    detailSubtext.textContent = 'Pan-India outcome coverage across 28 States & 8 Union Territories';
+    detailDataStatus.textContent = 'Active National Grid';
+    detailDataStatus.className = 'badge bg-success-subtle text-success border border-success-subtle px-2 py-1';
+
+    detailCardBody.innerHTML = `
+      <div class="p-3 border rounded-3 mb-3 bg-light">
+        <div class="small text-muted mb-1">National Trainees Tracked</div>
+        <h3 class="fw-bold text-dark mb-0">4,350</h3>
+        <div class="small text-success mt-1"><i class="bi bi-shield-check me-1"></i>3,850 in Maharashtra &bull; 138 Interstate Placed</div>
+      </div>
+
+      <div class="list-group list-group-flush mb-3">
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-building text-primary me-2"></i><strong>Maharashtra (Hub)</strong></span>
+          <span class="badge bg-success rounded-pill">3,850 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-laptop text-info me-2"></i>Karnataka (Bengaluru)</span>
+          <span class="badge bg-primary rounded-pill">48 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-sun text-warning me-2"></i>Gujarat (Surat / Ahmedabad)</span>
+          <span class="badge bg-warning text-dark rounded-pill">32 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-cpu text-purple me-2"></i>Telangana (Hyderabad)</span>
+          <span class="badge bg-info text-dark rounded-pill">24 Trainees</span>
+        </div>
+        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+          <span><i class="bi bi-geo text-dark me-2"></i>Delhi NCR & Tamil Nadu</span>
+          <span class="badge bg-dark rounded-pill">34 Trainees</span>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="button" class="btn btn-success btn-sm fw-semibold shadow-sm" onclick="window.geoJumpToState('Maharashtra')">
+          <i class="bi bi-arrow-right-circle me-1"></i> Explore Maharashtra 36 Districts &rarr;
+        </button>
+      </div>
+    `;
+  }
+
+  function renderIndiaTable() {
+    directorySectionTitle.textContent = 'Indian States & Regional Destinations Directory';
+    directorySectionSubtitle.textContent = 'Tracking interstate placement conversion, retention, and wage performance';
+
+    const statesData = state.indiaData ? state.indiaData.states_with_data : {};
+    let rowsHtml = '';
+
+    Object.keys(statesData).forEach(sname => {
+      const s = statesData[sname];
+      rowsHtml += `
+        <tr>
+          <td><strong>${sname}</strong></td>
+          <td><span class="badge bg-light text-dark border">${s.is_primary ? 'Primary Skilling Base' : 'Interstate Destination'}</span></td>
+          <td>${s.trainees_tracked.toLocaleString()}</td>
+          <td><span class="text-success fw-bold">${s.employment_rate}%</span></td>
+          <td><span class="text-primary fw-bold">${s.retention_rate}%</span></td>
+          <td>₹${s.avg_salary.toLocaleString()}</td>
+          <td><span class="small text-secondary">${(s.top_sectors || []).join(' &bull; ')}</span></td>
+          <td>
+            <button class="btn btn-outline-primary btn-sm py-0" onclick="window.geoJumpToState('${sname}')">
+              Explore Districts &rsaquo;
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    directoryTableBody.innerHTML = rowsHtml;
+  }
+
+  // ==============================================================
+  // 3. STATE LEVEL (Districts Map)
+  // ==============================================================
+  function renderStateLevel(stateName) {
+    currentLevelBadge.innerHTML = `<i class="bi bi-pin-map me-1"></i>${stateName} (State Level)`;
+
+    // Fetch state districts if not cached
+    if (!state.stateDistrictsData[stateName]) {
+      fetch(`/api/geographic/state/${encodeURIComponent(stateName)}`)
+        .then(r => r.json())
+        .then(res => {
+          if (res.success) {
+            state.stateDistrictsData[stateName] = res.data;
+            drawStateMap(stateName, res.data);
+          }
+        });
+    } else {
+      drawStateMap(stateName, state.stateDistrictsData[stateName]);
+    }
+  }
+
+  function drawStateMap(stateName, sData) {
+    if (sData.center) {
+      map.setView(sData.center, sData.zoom || 7);
+    }
+
+    // Render State boundary from GeoJSON if available
+    if (state.indiaGeoJson && state.indiaGeoJson.features) {
+      const feature = state.indiaGeoJson.features.find(f => f.properties.name === stateName);
+      if (feature) {
+        const statePoly = L.geoJSON(feature, {
+          style: {
+            fillColor: '#f1f5f9',
+            fillOpacity: 0.1,
+            color: '#0d6efd',
+            weight: 2,
+            dashArray: '4, 4'
+          }
+        });
+        geoJsonLayerGroup.addLayer(statePoly);
       }
-    })
-    .catch(err => console.error('Error loading district map data:', err));
+    }
+
+    // Render District Markers
+    const districts = sData.districts || [];
+    districts.forEach(d => {
+      const markerColor = getChoroplethColor(d.employment_rate, true);
+
+      const marker = L.circleMarker([d.lat, d.lng], {
+        radius: 11,
+        fillColor: markerColor,
+        color: '#ffffff',
+        weight: 2,
+        fillOpacity: 0.85
+      });
+
+      marker.bindTooltip(`
+        <strong>${d.name}</strong> (${d.division || stateName})<br>
+        Trained: <strong>${d.total_trained}</strong><br>
+        Employment: <strong class="text-success">${d.employment_rate}%</strong> &bull; Retention: ${d.retention_rate}%<br>
+        Wage: ₹${d.avg_salary.toLocaleString()}
+      `);
+
+      marker.on('click', () => {
+        selectDistrict(stateName, d);
+      });
+
+      markersLayerGroup.addLayer(marker);
+    });
+
+    // Render Intrastate Corridors
+    if (sData.corridors) {
+      sData.corridors.forEach(corr => {
+        const polyline = L.polyline([corr.origin_coords, corr.destination_coords], {
+          color: '#8b5cf6',
+          weight: state.mode === 'mobility' ? 4 : 2,
+          opacity: 0.8,
+          dashArray: '5, 5'
+        });
+
+        polyline.bindTooltip(`
+          <strong>${corr.origin} &rarr; ${corr.destination}</strong><br>
+          <span class="corridor-badge">${corr.type}</span> &bull; <strong>${corr.trainees_count} Trainees</strong><br>
+          Avg Wage: <strong>₹${corr.avg_salary.toLocaleString()}/mo</strong><br>
+          Sector: ${corr.sector}
+        `);
+        corridorsLayerGroup.addLayer(polyline);
+      });
+    }
+
+    // Update Details & Table
+    renderStateDetailsPanel(stateName, sData);
+    renderStateTable(stateName, districts);
+  }
+
+  function renderStateDetailsPanel(stateName, sData) {
+    const districts = sData.districts || [];
+    const totalTrained = districts.reduce((acc, d) => acc + (d.total_trained || 0), 0);
+    const avgEmp = districts.length > 0 ? (districts.reduce((acc, d) => acc + (d.employment_rate || 0), 0) / districts.length).toFixed(1) : 0;
+    const avgRet = districts.length > 0 ? (districts.reduce((acc, d) => acc + (d.retention_rate || 0), 0) / districts.length).toFixed(1) : 0;
+
+    detailRegionType.textContent = 'Indian State';
+    detailRegionName.textContent = stateName;
+    detailSubtext.textContent = `${districts.length} Administrative Districts Monitored`;
+    detailDataStatus.textContent = 'Active District Grid';
+    detailDataStatus.className = 'badge bg-success-subtle text-success border border-success-subtle px-2 py-1';
+
+    detailCardBody.innerHTML = `
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">State Trainees Tracked</span>
+            <strong class="fs-5 text-dark">${totalTrained.toLocaleString()}</strong>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">Avg Placement Rate</span>
+            <strong class="fs-5 text-success">${avgEmp}%</strong>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">Avg 12M Retention</span>
+            <strong class="fs-6 text-primary">${avgRet}%</strong>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">Districts Covered</span>
+            <strong class="fs-6 text-dark">${districts.length} Districts</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 border rounded-3 bg-light mb-3">
+        <div class="small fw-bold text-dark mb-1"><i class="bi bi-info-circle me-1 text-primary"></i>District Selection Instructions</div>
+        <div class="small text-muted">Click any district marker or select from the directory below to view deep-dive outcome performance.</div>
+      </div>
+
+      ${(sData.corridors && sData.corridors.length > 0) ? `
+        <div class="mb-3">
+          <span class="text-muted small d-block mb-1 fw-bold">Primary Intra-state Corridors:</span>
+          ${sData.corridors.slice(0, 3).map(c => `
+            <div class="small border-bottom py-1 d-flex justify-content-between">
+              <span>${c.origin} &rarr; ${c.destination}</span>
+              <strong class="text-purple">${c.trainees_count} trainees</strong>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    `;
+  }
+
+  function renderStateTable(stateName, districts) {
+    directorySectionTitle.textContent = `${stateName} District Outcome Directory (${districts.length} Districts)`;
+    directorySectionSubtitle.textContent = `Longitudinal metrics aggregated across administrative divisions in ${stateName}`;
+
+    let rowsHtml = '';
+    districts.forEach(d => {
+      rowsHtml += `
+        <tr id="districtRow_${d.id}">
+          <td><strong>${d.name}</strong></td>
+          <td><span class="badge bg-light text-dark border">${d.division || stateName}</span></td>
+          <td>${d.total_trained}</td>
+          <td><span class="text-success fw-bold">${d.employment_rate}%</span></td>
+          <td><span class="text-primary fw-bold">${d.retention_rate}%</span></td>
+          <td>₹${d.avg_salary.toLocaleString()}</td>
+          <td><span class="small text-danger">${(d.top_skill_gaps || []).join(' &bull; ')}</span></td>
+          <td>
+            <button class="btn btn-outline-primary btn-sm py-0" onclick="window.geoSelectDistrict('${stateName}', '${d.name}')">
+              Select &rsaquo;
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    directoryTableBody.innerHTML = rowsHtml;
+  }
+
+  // ==============================================================
+  // 4. DISTRICT LEVEL
+  // ==============================================================
+  function selectDistrict(stateName, district) {
+    state.level = 'district';
+    state.currentState = stateName;
+    state.currentDistrict = district.name;
+    renderCurrentLevel();
+  }
+
+  function renderDistrictLevel(stateName, districtName) {
+    currentLevelBadge.innerHTML = `<i class="bi bi-geo-alt me-1"></i>${districtName} (District Level)`;
+
+    const sData = state.stateDistrictsData[stateName];
+    if (!sData) return;
+
+    const district = (sData.districts || []).find(d => d.name.toLowerCase() === districtName.toLowerCase());
+    if (!district) return;
+
+    map.setView([district.lat, district.lng], 10);
+
+    // Highlight district marker
+    const highlightMarker = L.circleMarker([district.lat, district.lng], {
+      radius: 18,
+      fillColor: getChoroplethColor(district.employment_rate, true),
+      color: '#0e385f',
+      weight: 3,
+      fillOpacity: 0.95
+    });
+
+    highlightMarker.bindPopup(`
+      <div class="custom-popup" style="min-width: 200px;">
+        <h6>${district.name} (${district.division})</h6>
+        <div class="metric-row"><span class="text-muted">Trained:</span> <strong>${district.total_trained}</strong></div>
+        <div class="metric-row"><span class="text-muted">Employment:</span> <strong class="text-success">${district.employment_rate}%</strong></div>
+        <div class="metric-row"><span class="text-muted">Retention:</span> <strong class="text-primary">${district.retention_rate}%</strong></div>
+        <div class="metric-row"><span class="text-muted">Wage:</span> <strong>₹${district.avg_salary.toLocaleString()}</strong></div>
+      </div>
+    `).openPopup();
+
+    markersLayerGroup.addLayer(highlightMarker);
+
+    // Update Details Card for District
+    detailRegionType.textContent = 'District Cohort Details';
+    detailRegionName.textContent = district.name;
+    detailSubtext.textContent = `${district.division} Division, ${stateName}`;
+    detailDataStatus.textContent = 'Verified Cohort';
+    detailDataStatus.className = 'badge bg-success-subtle text-success border border-success-subtle px-2 py-1';
+
+    detailCardBody.innerHTML = `
+      <div class="row g-2 mb-3">
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">Total Trained</span>
+            <strong class="fs-5 text-dark">${district.total_trained}</strong>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">Employment Rate</span>
+            <strong class="fs-5 text-success">${district.employment_rate}%</strong>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">12M Retention</span>
+            <strong class="fs-6 text-primary">${district.retention_rate}%</strong>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="p-2 border rounded bg-light">
+            <span class="text-muted d-block" style="font-size:0.72rem;">Average Monthly Wage</span>
+            <strong class="fs-6 text-dark">₹${district.avg_salary.toLocaleString()}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <span class="text-muted small d-block mb-1 fw-bold">Top Detected Workplace Skill Gaps:</span>
+        ${(district.top_skill_gaps || []).map(g => `<span class="badge bg-warning-subtle text-dark border border-warning me-1 mb-1">${g}</span>`).join('')}
+      </div>
+
+      <div class="p-3 border rounded-3 bg-light mb-3">
+        <div class="small fw-bold text-dark mb-1">Administrative Division</div>
+        <div class="small text-muted">${district.division} Division, Government of Maharashtra accredited training network.</div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.geoJumpToState('${stateName}')">
+          <i class="bi bi-arrow-left me-1"></i> Back to ${stateName} Districts
+        </button>
+      </div>
+    `;
+  }
+
+  // ==============================================================
+  // 5. BREADCRUMB & NAVIGATION CONTROLLER
+  // ==============================================================
+  function updateBreadcrumb() {
+    let crumbs = '';
+
+    if (state.level === 'world') {
+      crumbs = `<li class="breadcrumb-item active"><i class="bi bi-globe me-1"></i>World</li>`;
+    } else if (state.level === 'india') {
+      crumbs = `
+        <li class="breadcrumb-item"><a href="javascript:void(0)" onclick="window.geoJumpTo('world')"><i class="bi bi-globe me-1"></i>World</a></li>
+        <li class="breadcrumb-item active">India</li>
+      `;
+    } else if (state.level === 'state') {
+      crumbs = `
+        <li class="breadcrumb-item"><a href="javascript:void(0)" onclick="window.geoJumpTo('world')"><i class="bi bi-globe me-1"></i>World</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)" onclick="window.geoJumpTo('india')">India</a></li>
+        <li class="breadcrumb-item active">${state.currentState}</li>
+      `;
+    } else if (state.level === 'district') {
+      crumbs = `
+        <li class="breadcrumb-item"><a href="javascript:void(0)" onclick="window.geoJumpTo('world')"><i class="bi bi-globe me-1"></i>World</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)" onclick="window.geoJumpTo('india')">India</a></li>
+        <li class="breadcrumb-item"><a href="javascript:void(0)" onclick="window.geoJumpToState('${state.currentState}')">${state.currentState}</a></li>
+        <li class="breadcrumb-item active">${state.currentDistrict}</li>
+      `;
+    }
+
+    geoBreadcrumb.innerHTML = crumbs;
+  }
+
+  function updateNavigationControls() {
+    btnBackLevel.disabled = (state.level === 'world');
+  }
+
+  btnBackLevel.addEventListener('click', () => {
+    if (state.level === 'district') {
+      state.level = 'state';
+      state.currentDistrict = null;
+    } else if (state.level === 'state') {
+      state.level = 'india';
+      state.currentState = null;
+    } else if (state.level === 'india') {
+      state.level = 'world';
+    }
+    renderCurrentLevel();
+  });
+
+  btnResetWorld.addEventListener('click', () => {
+    navigateToLevel('world');
+  });
+
+  function navigateToLevel(targetLevel) {
+    state.level = targetLevel;
+    if (targetLevel === 'world') {
+      state.currentState = null;
+      state.currentDistrict = null;
+    } else if (targetLevel === 'india') {
+      state.currentDistrict = null;
+    }
+    renderCurrentLevel();
+  }
+
+  // ==============================================================
+  // 6. SEARCH CONTROLLER
+  // ==============================================================
+  let searchDebounce = null;
+  geoSearchInput.addEventListener('input', (e) => {
+    const q = e.target.value.trim();
+    geoSearchClear.style.display = q ? 'block' : 'none';
+
+    clearTimeout(searchDebounce);
+    if (!q) {
+      searchResultsDropdown.style.display = 'none';
+      return;
+    }
+
+    searchDebounce = setTimeout(() => {
+      fetch(`/api/geographic/search?q=${encodeURIComponent(q)}`)
+        .then(r => r.json())
+        .then(res => {
+          if (!res.success || !res.results || res.results.length === 0) {
+            searchResultsDropdown.innerHTML = `<div class="p-3 text-muted small text-center">No locations found matching "${q}"</div>`;
+            searchResultsDropdown.style.display = 'block';
+            return;
+          }
+
+          let itemsHtml = '';
+          res.results.forEach(item => {
+            itemsHtml += `
+              <div class="search-item d-flex justify-content-between align-items-center" onclick="window.geoHandleSearchResult('${encodeURIComponent(JSON.stringify(item))}')">
+                <div>
+                  <strong>${item.title}</strong>
+                  <span class="badge bg-light text-dark border ms-1" style="font-size:0.68rem;">${item.type}</span>
+                </div>
+                <div class="small ${item.has_data ? 'text-success fw-semibold' : 'text-muted'}">${item.badge}</div>
+              </div>
+            `;
+          });
+
+          searchResultsDropdown.innerHTML = itemsHtml;
+          searchResultsDropdown.style.display = 'block';
+        });
+    }, 200);
+  });
+
+  geoSearchClear.addEventListener('click', () => {
+    geoSearchInput.value = '';
+    geoSearchClear.style.display = 'none';
+    searchResultsDropdown.style.display = 'none';
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#geoSearchInput') && !e.target.closest('#searchResultsDropdown')) {
+      searchResultsDropdown.style.display = 'none';
+    }
+  });
+
+  // Global window functions for table and search callbacks
+  window.geoJumpTo = (lvl) => {
+    navigateToLevel(lvl);
+  };
+
+  window.geoJumpToState = (sname) => {
+    state.level = 'state';
+    state.currentState = sname;
+    state.currentDistrict = null;
+    renderCurrentLevel();
+  };
+
+  window.geoSelectDistrict = (sname, dname) => {
+    state.level = 'district';
+    state.currentState = sname;
+    state.currentDistrict = dname;
+    renderCurrentLevel();
+  };
+
+  window.geoSelectCountry = (cname) => {
+    const countries = state.worldData ? state.worldData.countries_with_data : {};
+    selectCountry(cname, countries[cname]);
+  };
+
+  window.geoHandleSearchResult = (encodedItem) => {
+    const item = JSON.parse(decodeURIComponent(encodedItem));
+    searchResultsDropdown.style.display = 'none';
+    geoSearchInput.value = item.title;
+
+    if (item.level === 'world') {
+      navigateToLevel('world');
+    } else if (item.level === 'india') {
+      navigateToLevel('india');
+    } else if (item.level === 'country') {
+      state.level = 'world';
+      renderCurrentLevel();
+      const countries = state.worldData ? state.worldData.countries_with_data : {};
+      selectCountry(item.country, countries[item.country] || { has_data: false, center: item.center, zoom: item.zoom });
+    } else if (item.level === 'state') {
+      window.geoJumpToState(item.state);
+    } else if (item.level === 'district') {
+      window.geoSelectDistrict(item.state, item.district);
+    }
+  };
+
 });
 </script>
 {% endblock %}

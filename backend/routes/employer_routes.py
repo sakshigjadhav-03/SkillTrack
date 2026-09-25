@@ -37,6 +37,14 @@ def dashboard():
 
     employer_id = session.get('employer_id') or 1
     employer = query_db("SELECT * FROM employers WHERE id = %s", (employer_id,), one=True)
+    if employer:
+        v_status = employer.get('verification_status', 'verified')
+        if v_status == 'pending':
+            flash('Your account is awaiting Administrator verification. You will be able to access the dashboard after your account is verified.', 'warning')
+            return redirect(url_for('auth.login', role='employer'))
+        elif v_status == 'rejected':
+            flash('Your account verification was rejected. Please contact the Administrator for further information.', 'danger')
+            return redirect(url_for('auth.login', role='employer'))
 
     # Fetch recent verifications performed by this employer
     verifications = query_db(

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Training Provider Registration — SkillTrack{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="text-center mb-4">
+          <div class="d-inline-flex p-3 rounded-circle text-white mb-2 shadow-sm" style="background: #7c3aed;">
+            <i class="bi bi-mortarboard-fill fs-2"></i>
+          </div>
+          <h4 class="fw-bold mb-1">Register Training Provider</h4>
+          <p class="text-muted small">Register your training institution node for longitudinal cohort tracking and outcome verification</p>
+        </div>
+
+        <form action="{{ url_for('auth.register_provider') }}" method="POST">
+          <div class="row g-3 mb-3">
+            <div class="col-md-7">
+              <label class="form-label small fw-semibold">Organization / Training Provider Name *</label>
+              <input type="text" name="provider_name" class="form-control" placeholder="e.g. Pune Technical Skilling Center" required>
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small fw-semibold">Registration / Organization ID *</label>
+              <input type="text" name="registration_id" class="form-control" placeholder="e.g. PRV-MH-1082" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Authorized Person Name *</label>
+              <input type="text" name="authorized_person" class="form-control" placeholder="e.g. Dr. Rajesh Kulkarni" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Mobile Number *</label>
+              <input type="tel" name="phone" class="form-control" placeholder="+91 98XXXXXXXX" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Official Email Address *</label>
+              <input type="email" name="email" class="form-control" placeholder="contact@provider.org" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Operating District (Maharashtra) *</label>
+              <select name="district_id" class="form-select" required>
+                {% for d in districts %}
+                  <option value="{{ d.id }}">{{ d.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-8">
+              <label class="form-label small fw-semibold">Institution Campus Address *</label>
+              <input type="text" name="address" class="form-control" placeholder="Street, Landmark, Campus" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold">State *</label>
+              <input type="text" name="state" class="form-control" value="Maharashtra" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Password *</label>
+              <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold">Confirm Password *</label>
+              <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <div class="alert alert-info py-2 small mb-4">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            Upon submission, your account will be set to <strong>Pending Verification</strong> awaiting Administrator review.
+          </div>
+
+          <button type="submit" class="btn w-100 py-2 fw-semibold mb-3 text-white shadow-sm" style="background: #7c3aed;">
+            <i class="bi bi-check2-circle me-1"></i> Submit Provider Registration
+          </button>
+        </form>
+
+        <div class="text-center small text-muted">
+          Existing Training Provider? <a href="{{ url_for('auth.login', role='provider') }}" class="text-decoration-none fw-semibold" style="color: #7c3aed;">Sign In to Provider Portal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

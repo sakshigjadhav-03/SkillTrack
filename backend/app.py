@@ -17,6 +17,10 @@ def create_app(config_class=Config):
     )
     app.config.from_object(config_class)
 
+    # Ensure schema migrations for provider and employer registration
+    from backend.database import ensure_schema
+    ensure_schema()
+
     # Register Blueprints
     from backend.routes.auth_routes import auth_bp
     from backend.routes.trainee_routes import trainee_bp

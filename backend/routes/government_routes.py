@@ -1,6 +1,6 @@
 import json
-from flask import Blueprint, render_template, request, jsonify
-from backend.database import query_db
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
+from backend.database import query_db, execute_db
 from backend.utils.decorators import login_required, role_required
 from backend.services.outcome_score import OutcomeScoreCalculator
 from backend.services.recommendation_engine import RecommendationEngine
@@ -285,6 +285,26 @@ def dashboard():
     ]
     risk_summary = {'LOW': 24, 'MEDIUM': 8, 'HIGH': 4}
 
+    # Fetch registered providers and employers for verification records
+    registered_providers = query_db(
+        """
+        SELECT tp.*, d.name AS district_name, u.username
+        FROM training_providers tp
+        LEFT JOIN districts d ON tp.district_id = d.id
+        LEFT JOIN users u ON tp.user_id = u.id
+        ORDER BY tp.created_at DESC
+        """
+    )
+    registered_employers = query_db(
+        """
+        SELECT e.*, d.name AS district_name, u.username
+        FROM employers e
+        LEFT JOIN districts d ON e.district_id = d.id
+        LEFT JOIN users u ON e.user_id = u.id
+        ORDER BY e.created_at DESC
+        """
+    )
+
     return render_template(
         'government/dashboard.html',
         total_trainees=total_trainees,
@@ -311,8 +331,57 @@ def dashboard():
         mobility=mobility_metrics,
         followup_center=followup_metrics,
         followup_directory=followup_directory,
-        recent_notifications=recent_notifications
+        recent_notifications=recent_notifications,
+        registered_providers=registered_providers,
+        registered_employers=registered_employers
     )
+
+
+@gov_bp.route('/provider/<int:provider_id>/status', methods=['POST'])
+@login_required
+@role_required('government', 'admin', 'administrator')
+def update_provider_status(provider_id):
+    """Administrator verifies or rejects a training provider account."""
+    status = request.form.get('status', '').strip().lower()
+    if status not in ('verified', 'rejected', 'pending'):
+        if request.is_json:
+            return jsonify({'success': False, 'error': 'Invalid status'}), 400
+        flash('Invalid status action.', 'danger')
+        return redirect(url_for('government.dashboard') + '#provider-records')
+
+    execute_db(
+        "UPDATE training_providers SET verification_status = %s WHERE id = %s",
+        (status, provider_id)
+    )
+    msg = f"Training Provider status updated to {status.capitalize()}."
+    if request.is_json:
+        return jsonify({'success': True, 'message': msg, 'status': status})
+    flash(msg, 'success')
+    return redirect(url_for('government.dashboard') + '#provider-records')
+
+
+@gov_bp.route('/employer/<int:employer_id>/status', methods=['POST'])
+@login_required
+@role_required('government', 'admin', 'administrator')
+def update_employer_status(employer_id):
+    """Administrator verifies or rejects an employer account."""
+    status = request.form.get('status', '').strip().lower()
+    if status not in ('verified', 'rejected', 'pending'):
+        if request.is_json:
+            return jsonify({'success': False, 'error': 'Invalid status'}), 400
+        flash('Invalid status action.', 'danger')
+        return redirect(url_for('government.dashboard') + '#employer-records')
+
+    is_verified_val = 1 if status == 'verified' else 0
+    execute_db(
+        "UPDATE employers SET verification_status = %s, is_verified = %s WHERE id = %s",
+        (status, is_verified_val, employer_id)
+    )
+    msg = f"Employer account status updated to {status.capitalize()}."
+    if request.is_json:
+        return jsonify({'success': True, 'message': msg, 'status': status})
+    flash(msg, 'success')
+    return redirect(url_for('government.dashboard') + '#employer-records')
 
 
 @gov_bp.route('/map')

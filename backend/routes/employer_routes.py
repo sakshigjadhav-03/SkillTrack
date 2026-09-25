@@ -14,10 +14,10 @@ def dashboard():
     if 'employer_id' not in session or session.get('role') != 'employer':
         emp_user = query_db(
             """
-            SELECT u.id, u.username, u.email, e.id AS employer_id, e.company_name 
+            SELECT u.id, u.username, u.email, e.id AS employer_id, e.company_name, e.verification_status 
             FROM users u 
             JOIN employers e ON u.id = e.user_id 
-            WHERE u.role = 'employer' 
+            WHERE u.role = 'employer' AND (e.verification_status = 'verified' OR e.verification_status IS NULL)
             LIMIT 1
             """, 
             one=True
@@ -37,6 +37,16 @@ def dashboard():
 
     employer_id = session.get('employer_id') or 1
     employer = query_db("SELECT * FROM employers WHERE id = %s", (employer_id,), one=True)
+    if employer:
+        v_status = employer.get('verification_status', 'verified')
+        if v_status == 'pending':
+            session.clear()
+            flash('Your account is awaiting Administrator verification. You will be able to access the dashboard after your account is verified.', 'warning')
+            return redirect(url_for('auth.login', role='employer'))
+        elif v_status == 'rejected':
+            session.clear()
+            flash('Your account verification was rejected. Please contact the Administrator for further information.', 'danger')
+            return redirect(url_for('auth.login', role='employer'))
 
     # Fetch recent verifications performed by this employer
     verifications = query_db(

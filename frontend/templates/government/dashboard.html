@@ -37,10 +37,10 @@
       <a href="#course-performance" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-mortarboard-fill me-1"></i>Course Performance</a>
       <a href="#workforce-mobility" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-globe me-1"></i>Workforce Mobility</a>
       <a href="#followup-center" class="btn btn-sm btn-outline-secondary fw-semibold"><i class="bi bi-bell-fill me-1"></i>Follow-ups</a>
-      <a href="#before-after-section" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-arrow-left-right me-1"></i>Impact Measurement</a>
-      <a href="{{ url_for('government.recommendations_view') }}" class="btn btn-sm btn-outline-warning text-dark fw-semibold"><i class="bi bi-lightbulb-fill me-1"></i>Recommendations</a>
       <a href="{{ url_for('government.map_view') }}" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-geo-alt-fill me-1"></i>District Map</a>
       <a href="{{ url_for('government.world_map_view') }}" class="btn btn-sm btn-outline-success fw-semibold"><i class="bi bi-globe2 me-1"></i>World Map</a>
+      <a href="#provider-records" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-building me-1"></i>Provider Records</a>
+      <a href="#employer-records" class="btn btn-sm btn-outline-secondary fw-semibold"><i class="bi bi-briefcase-fill me-1"></i>Employer Records</a>
     </div>
   </div>
 
@@ -741,6 +741,287 @@
     </div>
   </div>
 
+  <!-- 10. Training Provider Registration Records Section -->
+  <div id="provider-records" class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-primary text-uppercase">Account Verification</span>
+          <span class="badge bg-light text-dark border">{{ registered_providers|length }} Total Providers</span>
+        </div>
+        <h4 class="fw-bold mb-0">Training Provider Records</h4>
+        <p class="text-muted small mb-0">Review submitted training provider registrations and grant or restrict portal access.</p>
+      </div>
+      <div>
+        <a href="{{ url_for('auth.register_provider') }}" target="_blank" class="btn btn-sm btn-outline-primary fw-semibold">
+          <i class="bi bi-plus-circle me-1"></i> New Provider Registration
+        </a>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="providerRecordsTable">
+        <thead class="table-light text-muted small text-uppercase">
+          <tr>
+            <th>Provider ID</th>
+            <th>Provider Name</th>
+            <th>Authorized Person</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>District</th>
+            <th>Registration ID</th>
+            <th>Reg. Date</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="small">
+          {% for p in registered_providers %}
+          <tr id="provider-row-{{ p.id }}">
+            <td class="fw-bold text-primary">PRV-{{ "%04d"|format(p.id) }}</td>
+            <td class="fw-bold text-dark">{{ p.name }}</td>
+            <td>{{ p.authorized_person or '—' }}</td>
+            <td>{{ p.contact_email or '—' }}</td>
+            <td>{{ p.phone or '—' }}</td>
+            <td><span class="badge bg-light text-dark border">{{ p.district_name or 'Maharashtra' }}</span></td>
+            <td><code>{{ p.registration_id or '—' }}</code></td>
+            <td class="text-muted">{{ (p.created_at|string)[:10] if p.created_at else '—' }}</td>
+            <td>
+              <span class="badge status-badge {% if p.verification_status == 'verified' %}bg-success{% elif p.verification_status == 'rejected' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                {% if p.verification_status == 'verified' %}Verified{% elif p.verification_status == 'rejected' %}Rejected{% else %}Pending Verification{% endif %}
+              </span>
+            </td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-secondary btn-view-details" 
+                        data-type="provider"
+                        data-id="PRV-{{ '%04d'|format(p.id) }}"
+                        data-name="{{ p.name }}"
+                        data-auth="{{ p.authorized_person or '—' }}"
+                        data-email="{{ p.contact_email or '—' }}"
+                        data-phone="{{ p.phone or '—' }}"
+                        data-district="{{ p.district_name or '—' }}"
+                        data-state="{{ p.state or 'Maharashtra' }}"
+                        data-address="{{ p.address or '—' }}"
+                        data-regid="{{ p.registration_id or '—' }}"
+                        data-date="{{ (p.created_at|string)[:10] if p.created_at else '—' }}"
+                        data-status="{{ p.verification_status or 'pending' }}">
+                  <i class="bi bi-eye me-1"></i> View Details
+                </button>
+                <button type="button" class="btn btn-outline-success btn-verify-action {% if p.verification_status == 'verified' %}d-none{% endif %}"
+                        data-type="provider"
+                        data-id="{{ p.id }}"
+                        data-name="{{ p.name }}"
+                        data-action="verify">
+                  <i class="bi bi-check-circle me-1"></i> Verify
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-reject-action {% if p.verification_status == 'rejected' %}d-none{% endif %}"
+                        data-type="provider"
+                        data-id="{{ p.id }}"
+                        data-name="{{ p.name }}"
+                        data-action="reject">
+                  <i class="bi bi-x-circle me-1"></i> Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="10" class="text-center text-muted py-4">No provider records found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 11. Employer Registration Records Section -->
+  <div id="employer-records" class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+          <span class="badge bg-info text-dark text-uppercase">Account Verification</span>
+          <span class="badge bg-light text-dark border">{{ registered_employers|length }} Total Employers</span>
+        </div>
+        <h4 class="fw-bold mb-0">Employer Records</h4>
+        <p class="text-muted small mb-0">Review employer registrations and enable verified companies to log in and participate in skill verification.</p>
+      </div>
+      <div>
+        <a href="{{ url_for('auth.register_employer') }}" target="_blank" class="btn btn-sm btn-outline-primary fw-semibold">
+          <i class="bi bi-plus-circle me-1"></i> New Employer Registration
+        </a>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="employerRecordsTable">
+        <thead class="table-light text-muted small text-uppercase">
+          <tr>
+            <th>Employer ID</th>
+            <th>Company Name</th>
+            <th>Authorized Person</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>District</th>
+            <th>Registration / GST ID</th>
+            <th>Reg. Date</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="small">
+          {% for e in registered_employers %}
+          <tr id="employer-row-{{ e.id }}">
+            <td class="fw-bold text-info">EMP-{{ "%04d"|format(e.id) }}</td>
+            <td class="fw-bold text-dark">{{ e.company_name }}</td>
+            <td>{{ e.contact_person or '—' }}</td>
+            <td>{{ e.contact_email or '—' }}</td>
+            <td>{{ e.phone or '—' }}</td>
+            <td><span class="badge bg-light text-dark border">{{ e.district_name or 'Maharashtra' }}</span></td>
+            <td><code>{{ e.registration_id or '—' }}</code></td>
+            <td class="text-muted">{{ (e.created_at|string)[:10] if e.created_at else '—' }}</td>
+            <td>
+              <span class="badge status-badge {% if e.verification_status == 'verified' %}bg-success{% elif e.verification_status == 'rejected' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                {% if e.verification_status == 'verified' %}Verified{% elif e.verification_status == 'rejected' %}Rejected{% else %}Pending Verification{% endif %}
+              </span>
+            </td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-secondary btn-view-details" 
+                        data-type="employer"
+                        data-id="EMP-{{ '%04d'|format(e.id) }}"
+                        data-name="{{ e.company_name }}"
+                        data-industry="{{ e.industry or '—' }}"
+                        data-auth="{{ e.contact_person or '—' }}"
+                        data-email="{{ e.contact_email or '—' }}"
+                        data-phone="{{ e.phone or '—' }}"
+                        data-district="{{ e.district_name or '—' }}"
+                        data-state="{{ e.state or 'Maharashtra' }}"
+                        data-address="{{ e.address or '—' }}"
+                        data-regid="{{ e.registration_id or '—' }}"
+                        data-date="{{ (e.created_at|string)[:10] if e.created_at else '—' }}"
+                        data-status="{{ e.verification_status or 'pending' }}">
+                  <i class="bi bi-eye me-1"></i> View Details
+                </button>
+                <button type="button" class="btn btn-outline-success btn-verify-action {% if e.verification_status == 'verified' %}d-none{% endif %}"
+                        data-type="employer"
+                        data-id="{{ e.id }}"
+                        data-name="{{ e.company_name }}"
+                        data-action="verify">
+                  <i class="bi bi-check-circle me-1"></i> Verify
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-reject-action {% if e.verification_status == 'rejected' %}d-none{% endif %}"
+                        data-type="employer"
+                        data-id="{{ e.id }}"
+                        data-name="{{ e.company_name }}"
+                        data-action="reject">
+                  <i class="bi bi-x-circle me-1"></i> Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="10" class="text-center text-muted py-4">No employer records found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Details Modal -->
+  <div class="modal fade" id="accountDetailsModal" tabindex="-1" aria-labelledby="accountDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content rounded-4 border-0 shadow">
+        <div class="modal-header border-bottom pb-3">
+          <h5 class="modal-title fw-bold" id="accountDetailsModalLabel">
+            <i class="bi bi-info-circle-fill text-primary me-2"></i>Registration Profile Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Entity ID</label>
+              <div id="modalDetailId" class="fw-bold fs-6 text-primary">—</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Verification Status</label>
+              <div><span id="modalDetailStatusBadge" class="badge bg-secondary">—</span></div>
+            </div>
+            <div class="col-md-6">
+              <label id="modalDetailNameLabel" class="form-label text-muted small text-uppercase fw-bold mb-1">Organization Name</label>
+              <div id="modalDetailName" class="fw-semibold text-dark">—</div>
+            </div>
+            <div class="col-md-6" id="modalDetailIndustryCol">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Industry / Sector</label>
+              <div id="modalDetailIndustry" class="fw-semibold text-dark">—</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Authorized Person</label>
+              <div id="modalDetailAuth" class="text-dark">—</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Registration / GST ID</label>
+              <div><code id="modalDetailRegId" class="fs-6">—</code></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Official Email</label>
+              <div id="modalDetailEmail" class="text-dark">—</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Mobile / Phone</label>
+              <div id="modalDetailPhone" class="text-dark">—</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">District & State</label>
+              <div id="modalDetailLocation" class="text-dark">—</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Registration Date</label>
+              <div id="modalDetailDate" class="text-muted">—</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label text-muted small text-uppercase fw-bold mb-1">Address</label>
+              <div id="modalDetailAddress" class="p-3 bg-light rounded-3 text-secondary">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-top pt-3">
+          <button type="button" class="btn btn-secondary px-4 fw-semibold" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="confirmVerificationModal" tabindex="-1" aria-labelledby="confirmVerificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 border-0 shadow">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="confirmVerificationModalLabel">Confirm Action</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body py-4 text-center">
+          <div id="confirmActionIcon" class="mb-3">
+            <i class="bi bi-question-circle text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="fw-bold mb-2">Are you sure?</h5>
+          <p class="text-muted mb-0">
+            Are you sure you want to <span id="confirmActionVerb" class="fw-bold"></span> this account:
+            <br><strong id="confirmTargetName" class="text-dark"></strong>?
+          </p>
+          <p id="confirmActionHelp" class="small text-muted mt-2 mb-0"></p>
+        </div>
+        <div class="modal-footer border-0 pt-0 d-flex justify-content-center gap-2 pb-4">
+          <button type="button" class="btn btn-light px-4 fw-semibold" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn px-4 fw-bold" id="btnExecuteConfirmAction">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
 
@@ -931,6 +1212,151 @@ document.addEventListener('DOMContentLoaded', () => {
         engineBtn.disabled = false;
         engineBtn.innerHTML = '<i class="bi bi-play-circle-fill me-1"></i> RUN FOLLOW-UP ENGINE';
         console.error(err);
+      });
+    });
+  }
+
+  // 8. Account Verification & Profile Details Modals Logic
+  let pendingActionData = null;
+  const detailsModalEl = document.getElementById('accountDetailsModal');
+  const confirmModalEl = document.getElementById('confirmVerificationModal');
+  const detailsModal = detailsModalEl ? new bootstrap.Modal(detailsModalEl) : null;
+  const confirmModal = confirmModalEl ? new bootstrap.Modal(confirmModalEl) : null;
+
+  document.querySelectorAll('.btn-view-details').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const d = btn.dataset;
+      document.getElementById('modalDetailId').innerText = d.id;
+      document.getElementById('modalDetailNameLabel').innerText = d.type === 'provider' ? 'Provider Name' : 'Company Name';
+      document.getElementById('modalDetailName').innerText = d.name;
+      document.getElementById('modalDetailAuth').innerText = d.auth;
+      document.getElementById('modalDetailEmail').innerText = d.email;
+      document.getElementById('modalDetailPhone').innerText = d.phone;
+      document.getElementById('modalDetailLocation').innerText = `${d.district}, ${d.state}`;
+      document.getElementById('modalDetailRegId').innerText = d.regid;
+      document.getElementById('modalDetailDate').innerText = d.date;
+      document.getElementById('modalDetailAddress').innerText = d.address;
+      
+      const indCol = document.getElementById('modalDetailIndustryCol');
+      if (d.type === 'employer') {
+        indCol.classList.remove('d-none');
+        document.getElementById('modalDetailIndustry').innerText = d.industry || '—';
+      } else {
+        indCol.classList.add('d-none');
+      }
+
+      const statusBadge = document.getElementById('modalDetailStatusBadge');
+      statusBadge.className = 'badge';
+      if (d.status === 'verified') {
+        statusBadge.classList.add('bg-success');
+        statusBadge.innerText = 'Verified';
+      } else if (d.status === 'rejected') {
+        statusBadge.classList.add('bg-danger');
+        statusBadge.innerText = 'Rejected';
+      } else {
+        statusBadge.classList.add('bg-warning', 'text-dark');
+        statusBadge.innerText = 'Pending Verification';
+      }
+
+      if (detailsModal) detailsModal.show();
+    });
+  });
+
+  function setupActionButtons() {
+    document.querySelectorAll('.btn-verify-action, .btn-reject-action').forEach(btn => {
+      btn.onclick = () => {
+        const type = btn.dataset.type;
+        const id = btn.dataset.id;
+        const name = btn.dataset.name;
+        const action = btn.dataset.action;
+
+        pendingActionData = { type, id, name, action, btn };
+
+        const actionVerb = document.getElementById('confirmActionVerb');
+        const targetName = document.getElementById('confirmTargetName');
+        const actionHelp = document.getElementById('confirmActionHelp');
+        const confirmBtn = document.getElementById('btnExecuteConfirmAction');
+        const iconDiv = document.getElementById('confirmActionIcon');
+
+        targetName.innerText = name;
+        if (action === 'verify') {
+          actionVerb.innerText = 'VERIFY';
+          actionVerb.className = 'fw-bold text-success';
+          actionHelp.innerText = 'This will approve the account, granting immediate access to their portal.';
+          confirmBtn.className = 'btn btn-success px-4 fw-bold';
+          confirmBtn.innerText = 'Yes, Verify Account';
+          iconDiv.innerHTML = '<i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>';
+        } else {
+          actionVerb.innerText = 'REJECT';
+          actionVerb.className = 'fw-bold text-danger';
+          actionHelp.innerText = 'This will reject the account and block access to their portal.';
+          confirmBtn.className = 'btn btn-danger px-4 fw-bold';
+          confirmBtn.innerText = 'Yes, Reject Account';
+          iconDiv.innerHTML = '<i class="bi bi-x-circle text-danger" style="font-size: 3rem;"></i>';
+        }
+
+        if (confirmModal) confirmModal.show();
+      };
+    });
+  }
+
+  setupActionButtons();
+
+  const confirmBtn = document.getElementById('btnExecuteConfirmAction');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', () => {
+      if (!pendingActionData) return;
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Processing...';
+
+      fetch('/government/verify-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          entity_type: pendingActionData.type,
+          entity_id: pendingActionData.id,
+          action: pendingActionData.action
+        })
+      })
+      .then(r => r.json())
+      .then(res => {
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = 'Confirm';
+        if (confirmModal) confirmModal.hide();
+
+        if (res.success) {
+          const rowId = `${pendingActionData.type}-row-${pendingActionData.id}`;
+          const row = document.getElementById(rowId);
+          if (row) {
+            const badge = row.querySelector('.status-badge');
+            const verifyBtn = row.querySelector('.btn-verify-action');
+            const rejectBtn = row.querySelector('.btn-reject-action');
+            const viewBtn = row.querySelector('.btn-view-details');
+
+            if (res.new_status === 'verified') {
+              badge.className = 'badge status-badge bg-success';
+              badge.innerText = 'Verified';
+              verifyBtn.classList.add('d-none');
+              rejectBtn.classList.remove('d-none');
+              if (viewBtn) viewBtn.dataset.status = 'verified';
+            } else if (res.new_status === 'rejected') {
+              badge.className = 'badge status-badge bg-danger';
+              badge.innerText = 'Rejected';
+              verifyBtn.classList.remove('d-none');
+              rejectBtn.classList.add('d-none');
+              if (viewBtn) viewBtn.dataset.status = 'rejected';
+            }
+          }
+        } else {
+          alert('Error: ' + (res.message || 'Failed to update status'));
+        }
+      })
+      .catch(err => {
+        confirmBtn.disabled = false;
+        confirmBtn.innerText = 'Confirm';
+        if (confirmModal) confirmModal.hide();
+        console.error(err);
+        alert('Network or server error updating account status.');
       });
     });
   }

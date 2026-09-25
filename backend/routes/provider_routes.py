@@ -15,6 +15,15 @@ def dashboard():
     provider_id = session.get('provider_id') or 1
     provider = query_db("SELECT * FROM training_providers WHERE id = %s", (provider_id,), one=True)
 
+    if provider:
+        v_status = provider.get('verification_status', 'verified')
+        if v_status == 'pending':
+            flash('Your account is awaiting Administrator verification. You will be able to access the dashboard after your account is verified.', 'warning')
+            return redirect(url_for('auth.login', role='provider'))
+        elif v_status == 'rejected':
+            flash('Your account verification was rejected. Please contact the Administrator for further information.', 'danger')
+            return redirect(url_for('auth.login', role='provider'))
+
     # Provider cohorts & courses summary
     courses_summary = query_db(
         """

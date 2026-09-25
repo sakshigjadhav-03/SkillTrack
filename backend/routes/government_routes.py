@@ -1,6 +1,6 @@
 import json
 from flask import Blueprint, render_template, request, jsonify
-from backend.database import query_db
+from backend.database import query_db, execute_db
 from backend.utils.decorators import login_required, role_required
 from backend.services.outcome_score import OutcomeScoreCalculator
 from backend.services.recommendation_engine import RecommendationEngine
@@ -208,8 +208,31 @@ def dashboard():
         followup_directory = FollowupService.get_active_followup_directory()
         recent_notifications = NotificationService.get_recent_logs(limit=5)
 
+        # Provider and Employer Account Verification Records
+        registered_providers = query_db(
+            """
+            SELECT tp.*, d.name AS district_name, u.username
+            FROM training_providers tp
+            LEFT JOIN districts d ON tp.district_id = d.id
+            LEFT JOIN users u ON tp.user_id = u.id
+            ORDER BY tp.created_at DESC
+            """
+        ) or []
+
+        registered_employers = query_db(
+            """
+            SELECT e.*, d.name AS district_name, u.username
+            FROM employers e
+            LEFT JOIN districts d ON e.district_id = d.id
+            LEFT JOIN users u ON e.user_id = u.id
+            ORDER BY e.created_at DESC
+            """
+        ) or []
+
     except Exception as e:
         current_app.logger.error(f"[Government Dashboard Calculation Exception] {e}", exc_info=True)
+        registered_providers = []
+        registered_employers = []
 
     # Prototype Outcome Score calculation
     try:
@@ -311,8 +334,62 @@ def dashboard():
         mobility=mobility_metrics,
         followup_center=followup_metrics,
         followup_directory=followup_directory,
-        recent_notifications=recent_notifications
+        recent_notifications=recent_notifications,
+        registered_providers=registered_providers,
+        registered_employers=registered_employers
     )
+
+
+@gov_bp.route('/verify-account', methods=['POST'])
+@login_required
+@role_required('government', 'admin')
+def verify_account():
+    """Administrator verification or rejection of provider or employer account."""
+    if request.is_json:
+        data = request.get_json() or {}
+        entity_type = data.get('entity_type', '').strip().lower()
+        entity_id = data.get('entity_id')
+        action = data.get('action', '').strip().lower()
+    else:
+        entity_type = request.form.get('entity_type', '').strip().lower()
+        entity_id = request.form.get('entity_id')
+        action = request.form.get('action', '').strip().lower()
+
+    if entity_type not in ('provider', 'employer'):
+        return jsonify({'success': False, 'message': 'Invalid entity type'}), 400
+
+    if action not in ('verify', 'reject'):
+        return jsonify({'success': False, 'message': 'Invalid action'}), 400
+
+    new_status = 'verified' if action == 'verify' else 'rejected'
+
+    try:
+        if entity_type == 'provider':
+            execute_db(
+                "UPDATE training_providers SET verification_status = %s WHERE id = %s",
+                (new_status, entity_id)
+            )
+        elif entity_type == 'employer':
+            is_verified = 1 if new_status == 'verified' else 0
+            execute_db(
+                "UPDATE employers SET verification_status = %s, is_verified = %s WHERE id = %s",
+                (new_status, is_verified, entity_id)
+            )
+
+        if not request.is_json:
+            from flask import flash, redirect, url_for
+            flash(f"{entity_type.title()} account has been {new_status}.", 'success')
+            return redirect(url_for('government.dashboard') + f'#{entity_type}-records')
+
+        return jsonify({
+            'success': True,
+            'entity_type': entity_type,
+            'entity_id': entity_id,
+            'new_status': new_status,
+            'message': f"{entity_type.title()} account status updated to {new_status}."
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 
 @gov_bp.route('/map')

@@ -9,11 +9,11 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     """User login requiring valid username/email and password."""
     selected_role = request.args.get('role', request.form.get('role', 'trainee')).lower()
-    if selected_role not in ('trainee', 'provider', 'administrator', 'admin'):
+    if selected_role not in ('trainee', 'provider', 'administrator', 'admin', 'employer'):
         selected_role = 'trainee'
 
     if request.method == 'POST':
-        identifier = request.form.get('email', '').strip()
+        identifier = (request.form.get('email') or request.form.get('username') or '').strip()
         password = request.form.get('password', '')
 
         if not identifier or not password:
@@ -27,6 +27,36 @@ def login():
         )
 
         if user and check_password_hash(user['password_hash'], password):
+            # Enforce Administrator verification check for Training Providers
+            if user['role'] == 'provider':
+                provider = query_db(
+                    "SELECT id, name, verification_status FROM training_providers WHERE user_id = %s",
+                    (user['id'],),
+                    one=True
+                )
+                v_status = provider['verification_status'] if provider and provider.get('verification_status') else 'verified'
+                if v_status == 'pending':
+                    flash('Your account is awaiting Administrator verification. You will be able to access the dashboard after your account is verified.', 'warning')
+                    return render_template('login.html', selected_role='provider')
+                elif v_status == 'rejected':
+                    flash('Your account verification was rejected. Please contact the Administrator for further information.', 'danger')
+                    return render_template('login.html', selected_role='provider')
+
+            # Enforce Administrator verification check for Employers
+            elif user['role'] == 'employer':
+                employer = query_db(
+                    "SELECT id, company_name, verification_status FROM employers WHERE user_id = %s",
+                    (user['id'],),
+                    one=True
+                )
+                v_status = employer['verification_status'] if employer and employer.get('verification_status') else 'verified'
+                if v_status == 'pending':
+                    flash('Your account is awaiting Administrator verification. You will be able to access the dashboard after your account is verified.', 'warning')
+                    return render_template('login.html', selected_role='employer')
+                elif v_status == 'rejected':
+                    flash('Your account verification was rejected. Please contact the Administrator for further information.', 'danger')
+                    return render_template('login.html', selected_role='employer')
+
             return _setup_session_and_redirect(user)
         else:
             flash('Invalid username/email or password. Please try again.', 'danger')
@@ -53,17 +83,19 @@ def _setup_session_and_redirect(user):
         return redirect(url_for('trainee.dashboard'))
 
     elif user['role'] == 'employer':
-        employer = query_db("SELECT id, company_name FROM employers WHERE user_id = %s", (user['id'],), one=True)
+        employer = query_db("SELECT id, company_name, verification_status FROM employers WHERE user_id = %s", (user['id'],), one=True)
         if employer:
             session['employer_id'] = employer['id']
             session['company_name'] = employer['company_name']
+            session['verification_status'] = employer.get('verification_status', 'verified')
         return redirect(url_for('employer.dashboard'))
 
     elif user['role'] == 'provider':
-        provider = query_db("SELECT id, name FROM training_providers WHERE user_id = %s", (user['id'],), one=True)
+        provider = query_db("SELECT id, name, verification_status FROM training_providers WHERE user_id = %s", (user['id'],), one=True)
         if provider:
             session['provider_id'] = provider['id']
             session['provider_name'] = provider['name']
+            session['verification_status'] = provider.get('verification_status', 'verified')
         return redirect(url_for('provider.dashboard'))
 
     elif user['role'] in ('government', 'admin', 'administrator'):
@@ -136,20 +168,89 @@ def register():
     return render_template('register.html', districts=districts)
 
 
+@auth_bp.route('/register-provider', methods=['GET', 'POST'])
+def register_provider():
+    """Training Provider organization registration (Pending Administrator Verification)."""
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        registration_id = request.form.get('registration_id', '').strip()
+        authorized_person = request.form.get('authorized_person', '').strip()
+        contact_email = request.form.get('contact_email', '').strip().lower()
+        phone = request.form.get('phone', '').strip()
+        state = request.form.get('state', 'Maharashtra').strip()
+        district_id = request.form.get('district_id', type=int) or 1
+        address = request.form.get('address', '').strip()
+        password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
+
+        if not name or not registration_id or not authorized_person or not contact_email or not phone or not password:
+            flash('Please complete all required fields.', 'warning')
+            districts = query_db("SELECT id, name FROM districts ORDER BY name")
+            return render_template('register_provider.html', districts=districts)
+
+        if password != confirm_password:
+            flash('Passwords do not match. Please re-enter your password.', 'danger')
+            districts = query_db("SELECT id, name FROM districts ORDER BY name")
+            return render_template('register_provider.html', districts=districts)
+
+        # Check existing user
+        existing = query_db("SELECT id FROM users WHERE email = %s", (contact_email,), one=True)
+        if existing:
+            flash('This official email is already registered. Please log in directly.', 'danger')
+            return redirect(url_for('auth.login', role='provider'))
+
+        username = 'prv_' + contact_email.split('@')[0].replace('.', '_').replace('-', '_')
+        pwd_hash = generate_password_hash(password)
+        res_u = execute_db(
+            "INSERT INTO users (username, email, password_hash, role) VALUES (%s, %s, %s, 'provider')",
+            (username, contact_email, pwd_hash)
+        )
+        user_id = res_u['lastrowid']
+
+        provider_code = f"PRV-{registration_id[:8].upper()}-{user_id}"
+
+        # Insert provider record in 'pending' verification status
+        execute_db(
+            """
+            INSERT INTO training_providers (
+                user_id, provider_code, name, authorized_person, district_id, state, address,
+                registration_id, contact_email, phone, rating, verification_status
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 4.0, 'pending')
+            """,
+            (user_id, provider_code, name, authorized_person, district_id, state, address,
+             registration_id, contact_email, phone)
+        )
+
+        flash('Registration successful. Your Training Provider account is pending Administrator verification.', 'success')
+        return redirect(url_for('auth.login', role='provider'))
+
+    districts = query_db("SELECT id, name FROM districts ORDER BY name")
+    return render_template('register_provider.html', districts=districts)
+
+
 @auth_bp.route('/register-employer', methods=['GET', 'POST'])
 def register_employer():
-    """Employer / Enterprise Partner self-registration (Prototype Demo Account)."""
+    """Employer / Enterprise Partner self-registration (Pending Administrator Verification)."""
     if request.method == 'POST':
         company_name = request.form.get('company_name', '').strip()
-        company_email = request.form.get('company_email', '').strip().lower()
-        industry = request.form.get('industry', '').strip()
-        district_id = request.form.get('district_id', type=int) or 1
+        registration_id = request.form.get('registration_id', '').strip()
         contact_person = request.form.get('contact_person', '').strip()
-        designation = request.form.get('designation', '').strip()
+        industry = request.form.get('industry', '').strip()
+        company_email = request.form.get('company_email', '').strip().lower()
+        phone = request.form.get('phone', '').strip()
+        state = request.form.get('state', 'Maharashtra').strip()
+        district_id = request.form.get('district_id', type=int) or 1
+        address = request.form.get('address', '').strip()
         password = request.form.get('password', '')
+        confirm_password = request.form.get('confirm_password', '')
 
-        if not company_name or not company_email or not password or not contact_person:
+        if not company_name or not registration_id or not contact_person or not company_email or not phone or not password:
             flash('Please complete all required employer registration fields.', 'warning')
+            districts = query_db("SELECT id, name FROM districts ORDER BY name")
+            return render_template('register_employer.html', districts=districts)
+
+        if password != confirm_password:
+            flash('Passwords do not match. Please re-enter your password.', 'danger')
             districts = query_db("SELECT id, name FROM districts ORDER BY name")
             return render_template('register_employer.html', districts=districts)
 
@@ -157,7 +258,7 @@ def register_employer():
         existing = query_db("SELECT id FROM users WHERE email = %s", (company_email,), one=True)
         if existing:
             flash('This corporate email is already registered. Please log in directly.', 'danger')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.login', role='employer'))
 
         # Create employer user account
         username = 'emp_' + company_email.split('@')[0].replace('.', '_').replace('-', '_')
@@ -168,18 +269,20 @@ def register_employer():
         )
         user_id = res_u['lastrowid']
 
-        # Create employer enterprise record
+        # Create employer enterprise record in 'pending' verification status
         execute_db(
             """
             INSERT INTO employers (
-                user_id, company_name, industry, district_id, contact_person, contact_email, phone, is_verified
-            ) VALUES (%s, %s, %s, %s, %s, %s, '+91 20 66000000', 1)
+                user_id, company_name, industry, district_id, state, address, registration_id,
+                contact_person, contact_email, phone, is_verified, verification_status
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 0, 'pending')
             """,
-            (user_id, company_name, industry, district_id, f"{contact_person} ({designation})" if designation else contact_person, company_email)
+            (user_id, company_name, industry, district_id, state, address, registration_id,
+             contact_person, company_email, phone)
         )
 
-        flash(f'Prototype Employer Account for "{company_name}" created successfully! Please sign in.', 'success')
-        return redirect(url_for('auth.login'))
+        flash('Registration successful. Your Employer account is pending Administrator verification.', 'success')
+        return redirect(url_for('auth.login', role='employer'))
 
     districts = query_db("SELECT id, name FROM districts ORDER BY name")
     return render_template('register_employer.html', districts=districts)

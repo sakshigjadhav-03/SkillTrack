@@ -12,7 +12,7 @@ gov_bp = Blueprint('government', __name__, url_prefix='/government')
 
 @gov_bp.route('/dashboard')
 @login_required
-@role_required('government', 'admin', 'provider')
+@role_required('government', 'admin', 'administrator')
 def dashboard():
     """Main executive command center with top KPI cards, trends, and root cause distributions."""
     from flask import current_app
@@ -386,7 +386,7 @@ def update_employer_status(employer_id):
 
 @gov_bp.route('/map')
 @login_required
-@role_required('government', 'admin', 'provider')
+@role_required('government', 'admin', 'administrator')
 def map_view():
     """Maharashtra interactive district outcome map using Leaflet.js and OpenStreetMap."""
     districts = query_db("SELECT * FROM districts ORDER BY name ASC")
@@ -394,7 +394,7 @@ def map_view():
 
 @gov_bp.route('/world-map')
 @login_required
-@role_required('government', 'admin', 'provider')
+@role_required('government', 'admin', 'administrator')
 def world_map_view():
     """Global employment map page showing markers for worldwide employment records."""
     return render_template('government/world_map.html')
@@ -402,7 +402,7 @@ def world_map_view():
 
 @gov_bp.route('/skill-gaps')
 @login_required
-@role_required('government', 'admin', 'provider')
+@role_required('government', 'admin', 'administrator')
 def skill_gaps_view():
     """Deep-dive skill-gap analysis with filters for district, course, and provider."""
     courses = query_db("SELECT id, course_name, sector FROM courses")
@@ -412,7 +412,7 @@ def skill_gaps_view():
 
 @gov_bp.route('/recommendations')
 @login_required
-@role_required('government', 'admin', 'provider')
+@role_required('government', 'admin', 'administrator')
 def recommendations_view():
     """Action Engine: Problem -> Evidence -> Recommendation -> Suggested Action."""
     recommendations = RecommendationEngine.generate_recommendations()

@@ -1,38 +1,565 @@
 {% extends 'base.html' %}
 
-{% block title %}Employer Verification Portal — SkillTrack{% endblock %}
+{% block title %}Employer Dashboard — SkillTrack{% endblock %}
 
 {% block content %}
 <div class="container py-4">
 
   <!-- Employer Header -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="employer-overview">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div class="d-flex align-items-center gap-3">
         <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success">
           <i class="bi bi-building-check fs-2"></i>
         </div>
         <div>
-          <h3 class="fw-bold mb-1">{{ employer.company_name }}</h3>
-          <p class="text-muted small mb-0">
-            Sector: <strong>{{ employer.industry }}</strong> &bull; Empanelled Verification Partner
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <h3 class="fw-bold mb-0 text-dark">Employer Dashboard</h3>
+            <span class="badge bg-success-subtle text-success border border-success px-2 py-1 small">
+              <i class="bi bi-shield-check me-1"></i> Authorized Verification Node
+            </span>
+          </div>
+          <p class="text-muted small mb-0 mt-1">
+            Enterprise: <strong class="text-dark">{{ employer.company_name }}</strong> &bull; Sector: <strong>{{ employer.industry }}</strong> &bull; Empanelled Outcome Verification Partner
           </p>
         </div>
       </div>
-      <span class="badge bg-success-subtle text-success border border-success px-3 py-2">
-        <i class="bi bi-shield-lock-fill me-1"></i> Authorized Verification Node
-      </span>
+      <div class="d-flex align-items-center gap-2">
+        <a href="#verification-requests" class="btn btn-success btn-sm fw-semibold shadow-sm">
+          <i class="bi bi-patch-check me-1"></i> Pending Verifications ({{ pending_requests|length }})
+        </a>
+        <a href="#candidate-lookup" class="btn btn-outline-secondary btn-sm fw-semibold">
+          <i class="bi bi-search me-1"></i> Look Up Outcome ID
+        </a>
+      </div>
+    </div>
+
+    <!-- Quick Jump Sub-Navigation -->
+    <hr class="my-3 text-muted">
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <span class="text-muted small fw-bold me-1"><i class="bi bi-compass me-1"></i>Employer Sections:</span>
+      <a href="#overview-kpis" class="btn btn-sm btn-outline-secondary fw-semibold"><i class="bi bi-grid-fill me-1"></i>Overview</a>
+      <a href="#verification-requests" class="btn btn-sm btn-outline-warning text-dark fw-semibold"><i class="bi bi-clock-history me-1"></i>Verification Requests ({{ pending_requests|length }})</a>
+      <a href="#skill-feedback" class="btn btn-sm btn-outline-primary fw-semibold"><i class="bi bi-star-fill me-1"></i>Workplace Skill Feedback</a>
+      <a href="#skill-requirements" class="btn btn-sm btn-outline-success fw-semibold"><i class="bi bi-lightning-charge-fill me-1"></i>Skill Requirements &amp; Gaps</a>
+      <a href="#verification-history" class="btn btn-sm btn-outline-info fw-semibold"><i class="bi bi-journal-text me-1"></i>Verification History ({{ verifications|length }})</a>
+      <a href="#candidate-lookup" class="btn btn-sm btn-outline-dark fw-semibold"><i class="bi bi-search me-1"></i>Candidate Lookup</a>
     </div>
   </div>
 
-  <!-- Search by Permanent Outcome ID -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
-    <div class="section-header">
-      <h4 data-i18n="auto_139">{{ 'Look Up Candidate by Unique Outcome ID' }}</h4>
-      <p>Enter the candidate's permanent identifier (e.g., <code data-i18n="auto_140">{{ 'ST-MH-000123' }}</code>) to verify employment</p>
+  <!-- Section E: Employer Overview KPI Metrics -->
+  <div class="row g-3 mb-4" id="overview-kpis">
+    <div class="col-md-3">
+      <div class="kpi-card bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Pending Requests</span>
+          <span class="p-2 rounded bg-warning bg-opacity-10 text-warning"><i class="bi bi-clock-history fs-5"></i></span>
+        </div>
+        <div class="fs-2 fw-bold text-warning">{{ pending_requests|length }}</div>
+        <div class="text-muted small" style="font-size: 0.75rem;">Awaiting your official verification</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="kpi-card bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Verified Employment</span>
+          <span class="p-2 rounded bg-success bg-opacity-10 text-success"><i class="bi bi-patch-check-fill fs-5"></i></span>
+        </div>
+        <div class="fs-2 fw-bold text-success">{{ verified_records|length }}</div>
+        <div class="text-muted small" style="font-size: 0.75rem;">Validated on enterprise payroll</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="kpi-card bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Linked Employees</span>
+          <span class="p-2 rounded bg-primary bg-opacity-10 text-primary"><i class="bi bi-people-fill fs-5"></i></span>
+        </div>
+        <div class="fs-2 fw-bold text-primary">{{ verifications|length }}</div>
+        <div class="text-muted small" style="font-size: 0.75rem;">Graduates linked to this enterprise</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="kpi-card bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Skill Feedback Given</span>
+          <span class="p-2 rounded bg-info bg-opacity-10 text-info"><i class="bi bi-chat-quote-fill fs-5"></i></span>
+        </div>
+        <div class="fs-2 fw-bold text-info">{{ feedback_submitted|length }}</div>
+        <div class="text-muted small" style="font-size: 0.75rem;">Workplace ratings submitted</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section A: Employment Verification (Requests from Training Providers) -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="verification-requests">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <div class="d-flex align-items-center gap-2">
+          <h4 class="fw-bold mb-0 text-dark">A. Employment Verification Requests</h4>
+          <span class="badge bg-warning text-dark">{{ pending_requests|length }} Action Required</span>
+        </div>
+        <p class="text-muted small mb-0 mt-1">Verification requests dispatched by accredited Training Providers for candidates reporting employment at {{ employer.company_name }}</p>
+      </div>
     </div>
 
-    <form action="{{ url_for('employer.dashboard') }}" method="GET" class="row g-2 align-items-center mb-3">
+    {% if pending_requests %}
+      <div class="table-responsive">
+        <table class="table custom-table table-bordered mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Outcome ID</th>
+              <th>Trainee Candidate</th>
+              <th>Course &amp; Provider</th>
+              <th>Reported Job Role</th>
+              <th>Joining Date</th>
+              <th>Salary Range</th>
+              <th>Status</th>
+              <th class="text-center" style="min-width: 250px;">Employer Verification Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in pending_requests %}
+              <tr>
+                <td><span class="outcome-id-pill small">{{ r.outcome_id }}</span></td>
+                <td>
+                  <strong>{{ r.first_name }} {{ r.last_name }}</strong>
+                  <div class="text-muted small" style="font-size: 0.72rem;">Status: {{ r.current_employment_status|replace('_', ' ')|title }}</div>
+                </td>
+                <td>
+                  <div class="fw-semibold text-dark">{{ r.course_name }}</div>
+                  <div class="text-muted small" style="font-size: 0.72rem;">Provider: {{ r.provider_name or 'State Training Center' }}</div>
+                </td>
+                <td><strong class="text-dark">{{ r.verified_role }}</strong></td>
+                <td>{{ r.verified_joining_date }}</td>
+                <td><span class="badge bg-light text-dark border">{{ r.verified_salary_range }}</span></td>
+                <td>
+                  <span class="badge bg-warning-subtle text-warning-emphasis border border-warning">
+                    <i class="bi bi-clock-history me-1"></i>Pending Review
+                  </span>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex gap-1 justify-content-center flex-wrap">
+                    <!-- Action 1: Confirm -->
+                    <button type="button" 
+                            class="btn btn-success btn-sm fw-semibold btn-confirm-action"
+                            data-bs-toggle="modal"
+                            data-bs-target="#confirmModal"
+                            data-outcome-id="{{ r.outcome_id }}"
+                            data-trainee-name="{{ r.first_name }} {{ r.last_name }}"
+                            data-role="{{ r.verified_role }}"
+                            data-joining-date="{{ r.verified_joining_date }}"
+                            data-salary="{{ r.verified_salary_range }}">
+                      <i class="bi bi-check-circle me-1"></i> Confirm
+                    </button>
+                    <!-- Action 2: Request Correction -->
+                    <button type="button" 
+                            class="btn btn-outline-warning text-dark btn-sm fw-semibold btn-correction-action"
+                            data-bs-toggle="modal"
+                            data-bs-target="#correctionModal"
+                            data-outcome-id="{{ r.outcome_id }}"
+                            data-trainee-name="{{ r.first_name }} {{ r.last_name }}"
+                            data-role="{{ r.verified_role }}">
+                      <i class="bi bi-pencil-square me-1"></i> Request Correction
+                    </button>
+                    <!-- Action 3: Unable to Verify -->
+                    <button type="button" 
+                            class="btn btn-outline-danger btn-sm fw-semibold btn-unable-action"
+                            data-bs-toggle="modal"
+                            data-bs-target="#unableModal"
+                            data-outcome-id="{{ r.outcome_id }}"
+                            data-trainee-name="{{ r.first_name }} {{ r.last_name }}">
+                      <i class="bi bi-x-circle me-1"></i> Unable to Verify
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="alert alert-success border-success-subtle py-3 px-4 rounded-3 mb-0 d-flex align-items-center gap-3">
+        <i class="bi bi-check2-circle fs-3 text-success"></i>
+        <div>
+          <div class="fw-bold">All Pending Verification Requests Completed</div>
+          <div class="small text-muted">There are currently no outstanding verification requests awaiting your decision. You can look up additional candidates below using their Outcome ID.</div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Section B: Workplace Skill Feedback -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="skill-feedback">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <h4 class="fw-bold mb-0 text-dark">B. Workplace Skill Feedback</h4>
+        <p class="text-muted small mb-0 mt-1">Provide workplace competency feedback for confirmed employees across key industrial dimensions</p>
+      </div>
+      <span class="badge bg-primary-subtle text-primary border border-primary px-3 py-1">
+        <i class="bi bi-chat-quote-fill me-1"></i> 5 Core Competencies: Communication &bull; Technical &bull; Problem Solving &bull; Teamwork &bull; Additional
+      </span>
+    </div>
+
+    {% if verified_records %}
+      <div class="table-responsive">
+        <table class="table custom-table table-bordered mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Outcome ID</th>
+              <th>Employee Name</th>
+              <th>Verified Job Role</th>
+              <th>Communication</th>
+              <th>Technical Skills</th>
+              <th>Problem Solving</th>
+              <th>Teamwork</th>
+              <th>Reported Deficiencies / Requirements</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in verified_records %}
+              <tr>
+                <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+                <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+                <td>{{ v.verified_role }}</td>
+                <td>
+                  {% if v.communication_rating %}
+                    <span class="badge bg-light text-warning border">★ {{ v.communication_rating }}/5</span>
+                  {% else %}
+                    <span class="text-muted small">Pending</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if v.technical_skills_rating %}
+                    <span class="badge bg-light text-warning border">★ {{ v.technical_skills_rating }}/5</span>
+                  {% else %}
+                    <span class="text-muted small">Pending</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if v.problem_solving_rating %}
+                    <span class="badge bg-light text-warning border">★ {{ v.problem_solving_rating }}/5</span>
+                  {% else %}
+                    <span class="text-muted small">Pending</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if v.teamwork_rating %}
+                    <span class="badge bg-light text-warning border">★ {{ v.teamwork_rating }}/5</span>
+                  {% else %}
+                    <span class="text-muted small">Pending</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if v.missing_skills_text %}
+                    <span class="badge bg-warning-subtle text-danger border">Gaps: {{ v.missing_skills_text }}</span>
+                  {% else %}
+                    <span class="text-muted small">No specific gap reported</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{{ url_for('employer.feedback', outcome_id=v.outcome_id) }}" class="btn btn-outline-primary btn-sm fw-semibold">
+                    <i class="bi bi-pencil-square me-1"></i> {% if v.technical_skills_rating %}Update Feedback{% else %}Give Feedback{% endif %}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted small mb-0">No verified employees found yet. Confirm verification requests above to provide workplace skill feedback.</p>
+    {% endif %}
+  </div>
+
+  <!-- Section C: Employer Skill Requirements -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="skill-requirements">
+    <div class="section-header mb-3">
+      <h4 class="fw-bold mb-0 text-dark">C. Employer Skill Requirements &amp; Deficiencies</h4>
+      <p class="text-muted small mb-0 mt-1">Communicate real-world workplace skill requirements and deficiencies. This evidence feeds directly into SkillTrack's closed-loop Skill Gap Analysis and curriculum recommendations.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="border rounded-4 p-3 bg-light h-100">
+          <h6 class="fw-bold text-dark mb-2"><i class="bi bi-lightning-charge text-warning me-1"></i> Reported Workplace Skill Deficiencies</h6>
+          <p class="text-muted small mb-3">Skills that candidates were lacking upon onboarding under {{ employer.company_name }}:</p>
+          {% if missing_skills_list %}
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              {% for sk in missing_skills_list %}
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-6">
+                  <i class="bi bi-exclamation-circle me-1"></i> {{ sk }}
+                </span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-muted small mb-3">No specific skill deficiencies reported yet.</p>
+          {% endif %}
+          <div class="small text-muted border-top pt-2">
+            <i class="bi bi-arrow-repeat text-success me-1"></i> Feeds into: Statewide Skill Gap Matrix &bull; Provider Curriculum Updates &bull; Continuous System Improvements.
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="border rounded-4 p-3 bg-white h-100">
+          <h6 class="fw-bold text-dark mb-2"><i class="bi bi-send text-primary me-1"></i> Submit Workplace Skill Requirements</h6>
+          <form action="{{ url_for('employer.submit_skill_requirements') }}" method="POST">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Required Workplace Skills / Missing Competencies (Comma-separated)</label>
+              <input type="text" name="missing_skills_text" class="form-control form-control-sm" placeholder="e.g. Advanced Excel, SQL Queries, Client Presentation, Python" required>
+              <div class="form-text small" style="font-size: 0.72rem;">Enter tools, technologies, or soft skills needed for your workforce.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Workplace Requirements Description &amp; Feedback</label>
+              <textarea name="general_feedback" class="form-control form-control-sm" rows="2" placeholder="Describe the operational gap observed and curriculum suggestions..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm fw-semibold">
+              <i class="bi bi-cloud-arrow-up me-1"></i> Save Enterprise Skill Requirements
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section D: Verification History (Tabbed Records) -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white" id="verification-history">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+      <div>
+        <h4 class="fw-bold mb-0 text-dark">D. Verification History</h4>
+        <p class="text-muted small mb-0 mt-1">Complete audit log of employment verifications processed by {{ employer.company_name }}</p>
+      </div>
+    </div>
+
+    <!-- Filter Pills -->
+    <ul class="nav nav-pills mb-3 gap-2" id="verificationTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active btn-sm" id="all-tab" data-bs-toggle="pill" data-bs-target="#tab-all" type="button" role="tab">
+          All Records ({{ verifications|length }})
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link btn-sm" id="verified-tab" data-bs-toggle="pill" data-bs-target="#tab-verified" type="button" role="tab">
+          Verified ({{ verified_records|length }})
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link btn-sm" id="pending-tab" data-bs-toggle="pill" data-bs-target="#tab-pending" type="button" role="tab">
+          Pending ({{ pending_requests|length }})
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link btn-sm" id="correction-tab" data-bs-toggle="pill" data-bs-target="#tab-correction" type="button" role="tab">
+          Correction Requests ({{ correction_requests|length }})
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link btn-sm" id="unable-tab" data-bs-toggle="pill" data-bs-target="#tab-unable" type="button" role="tab">
+          Unable to Verify ({{ unable_records|length }})
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="verificationTabsContent">
+      <!-- Tab: All Records -->
+      <div class="tab-pane fade show active" id="tab-all" role="tabpanel">
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Outcome ID</th>
+                <th>Candidate Name</th>
+                <th>Course</th>
+                <th>Verified Job Role</th>
+                <th>Joining Date</th>
+                <th>Status</th>
+                <th>Remarks / Feedback</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in verifications %}
+                <tr>
+                  <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+                  <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+                  <td>{{ v.course_name }}</td>
+                  <td>{{ v.verified_role }}</td>
+                  <td>{{ v.verified_joining_date }}</td>
+                  <td>
+                    {% if v.verification_status == 'verified' %}
+                      <span class="verified-badge"><i class="bi bi-check-circle-fill"></i> Verified ✓</span>
+                    {% elif v.verification_status == 'pending' %}
+                      <span class="badge bg-warning-subtle text-warning-emphasis border border-warning"><i class="bi bi-clock-history me-1"></i>Pending</span>
+                    {% elif v.verification_status == 'correction_requested' %}
+                      <span class="badge bg-info-subtle text-info-emphasis border border-info"><i class="bi bi-pencil me-1"></i>Correction</span>
+                    {% else %}
+                      <span class="badge bg-danger-subtle text-danger border border-danger"><i class="bi bi-x-circle me-1"></i>Unable</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <div class="small text-muted">{{ v.remarks or 'N/A' }}</div>
+                    {% if v.missing_skills_text %}
+                      <span class="badge bg-warning-subtle text-danger border mt-1" style="font-size:0.68rem;">Gaps: {{ v.missing_skills_text }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if v.verification_status == 'verified' %}
+                      <a href="{{ url_for('employer.feedback', outcome_id=v.outcome_id) }}" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size:0.75rem;">
+                        <i class="bi bi-star me-1"></i> Skill Feedback
+                      </a>
+                    {% elif v.verification_status == 'pending' %}
+                      <a href="#verification-requests" class="btn btn-warning btn-sm py-0 px-2 text-dark" style="font-size:0.75rem;">
+                        <i class="bi bi-check2 me-1"></i> Review
+                      </a>
+                    {% else %}
+                      <span class="text-muted small">-</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Verified -->
+      <div class="tab-pane fade" id="tab-verified" role="tabpanel">
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Outcome ID</th>
+                <th>Candidate Name</th>
+                <th>Job Role</th>
+                <th>Joining Date</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in verified_records %}
+                <tr>
+                  <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+                  <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+                  <td>{{ v.verified_role }}</td>
+                  <td>{{ v.verified_joining_date }}</td>
+                  <td><span class="verified-badge"><i class="bi bi-check-circle-fill"></i> Verified ✓</span></td>
+                  <td>{{ v.remarks }}</td>
+                  <td>
+                    <a href="{{ url_for('employer.feedback', outcome_id=v.outcome_id) }}" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size:0.75rem;">
+                      <i class="bi bi-star me-1"></i> Skill Feedback
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Pending -->
+      <div class="tab-pane fade" id="tab-pending" role="tabpanel">
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Outcome ID</th>
+                <th>Candidate Name</th>
+                <th>Course</th>
+                <th>Reported Role</th>
+                <th>Joining Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in pending_requests %}
+                <tr>
+                  <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+                  <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+                  <td>{{ v.course_name }}</td>
+                  <td>{{ v.verified_role }}</td>
+                  <td>{{ v.verified_joining_date }}</td>
+                  <td>
+                    <a href="#verification-requests" class="btn btn-warning btn-sm py-0 px-2 text-dark" style="font-size:0.75rem;">
+                      <i class="bi bi-check2 me-1"></i> Review
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Correction Requests -->
+      <div class="tab-pane fade" id="tab-correction" role="tabpanel">
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Outcome ID</th>
+                <th>Candidate Name</th>
+                <th>Reported Role</th>
+                <th>Status</th>
+                <th>Correction Notes Logged</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in correction_requests %}
+                <tr>
+                  <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+                  <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+                  <td>{{ v.verified_role }}</td>
+                  <td><span class="badge bg-info-subtle text-info-emphasis border border-info"><i class="bi bi-pencil me-1"></i>Correction Requested</span></td>
+                  <td class="text-danger small">{{ v.remarks }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Unable to Verify -->
+      <div class="tab-pane fade" id="tab-unable" role="tabpanel">
+        <div class="table-responsive">
+          <table class="table custom-table table-bordered mb-0 align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Outcome ID</th>
+                <th>Candidate Name</th>
+                <th>Reported Role</th>
+                <th>Status</th>
+                <th>Reason / Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in unable_records %}
+                <tr>
+                  <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
+                  <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
+                  <td>{{ v.verified_role }}</td>
+                  <td><span class="badge bg-danger-subtle text-danger border border-danger"><i class="bi bi-x-circle me-1"></i>Unable to Verify</span></td>
+                  <td class="text-muted small">{{ v.remarks }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidate Lookup by Unique Permanent Outcome ID -->
+  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white" id="candidate-lookup">
+    <div class="section-header">
+      <h4 class="fw-bold mb-0 text-dark">Candidate Lookup by Permanent Outcome ID</h4>
+      <p class="text-muted small mb-0 mt-1">Look up and verify any candidate using their unique identifier (e.g. <code>ST-MH-000123</code>)</p>
+    </div>
+
+    <form action="{{ url_for('employer.dashboard') }}" method="GET" class="row g-2 align-items-center mb-3 mt-1">
       <div class="col-md-6 col-lg-5">
         <div class="input-group">
           <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
@@ -41,20 +568,20 @@
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-primary px-4 fw-semibold">
-          <i class="bi bi-search me-1"></i> Look Up Outcome ID
+          <i class="bi bi-search me-1"></i> Look Up Candidate
         </button>
       </div>
       <div class="col-auto">
-        <a href="{{ url_for('employer.dashboard', outcome_id='ST-MH-000123') }}" class="btn btn-outline-secondary btn-sm" data-i18n="auto_141">{{ 'Try Demo ID (ST-MH-000123)' }}</a>
+        <a href="{{ url_for('employer.dashboard', outcome_id='ST-MH-000123') }}" class="btn btn-outline-secondary btn-sm">Try Demo ID (ST-MH-000123)</a>
       </div>
     </form>
 
     <!-- Searched Candidate Result & Verification Form -->
     {% if searched_trainee %}
-      <div class="border rounded-4 p-4 mt-4" style="background-color: #f8fafc;">
+      <div class="border rounded-4 p-4 mt-3" style="background-color: #f8fafc;">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
           <div>
-            <span class="badge bg-primary mb-1" data-i18n="auto_142">{{ 'Consent Verified' }}</span>
+            <span class="badge bg-primary mb-1">Consent Verified</span>
             <h5 class="fw-bold mb-0">{{ searched_trainee.first_name }} {{ searched_trainee.last_name }}</h5>
           </div>
           <span class="outcome-id-pill">{{ searched_trainee.outcome_id }}</span>
@@ -62,15 +589,15 @@
 
         <div class="row g-3 mb-4 small">
           <div class="col-md-4">
-            <span class="text-muted d-block" data-i18n="auto_143">{{ 'Completed Training Course:' }}</span>
+            <span class="text-muted d-block">Completed Training Course:</span>
             <strong>{{ searched_trainee.course_name }}</strong>
           </div>
           <div class="col-md-4">
-            <span class="text-muted d-block" data-i18n="auto_144">{{ 'Training Provider:' }}</span>
+            <span class="text-muted d-block">Training Provider:</span>
             <strong>{{ searched_trainee.provider_name }}</strong>
           </div>
           <div class="col-md-4">
-            <span class="text-muted d-block" data-i18n="auto_145">{{ 'Certification Status:' }}</span>
+            <span class="text-muted d-block">Certification Status:</span>
             <span class="badge bg-success">{{ searched_trainee.certification_status|upper }}</span>
           </div>
         </div>
@@ -84,46 +611,46 @@
           
           <div class="row g-3 mb-3">
             <div class="col-md-4">
-              <label class="form-label small fw-semibold" data-i18n="auto_146">{{ 'Verification Status' }}</label>
-              <select name="verification_status" class="form-select">
-                <option value="verified" selected data-i18n="auto_147">{{ 'Verified (Currently Employed on Rolls)' }}</option>
-                <option value="rejected" data-i18n="auto_148">{{ 'Rejected (Candidate not on rolls)' }}</option>
-                <option value="pending" data-i18n="auto_149">{{ 'Pending Review' }}</option>
+              <label class="form-label small fw-semibold">Verification Action</label>
+              <select name="action" class="form-select">
+                <option value="confirm" selected>Confirm (Employed on Rolls)</option>
+                <option value="correction">Request Correction</option>
+                <option value="unable">Unable to Verify (Not on Rolls)</option>
               </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label small fw-semibold" data-i18n="auto_150">{{ 'Designation / Job Role' }}</label>
+              <label class="form-label small fw-semibold">Designation / Job Role</label>
               <input type="text" name="verified_role" class="form-control" value="{{ existing_verification.verified_role if existing_verification else 'Junior Data Operations Executive' }}" required>
             </div>
             <div class="col-md-4">
-              <label class="form-label small fw-semibold" data-i18n="auto_151">{{ 'Joining Date' }}</label>
+              <label class="form-label small fw-semibold">Joining Date</label>
               <input type="date" name="verified_joining_date" class="form-control" value="{{ existing_verification.verified_joining_date if existing_verification else '2023-09-01' }}" required>
             </div>
           </div>
 
           <div class="row g-3 mb-4">
             <div class="col-md-6">
-              <label class="form-label small fw-semibold" data-i18n="auto_152">{{ 'Monthly Salary Range' }}</label>
+              <label class="form-label small fw-semibold">Monthly Salary Range</label>
               <select name="verified_salary_range" class="form-select">
-                <option value="₹12,000 - ₹15,000" data-i18n="auto_153">{{ '₹12,000 - ₹15,000' }}</option>
-                <option value="₹15,000 - ₹18,000" data-i18n="auto_154">{{ '₹15,000 - ₹18,000' }}</option>
-                <option value="₹18,000 - ₹22,000" selected data-i18n="auto_155">{{ '₹18,000 - ₹22,000' }}</option>
-                <option value="₹22,000 - ₹28,000" data-i18n="auto_156">{{ '₹22,000 - ₹28,000' }}</option>
-                <option value="₹28,000+" data-i18n="auto_157">{{ '₹28,000+' }}</option>
+                <option value="₹12,000 - ₹15,000">₹12,000 - ₹15,000</option>
+                <option value="₹15,000 - ₹18,000">₹15,000 - ₹18,000</option>
+                <option value="₹18,000 - ₹22,000" selected>₹18,000 - ₹22,000</option>
+                <option value="₹22,000 - ₹28,000">₹22,000 - ₹28,000</option>
+                <option value="₹28,000+">₹28,000+</option>
               </select>
             </div>
             <div class="col-md-6">
-              <label class="form-label small fw-semibold" data-i18n="auto_158">{{ 'Verification Remarks' }}</label>
+              <label class="form-label small fw-semibold">Verification Remarks</label>
               <input type="text" name="remarks" class="form-control" placeholder="e.g. Role and active status confirmed by HR" value="{{ existing_verification.remarks if existing_verification else 'Confirmed on payroll.' }}">
             </div>
           </div>
 
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-success fw-semibold px-4">
-              <i class="bi bi-check2-circle me-1"></i> Submit Official Verification
+              <i class="bi bi-check2-circle me-1"></i> Submit Verification
             </button>
             <a href="{{ url_for('employer.feedback', outcome_id=searched_trainee.outcome_id) }}" class="btn btn-outline-primary fw-semibold px-3">
-              <i class="bi bi-star me-1"></i> Provide Skill Gap Feedback
+              <i class="bi bi-star me-1"></i> Provide Skill Feedback
             </a>
           </div>
         </form>
@@ -131,52 +658,158 @@
     {% endif %}
   </div>
 
-  <!-- Verified Trainees History Table -->
-  <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-    <div class="section-header">
-      <h4 data-i18n="auto_159">{{ 'Verified Candidate Records' }}</h4>
-      <p data-i18n="auto_160">{{ 'Candidates validated under this enterprise with verified status badges' }}</p>
-    </div>
+</div>
 
-    <div class="table-responsive">
-      <table class="table custom-table table-bordered mb-0">
-        <thead>
-          <tr>
-            <th data-i18n="auto_161">{{ 'Outcome ID' }}</th>
-            <th data-i18n="auto_162">{{ 'Candidate Name' }}</th>
-            <th data-i18n="auto_163">{{ 'Training Course' }}</th>
-            <th data-i18n="auto_164">{{ 'Verified Job Role' }}</th>
-            <th data-i18n="auto_165">{{ 'Status' }}</th>
-            <th data-i18n="auto_166">{{ 'Feedback & Skill Gaps' }}</th>
-            <th data-i18n="auto_167">{{ 'Actions' }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for v in verifications %}
-            <tr>
-              <td><span class="outcome-id-pill small">{{ v.outcome_id }}</span></td>
-              <td><strong>{{ v.first_name }} {{ v.last_name }}</strong></td>
-              <td>{{ v.course_name }}</td>
-              <td>{{ v.verified_role }}</td>
-              <td><span class="verified-badge"><i class="bi bi-check-circle-fill"></i> Verified ✓</span></td>
-              <td>
-                {% if v.missing_skills_text %}
-                  <span class="badge bg-warning-subtle text-danger border">Gaps: {{ v.missing_skills_text }}</span>
-                {% else %}
-                  <span class="text-muted small" data-i18n="auto_168">{{ 'Pending rating' }}</span>
-                {% endif %}
-              </td>
-              <td>
-                <a href="{{ url_for('employer.feedback', outcome_id=v.outcome_id) }}" class="btn btn-outline-primary btn-sm">
-                  <i class="bi bi-chat-left-text me-1"></i> Skill Feedback
-                </a>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<!-- Modal: Confirm Employment Verification -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-bottom bg-success-subtle">
+        <h5 class="modal-title fw-bold text-success"><i class="bi bi-check2-circle me-2"></i>Confirm Employment Verification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('employer.verify_trainee') }}" method="POST">
+        <div class="modal-body p-4">
+          <input type="hidden" name="action" value="confirm">
+          <input type="hidden" name="outcome_id" id="confirmOutcomeId">
+          <p class="text-muted small">You are confirming official employment for candidate <strong id="confirmTraineeName" class="text-dark"></strong> (<span id="confirmOutcomeIdText" class="font-monospace"></span>).</p>
+          
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Designation / Job Role</label>
+            <input type="text" name="verified_role" id="confirmRole" class="form-control form-control-sm" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Joining Date</label>
+            <input type="date" name="verified_joining_date" id="confirmJoiningDate" class="form-control form-control-sm" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Monthly Salary Range</label>
+            <select name="verified_salary_range" id="confirmSalary" class="form-select form-select-sm">
+              <option value="₹12,000 - ₹15,000">₹12,000 - ₹15,000</option>
+              <option value="₹15,000 - ₹18,000">₹15,000 - ₹18,000</option>
+              <option value="₹18,000 - ₹22,000" selected>₹18,000 - ₹22,000</option>
+              <option value="₹22,000 - ₹28,000">₹22,000 - ₹28,000</option>
+              <option value="₹28,000+">₹28,000+</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Remarks</label>
+            <input type="text" name="remarks" class="form-control form-control-sm" value="Candidate confirmed on active rolls and payroll.">
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success btn-sm fw-semibold px-3">
+            <i class="bi bi-patch-check me-1"></i> Confirm &amp; Proceed to Feedback
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-
 </div>
+
+<!-- Modal: Request Correction -->
+<div class="modal fade" id="correctionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-bottom bg-warning-subtle">
+        <h5 class="modal-title fw-bold text-dark"><i class="bi bi-pencil-square me-2 text-warning"></i>Request Record Correction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('employer.verify_trainee') }}" method="POST">
+        <div class="modal-body p-4">
+          <input type="hidden" name="action" value="correction">
+          <input type="hidden" name="outcome_id" id="correctionOutcomeId">
+          <p class="text-muted small">Notify the Training Provider that details submitted for <strong id="correctionTraineeName" class="text-dark"></strong> require revision.</p>
+          
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Correction Reason / Specific Note</label>
+            <textarea name="remarks" class="form-control form-control-sm" rows="3" placeholder="e.g. Candidate joined on Oct 01, not Sept 15. Designation is Trainee Operations, not Associate." required></textarea>
+            <div class="form-text small" style="font-size: 0.72rem;">This message will be shown to the training provider in their verification console.</div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-warning btn-sm fw-semibold text-dark px-3">
+            <i class="bi bi-send me-1"></i> Submit Correction Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Unable to Verify -->
+<div class="modal fade" id="unableModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-bottom bg-danger-subtle">
+        <h5 class="modal-title fw-bold text-danger"><i class="bi bi-x-circle me-2"></i>Unable to Verify Candidate</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ url_for('employer.verify_trainee') }}" method="POST">
+        <div class="modal-body p-4">
+          <input type="hidden" name="action" value="unable">
+          <input type="hidden" name="outcome_id" id="unableOutcomeId">
+          <p class="text-muted small">Record that <strong id="unableTraineeName" class="text-dark"></strong> could not be verified on enterprise rolls.</p>
+          
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Reason for Inability to Verify</label>
+            <select name="remarks" class="form-select form-select-sm mb-2">
+              <option value="Candidate not found in HRMS or payroll database.">Candidate not found in HRMS or payroll database</option>
+              <option value="Candidate offered employment but did not join.">Candidate offered employment but did not join</option>
+              <option value="Candidate separated prior to probation completion.">Candidate separated prior to probation completion</option>
+              <option value="Identity or PAN/Aadhaar details mismatch.">Identity or PAN/Aadhaar details mismatch</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger btn-sm fw-semibold px-3">
+            <i class="bi bi-x-octagon me-1"></i> Mark Unable to Verify
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Confirm Modal population
+  document.querySelectorAll('.btn-confirm-action').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const d = this.dataset;
+      document.getElementById('confirmOutcomeId').value = d.outcomeId;
+      document.getElementById('confirmOutcomeIdText').textContent = d.outcomeId;
+      document.getElementById('confirmTraineeName').textContent = d.traineeName;
+      document.getElementById('confirmRole').value = d.role || 'Associate Operations Executive';
+      document.getElementById('confirmJoiningDate').value = d.joiningDate || new Date().toISOString().split('T')[0];
+      if (d.salary) {
+        document.getElementById('confirmSalary').value = d.salary;
+      }
+    });
+  });
+
+  // Correction Modal population
+  document.querySelectorAll('.btn-correction-action').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const d = this.dataset;
+      document.getElementById('correctionOutcomeId').value = d.outcomeId;
+      document.getElementById('correctionTraineeName').textContent = d.traineeName;
+    });
+  });
+
+  // Unable Modal population
+  document.querySelectorAll('.btn-unable-action').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const d = this.dataset;
+      document.getElementById('unableOutcomeId').value = d.outcomeId;
+      document.getElementById('unableTraineeName').textContent = d.traineeName;
+    });
+  });
+});
+</script>
 {% endblock %}

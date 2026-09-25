@@ -324,40 +324,6 @@
             </div>
           </div>
 
-          <!-- Digital Verification & QR Section -->
-          <div class="card border rounded-3 p-3 mb-3 bg-white shadow-sm">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-              <div class="d-flex align-items-center gap-3">
-                <div class="p-1 border rounded bg-white shadow-sm text-center">
-                  <img id="modalQrCodeImg" src="" alt="QR Code" style="width: 72px; height: 72px;"
-                       onerror="this.style.display='none'; document.getElementById('modalQrFallback').style.display='block';">
-                  <div id="modalQrFallback" style="display:none; width: 72px; height: 72px;" class="d-flex align-items-center justify-content-center bg-light text-muted">
-                    <i class="bi bi-qr-code fs-2"></i>
-                  </div>
-                  <div class="text-muted" style="font-size: 0.6rem;">Scan to Verify</div>
-                </div>
-                <div>
-                  <div class="fw-bold small text-dark d-flex align-items-center gap-1">
-                    <i class="bi bi-shield-check text-success"></i> DigiLocker &amp; State Repository Verification
-                  </div>
-                  <div class="text-muted small" style="font-size: 0.75rem;">
-                    Status: <strong class="text-success">Demo Verification Successful</strong> &bull; Pull URI Active
-                  </div>
-                  <div class="text-muted small mt-1 font-monospace" style="font-size: 0.7rem;">
-                    Signature: <span id="modalDigiSig" class="text-secondary">SHA256-RSA-VALIDATED-DEMO-DIGILOCKER-PULL</span>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <button type="button" class="btn btn-outline-success btn-sm fw-semibold" id="btnVerifyOnline">
-                  <i class="bi bi-arrow-repeat me-1"></i>Re-verify Authenticity
-                </button>
-              </div>
-            </div>
-            <!-- Live Verification Alert Container -->
-            <div id="verificationLiveAlert" class="mt-2" style="display: none;"></div>
-          </div>
-
           <!-- Visual Certificate Preview -->
           <div class="p-3 border rounded-3" style="background: #ffffff; border: 4px solid #0e385f !important; outline: 2px solid #d4af37; outline-offset: -3px;">
             <div class="text-center py-2">
@@ -435,53 +401,10 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('previewGrade').textContent = data.grade || 'A';
       document.getElementById('previewIssueDate').textContent = data.issueDate;
 
-      // Update QR Code image
-      const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=' + encodeURIComponent(window.location.origin + data.certUrl);
-      const qrImg = document.getElementById('modalQrCodeImg');
-      qrImg.src = qrUrl;
-      qrImg.style.display = 'block';
-      const qrFallback = document.getElementById('modalQrFallback');
-      if (qrFallback) qrFallback.style.display = 'none';
-
       // Update Action Links
       document.getElementById('modalFullScreenBtn').href = data.certUrl;
-
-      // Reset Live Verification Alert
-      const liveAlert = document.getElementById('verificationLiveAlert');
-      liveAlert.style.display = 'none';
-      liveAlert.innerHTML = '';
     });
   });
-
-  // Verify Online Interactive Call
-  const verifyBtn = document.getElementById('btnVerifyOnline');
-  if (verifyBtn) {
-    verifyBtn.addEventListener('click', function() {
-      if (!currentVerifyUrl) return;
-      verifyBtn.disabled = true;
-      verifyBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Verifying...';
-
-      fetch(currentVerifyUrl)
-        .then(res => res.json())
-        .then(result => {
-          verifyBtn.disabled = false;
-          verifyBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Re-verify Authenticity';
-          const liveAlert = document.getElementById('verificationLiveAlert');
-          liveAlert.style.display = 'block';
-          liveAlert.innerHTML = `
-            <div class="alert alert-success border-success-subtle py-2 px-3 small rounded-3 mb-0">
-              <div class="fw-bold"><i class="bi bi-patch-check-fill me-1"></i>${result.status}</div>
-              <div class="text-muted" style="font-size:0.75rem;">Verified at ${result.verification_time} via ${result.issuer}</div>
-              <div class="font-monospace text-secondary" style="font-size:0.7rem;">Digital Signature: ${result.digital_signature}</div>
-            </div>
-          `;
-        })
-        .catch(err => {
-          verifyBtn.disabled = false;
-          verifyBtn.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Re-verify Authenticity';
-        });
-    });
-  }
 
   // Download / Print Action
   const downloadBtn = document.getElementById('modalDownloadBtn');

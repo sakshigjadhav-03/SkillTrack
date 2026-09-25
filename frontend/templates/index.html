@@ -5,24 +5,20 @@
 {% block content %}
 <!-- Hero Section -->
 <section class="hero-wrapper py-5 px-lg-4 px-3" id="about">
-  <!-- Subtle Ambient Glow Orbs -->
-  <div class="hero-ambient-orb-1" aria-hidden="true"></div>
-  <div class="hero-ambient-orb-2" aria-hidden="true"></div>
-
-  <div class="container-fluid py-3" style="position: relative; z-index: 2;">
+  <div class="container-fluid py-3">
     <div class="row align-items-center g-4">
       <!-- Left Column: Headlines, Subtitle, Stat Pills & Action Buttons -->
       <div class="col-xl-7 col-lg-7">
-        <h1 class="fw-bold mb-3 animate-fade-up delay-1" style="font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1.15; letter-spacing: -0.5px;">
+        <h1 class="fw-bold mb-3" style="font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1.15; letter-spacing: -0.5px;">
           <span class="text-white d-block" data-i18n="auto_36">{{ 'Track Outcomes.' }}</span>
           <span class="d-block" style="color: #10b981;" data-i18n="auto_37">{{ 'Identify Gaps.' }}</span>
           <span class="d-block" style="color: #f59e0b;" data-i18n="auto_38">{{ 'Improve Lives.' }}</span>
         </h1>
 
-        <p class="text-white-50 mb-4 lead animate-fade-up delay-2" style="font-size: 1.05rem; max-width: 540px; line-height: 1.6;" data-i18n="auto_39">{{ 'SkillTrack is the outcome-intelligence platform that connects training to real-world employment and helps improve the impact of skilling initiatives.' }}</p>
+        <p class="text-white-50 mb-4 lead" style="font-size: 1.05rem; max-width: 540px; line-height: 1.6;" data-i18n="auto_39">{{ 'SkillTrack is the outcome-intelligence platform that connects training to real-world employment and helps improve the impact of skilling initiatives.' }}</p>
 
         <!-- 4 Metrics Pills -->
-        <div class="d-flex flex-wrap gap-2 mb-4 animate-fade-up delay-3">
+        <div class="d-flex flex-wrap gap-2 mb-4">
           <div class="stat-pill">
             <i class="bi bi-people-fill text-info fs-5"></i>
             <div>
@@ -57,7 +53,7 @@
         </div>
 
         <!-- Call to Action Buttons -->
-        <div class="d-flex flex-wrap gap-3 animate-fade-up delay-4">
+        <div class="d-flex flex-wrap gap-3">
           <a href="{{ url_for('government.dashboard') }}" class="btn btn-warning btn-lg fw-bold px-4 text-dark shadow" style="background: #f59e0b; border: none; border-radius: 8px;" data-i18n="auto_48">{{ 'Explore Dashboard →' }}</a>
           <a href="#how-it-works" class="btn btn-outline-light btn-lg px-4" style="border-radius: 8px; border-color: rgba(255,255,255,0.35);">
             <i class="bi bi-play-circle me-1"></i> See How It Works
@@ -67,7 +63,7 @@
 
       <!-- Right Column: Quick 1-Click Role Login Card -->
       <div class="col-xl-5 col-lg-5" id="role-portals">
-        <div class="card border-0 shadow-lg rounded-4 p-4 text-dark bg-white portal-signin-card animate-fade-up delay-2" style="max-width: 480px; margin: 0 auto;">
+        <div class="card border-0 shadow-lg rounded-4 p-4 text-dark bg-white" style="max-width: 480px; margin: 0 auto;">
           <div class="text-center mb-3">
             <div class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle mb-2" style="width: 38px; height: 38px;">
               <i class="bi bi-shield-lock-fill fs-5 text-primary"></i>
@@ -121,15 +117,13 @@
                 </div>
                 <div class="fw-bold text-dark" style="font-size: 0.9rem;">Employer</div>
                 <div class="text-muted mt-1" style="font-size: 0.7rem; line-height: 1.3; min-height: 28px;">Verify employment &amp; provide workplace feedback</div>
-                <a href="{{ url_for('auth.login', role='employer') }}" class="btn btn-success btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #15803d; font-size: 0.75rem;">Login as Employer ›</a>
+                <a href="{{ url_for('employer.dashboard') }}" class="btn btn-success btn-sm w-100 fw-semibold mt-2 rounded-2 text-white" style="background: #15803d; font-size: 0.75rem;">Verify Employment ›</a>
               </div>
             </div>
           </div>
 
           <div class="text-center mt-3 pt-2 border-top text-muted" style="font-size: 0.78rem;">
-            <div>New Trainee? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-semibold text-primary">Create Trainee Account ›</a></div>
-            <div class="mt-1">New Training Provider? <a href="{{ url_for('auth.register_provider') }}" class="text-decoration-none fw-semibold" style="color: #7c3aed;">Create Provider Account →</a></div>
-            <div class="mt-1">New Employer? <a href="{{ url_for('auth.register_employer') }}" class="text-decoration-none fw-semibold text-success">Create Employer Account →</a></div>
+            New Trainee? <a href="{{ url_for('auth.register') }}" class="text-decoration-none fw-semibold text-primary">Create Trainee Account ›</a>
           </div>
         </div>
       </div>
@@ -140,12 +134,12 @@
 <!-- Section: Why SkillTrack? -->
 <section class="py-5 bg-white" id="features">
   <div class="container-fluid px-lg-4 px-3">
-    <div class="text-center mb-4 reveal-on-scroll">
+    <div class="text-center mb-4">
       <h3 class="fw-bold text-dark mb-1" style="font-size: 1.6rem;" data-i18n="auto_63">{{ 'Why SkillTrack?' }}</h3>
-      <div class="section-accent-line"></div>
+      <div style="width: 45px; height: 3px; background: #f59e0b; margin: 6px auto 0; border-radius: 2px;"></div>
     </div>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3 stagger-cards reveal-on-scroll">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-6 g-3">
       <!-- 1. Outcome Tracking -->
       <div class="col">
         <a href="{{ url_for('government.dashboard') }}" class="text-decoration-none d-block h-100">
@@ -230,16 +224,16 @@
 <!-- Section: How It Works -->
 <section class="py-5" style="background-color: #f8fafc;" id="how-it-works">
   <div class="container-fluid px-lg-4 px-3">
-    <div class="text-center mb-5 reveal-on-scroll">
+    <div class="text-center mb-5">
       <h3 class="fw-bold text-dark mb-1" style="font-size: 1.6rem;">How It Works</h3>
-      <div class="section-accent-line"></div>
+      <div style="width: 45px; height: 3px; background: #f59e0b; margin: 6px auto 0; border-radius: 2px;"></div>
     </div>
 
     <!-- 6 Interconnected Steps Flow -->
-    <div class="d-flex flex-wrap justify-content-center align-items-center gap-lg-3 gap-2 stagger-steps reveal-on-scroll">
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-lg-3 gap-2">
       <!-- Step 1 -->
       <a href="{{ url_for('provider.dashboard') }}" class="text-decoration-none">
-        <div class="text-center p-2 step-item" style="max-width: 155px;">
+        <div class="text-center p-2" style="max-width: 155px;">
           <div class="step-circle" style="background: #e0f2fe; color: #0284c7; border: 2px solid #bae6fd;">
             <i class="bi bi-mortarboard-fill"></i>
           </div>
@@ -248,11 +242,11 @@
         </div>
       </a>
 
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right flow-arrow-indicator flow-arrow-1 text-black-50"></i></div>
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 2 -->
       <a href="{{ url_for('government.dashboard') }}" class="text-decoration-none">
-        <div class="text-center p-2 step-item" style="max-width: 155px;">
+        <div class="text-center p-2" style="max-width: 155px;">
           <div class="step-circle" style="background: #d1fae5; color: #059669; border: 2px solid #a7f3d0;">
             <i class="bi bi-arrow-repeat"></i>
           </div>
@@ -261,11 +255,11 @@
         </div>
       </a>
 
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right flow-arrow-indicator flow-arrow-2 text-black-50"></i></div>
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 3 -->
       <a href="{{ url_for('employer.dashboard') }}" class="text-decoration-none">
-        <div class="text-center p-2 step-item" style="max-width: 155px;">
+        <div class="text-center p-2" style="max-width: 155px;">
           <div class="step-circle" style="background: #ede9fe; color: #7c3aed; border: 2px solid #ddd6fe;">
             <i class="bi bi-briefcase-fill"></i>
           </div>
@@ -274,11 +268,11 @@
         </div>
       </a>
 
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right flow-arrow-indicator flow-arrow-3 text-black-50"></i></div>
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 4 -->
       <a href="{{ url_for('government.skill_gaps_view') }}" class="text-decoration-none">
-        <div class="text-center p-2 step-item" style="max-width: 155px;">
+        <div class="text-center p-2" style="max-width: 155px;">
           <div class="step-circle" style="background: #ffedd5; color: #ea580c; border: 2px solid #fed7aa;">
             <i class="bi bi-puzzle-fill"></i>
           </div>
@@ -287,11 +281,11 @@
         </div>
       </a>
 
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right flow-arrow-indicator flow-arrow-4 text-black-50"></i></div>
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 5 -->
       <a href="{{ url_for('government.dashboard') }}#what-if-simulator" class="text-decoration-none">
-        <div class="text-center p-2 step-item" style="max-width: 155px;">
+        <div class="text-center p-2" style="max-width: 155px;">
           <div class="step-circle" style="background: #cffafe; color: #0891b2; border: 2px solid #a5f3fc;">
             <i class="bi bi-lightbulb-fill"></i>
           </div>
@@ -300,11 +294,11 @@
         </div>
       </a>
 
-      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right flow-arrow-indicator flow-arrow-5 text-black-50"></i></div>
+      <div class="text-muted d-none d-md-block fs-4"><i class="bi bi-chevron-right text-black-50"></i></div>
 
       <!-- Step 6 -->
       <a href="{{ url_for('government.dashboard') }}#before-after-section" class="text-decoration-none">
-        <div class="text-center p-2 step-item" style="max-width: 155px;">
+        <div class="text-center p-2" style="max-width: 155px;">
           <div class="step-circle" style="background: #fce7f3; color: #db2777; border: 2px solid #fbcfe8;">
             <i class="bi bi-bullseye"></i>
           </div>
@@ -315,28 +309,4 @@
     </div>
   </div>
 </section>
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -25px 0px'
-    });
-
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
-  } else {
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-revealed'));
-  }
-});
-</script>
 {% endblock %}

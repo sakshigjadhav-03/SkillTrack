@@ -496,16 +496,7 @@ def run_schema_migrations():
                 except Exception as e:
                     print(f"[Migration] longitude: {e}")
 
-        # 4. Employer feedback columns
-        fb_cols = get_columns('employer_feedback')
-        if fb_cols and 'teamwork_rating' not in fb_cols:
-            try:
-                execute_db("ALTER TABLE employer_feedback ADD COLUMN teamwork_rating INTEGER DEFAULT 4")
-                print("[Migration] Added teamwork_rating to employer_feedback")
-            except Exception as e:
-                pass
-
-        # 5. Ensure demo users exist
+        # 4. Ensure demo users exist
         try:
             users_check = query_db("SELECT COUNT(*) AS c FROM users", one=True)
             if not users_check or users_check.get('c', 0) == 0:

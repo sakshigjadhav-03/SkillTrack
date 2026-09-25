@@ -41,60 +41,6 @@ def get_db_connection():
     return conn, 'sqlite'
 
 
-_schema_ensured = False
-
-def ensure_schema():
-    """Ensures required columns exist in tables without breaking existing data."""
-    global _schema_ensured
-    if _schema_ensured:
-        return
-    try:
-        conn, db_type = get_db_connection()
-        if db_type == 'sqlite':
-            cur = conn.cursor()
-            
-            # Check training_providers columns
-            tp_info = cur.execute("PRAGMA table_info(training_providers)").fetchall()
-            tp_cols = [c[1] for c in tp_info]
-            if tp_cols:
-                if 'authorized_person' not in tp_cols:
-                    cur.execute("ALTER TABLE training_providers ADD COLUMN authorized_person VARCHAR(150)")
-                if 'address' not in tp_cols:
-                    cur.execute("ALTER TABLE training_providers ADD COLUMN address TEXT")
-                if 'state' not in tp_cols:
-                    cur.execute("ALTER TABLE training_providers ADD COLUMN state VARCHAR(100) DEFAULT 'Maharashtra'")
-                if 'verification_status' not in tp_cols:
-                    cur.execute("ALTER TABLE training_providers ADD COLUMN verification_status VARCHAR(20) DEFAULT 'verified'")
-
-                cur.execute("UPDATE training_providers SET verification_status = 'verified' WHERE verification_status IS NULL")
-                cur.execute("UPDATE training_providers SET state = 'Maharashtra' WHERE state IS NULL")
-                cur.execute("UPDATE training_providers SET authorized_person = 'Center Director' WHERE authorized_person IS NULL")
-
-            # Check employers columns
-            emp_info = cur.execute("PRAGMA table_info(employers)").fetchall()
-            emp_cols = [c[1] for c in emp_info]
-            if emp_cols:
-                if 'address' not in emp_cols:
-                    cur.execute("ALTER TABLE employers ADD COLUMN address TEXT")
-                if 'state' not in emp_cols:
-                    cur.execute("ALTER TABLE employers ADD COLUMN state VARCHAR(100) DEFAULT 'Maharashtra'")
-                if 'registration_id' not in emp_cols:
-                    cur.execute("ALTER TABLE employers ADD COLUMN registration_id VARCHAR(100)")
-                if 'verification_status' not in emp_cols:
-                    cur.execute("ALTER TABLE employers ADD COLUMN verification_status VARCHAR(20) DEFAULT 'verified'")
-
-                cur.execute("UPDATE employers SET verification_status = 'verified' WHERE verification_status IS NULL")
-                cur.execute("UPDATE employers SET state = 'Maharashtra' WHERE state IS NULL")
-                cur.execute("UPDATE employers SET registration_id = 'GST-27AAACT1234F' WHERE registration_id IS NULL")
-
-            conn.commit()
-            cur.close()
-        conn.close()
-        _schema_ensured = True
-    except Exception as e:
-        print(f"[SkillTrack DB Warning] ensure_schema error: {e}")
-
-
 def _normalize_query(query: str, db_type: str) -> str:
     """
     Normalizes SQL queries between MySQL (%s parameter placeholder)

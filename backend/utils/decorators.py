@@ -48,7 +48,6 @@ def get_current_user():
             'id': session.get('user_id'),
             'username': session.get('username'),
             'role': display_role,
-            'raw_role': raw_role,
             'email': session.get('email'),
             'trainee_id': session.get('trainee_id'),
             'outcome_id': session.get('outcome_id'),

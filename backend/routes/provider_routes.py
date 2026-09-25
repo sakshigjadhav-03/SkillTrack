@@ -1,6 +1,5 @@
-from datetime import datetime
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
-from backend.database import query_db, execute_db
+from backend.database import query_db
 from backend.utils.decorators import login_required, role_required
 from backend.services.outcome_score import OutcomeScoreCalculator
 from backend.services.skill_matcher import SkillMatcher
@@ -15,14 +14,6 @@ def dashboard():
     """Training Provider dashboard showing cohort analytics, curriculum gaps, and feedback."""
     provider_id = session.get('provider_id') or 1
     provider = query_db("SELECT * FROM training_providers WHERE id = %s", (provider_id,), one=True)
-    if provider:
-        v_status = provider.get('verification_status', 'verified')
-        if v_status == 'pending':
-            flash('Your account is awaiting Administrator verification. You will be able to access the dashboard after your account is verified.', 'warning')
-            return redirect(url_for('auth.login', role='provider'))
-        elif v_status == 'rejected':
-            flash('Your account verification was rejected. Please contact the Administrator for further information.', 'danger')
-            return redirect(url_for('auth.login', role='provider'))
 
     # Provider cohorts & courses summary
     courses_summary = query_db(
@@ -85,9 +76,6 @@ def dashboard():
             tr.grade,
             tp.name AS provider_name,
             ev.verification_status,
-            ev.verified_role,
-            e.company_name AS verified_employer,
-            e.id AS employer_id,
             f.current_salary,
             f.salary_growth_pct,
             f.retention_status,
@@ -96,8 +84,7 @@ def dashboard():
         JOIN trainees t ON tr.trainee_id = t.id
         JOIN courses c ON tr.course_id = c.id
         LEFT JOIN training_providers tp ON tr.provider_id = tp.id
-        LEFT JOIN employer_verifications ev ON t.id = ev.trainee_id
-        LEFT JOIN employers e ON ev.employer_id = e.id
+        LEFT JOIN employer_verifications ev ON t.id = ev.trainee_id AND ev.verification_status = 'verified'
         LEFT JOIN followups f ON t.id = f.trainee_id AND f.milestone_months = 12
         WHERE tr.provider_id = %s
         ORDER BY t.id DESC
@@ -171,40 +158,6 @@ def dashboard():
         employer_satisfaction_pct=82.0
     )
 
-    # Verification requests sent to employers for this provider's trainees
-    verification_requests = query_db(
-        """
-        SELECT 
-            ev.id AS verification_id,
-            ev.outcome_id,
-            ev.verification_status,
-            ev.verified_role,
-            ev.verified_joining_date,
-            ev.verified_salary_range,
-            ev.remarks,
-            ev.verified_at,
-            t.id AS trainee_id,
-            t.first_name,
-            t.last_name,
-            t.current_employment_status,
-            c.course_name,
-            e.company_name AS employer_name
-        FROM employer_verifications ev
-        JOIN trainees t ON ev.trainee_id = t.id
-        JOIN training_records tr ON t.id = tr.trainee_id
-        JOIN courses c ON tr.course_id = c.id
-        JOIN employers e ON ev.employer_id = e.id
-        WHERE tr.provider_id = %s
-        ORDER BY ev.id DESC
-        """,
-        (provider_id,)
-    )
-
-    # Active employers available for verification requests
-    employers_list = query_db(
-        "SELECT id, company_name, industry FROM employers WHERE verification_status = 'verified' ORDER BY company_name ASC"
-    )
-
     return render_template(
         'provider/dashboard.html',
         provider=provider,
@@ -215,76 +168,8 @@ def dashboard():
         placement_rate=placement_rate,
         retention_rate=retention_rate,
         total_trained=total_trained,
-        outcome_score=outcome_score,
-        verification_requests=verification_requests,
-        employers_list=employers_list
+        outcome_score=outcome_score
     )
-
-
-@provider_bp.route('/request-verification', methods=['POST'])
-@login_required
-@role_required('provider')
-def request_verification():
-    """Initiate an employer verification request for an enrolled trainee."""
-    provider_id = session.get('provider_id') or 1
-    trainee_id = request.form.get('trainee_id', type=int)
-    outcome_id = request.form.get('outcome_id', '').strip()
-    employer_id = request.form.get('employer_id', type=int)
-    role_title = request.form.get('job_role', '').strip() or 'Associate Trainee'
-    joining_date = request.form.get('joining_date') or datetime.now().strftime('%Y-%m-%d')
-    salary_range = request.form.get('salary_range', '').strip() or '₹18,000 - ₹22,000'
-    notes = request.form.get('notes', '').strip() or 'Verification request initiated by Training Provider'
-
-    # Validate trainee belongs to this provider
-    tr = query_db(
-        "SELECT id FROM training_records WHERE trainee_id = %s AND provider_id = %s",
-        (trainee_id, provider_id),
-        one=True
-    )
-    if not tr:
-        flash('Trainee record not found under your institution.', 'danger')
-        return redirect(url_for('provider.dashboard'))
-
-    emp = query_db("SELECT company_name FROM employers WHERE id = %s", (employer_id,), one=True)
-    emp_name = emp['company_name'] if emp else 'Employer'
-
-    # Upsert into employer_verifications with status='pending'
-    now_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    token = f"EV-REQ-{outcome_id.split('-')[-1] if '-' in outcome_id else outcome_id}"
-    existing = query_db(
-        "SELECT id FROM employer_verifications WHERE trainee_id = %s AND employer_id = %s",
-        (trainee_id, employer_id),
-        one=True
-    )
-    if existing:
-        execute_db(
-            """
-            UPDATE employer_verifications 
-            SET verification_status = 'pending', verified_role = %s, verified_joining_date = %s,
-                verified_salary_range = %s, remarks = %s, verified_at = %s, token = %s
-            WHERE id = %s
-            """,
-            (role_title, joining_date, salary_range, notes, now_str, token, existing['id'])
-        )
-    else:
-        execute_db(
-            """
-            INSERT INTO employer_verifications (
-                employer_id, trainee_id, outcome_id, verification_status, verified_role,
-                verified_joining_date, verified_salary_range, remarks, verified_at, token
-            ) VALUES (%s, %s, %s, 'pending', %s, %s, %s, %s, %s, %s)
-            """,
-            (employer_id, trainee_id, outcome_id, role_title, joining_date, salary_range, notes, now_str, token)
-        )
-
-    # Ensure trainee employment status is recorded as employed/apprentice
-    execute_db(
-        "UPDATE trainees SET current_employment_status = 'employed' WHERE id = %s AND current_employment_status = 'unemployed'",
-        (trainee_id,)
-    )
-
-    flash(f"Employer verification request successfully dispatched to {emp_name} for candidate {outcome_id}!", 'success')
-    return redirect(url_for('provider.dashboard'))
 
 @provider_bp.route('/certificate/<outcome_id>')
 @login_required
